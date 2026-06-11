@@ -580,22 +580,96 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 }
 
 /* Bot page */
-.bot-split{display:grid;grid-template-columns:1fr 300px;gap:16px;height:560px}
-.bot-chat{background:var(--white);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;overflow:hidden}
+.bot-layout{display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:stretch}
+.clara-avatar-panel{
+  background:linear-gradient(180deg,var(--white) 0%,var(--off) 100%);
+  border:1px solid var(--border);border-radius:var(--r);
+  padding:1.1rem 1rem;display:flex;flex-direction:column;align-items:center;
+  text-align:center;position:relative;overflow:hidden
+}
+.clara-avatar-panel::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 0%, rgba(34,197,94,0.08), transparent 55%);
+  pointer-events:none
+}
+.clara-avatar-wrap{
+  position:relative;width:148px;height:148px;margin:0.25rem 0 0.85rem;flex-shrink:0
+}
+.clara-avatar-ring{
+  position:absolute;inset:-6px;border-radius:50%;
+  border:2px solid rgba(15,37,112,0.12);transition:all 0.25s
+}
+.clara-avatar-panel.speaking .clara-avatar-ring{
+  border-color:rgba(34,197,94,0.55);
+  box-shadow:0 0 0 4px rgba(34,197,94,0.12);
+  animation:claraRingPulse 1.2s ease-in-out infinite
+}
+.clara-avatar-panel.thinking .clara-avatar-ring{
+  border-color:rgba(15,37,112,0.35);
+  animation:claraRingPulse 1.6s ease-in-out infinite
+}
+@keyframes claraRingPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+.clara-avatar-photo{
+  width:100%;height:100%;object-fit:cover;border-radius:50%;
+  border:3px solid var(--white);box-shadow:0 8px 24px rgba(10,22,40,0.12);
+  transition:transform 0.25s
+}
+.clara-avatar-panel.speaking .clara-avatar-photo{animation:claraTalkBob 0.45s ease-in-out infinite alternate}
+@keyframes claraTalkBob{from{transform:scale(1)}to{transform:scale(1.02) translateY(-1px)}}
+.clara-voice-bars{
+  position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
+  display:flex;gap:3px;align-items:flex-end;height:18px;opacity:0;transition:opacity 0.2s
+}
+.clara-avatar-panel.speaking .clara-voice-bars{opacity:1}
+.clara-voice-bars span{
+  width:4px;border-radius:999px;background:var(--green);
+  animation:claraVoiceBar 0.55s ease-in-out infinite alternate
+}
+.clara-voice-bars span:nth-child(1){height:8px;animation-delay:0s}
+.clara-voice-bars span:nth-child(2){height:14px;animation-delay:0.12s}
+.clara-voice-bars span:nth-child(3){height:10px;animation-delay:0.24s}
+.clara-voice-bars span:nth-child(4){height:16px;animation-delay:0.08s}
+@keyframes claraVoiceBar{from{transform:scaleY(0.45)}to{transform:scaleY(1)}}
+.clara-avatar-name{font-size:15px;font-weight:800;color:var(--ink);letter-spacing:-0.02em}
+.clara-avatar-role{font-size:11px;color:var(--ink-3);margin-top:2px}
+.clara-status-row{
+  display:inline-flex;align-items:center;gap:6px;margin-top:0.55rem;
+  font-size:11px;font-weight:600;color:var(--green)
+}
+.clara-status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);flex-shrink:0}
+.clara-avatar-panel.thinking .clara-status-dot{background:var(--amber);animation:claraStatusBlink 1s infinite}
+.clara-avatar-panel.speaking .clara-status-dot{animation:claraStatusBlink 0.7s infinite}
+@keyframes claraStatusBlink{0%,100%{opacity:1}50%{opacity:0.35}}
+.clara-caption{
+  margin-top:0.85rem;font-size:11px;line-height:1.55;color:var(--ink-3);
+  min-height:2.8em;padding:0 0.25rem
+}
+.clara-voice-toggle-row{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-top:auto;padding-top:0.85rem;font-size:11px;color:var(--ink-3);width:100%
+}
+.clara-voice-toggle-row input{accent-color:var(--green)}
+.bot-split{display:grid;grid-template-columns:1fr 280px;gap:16px;height:560px;min-height:560px}
+.bot-chat{background:var(--white);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;overflow:hidden;min-height:560px}
 .bot-header{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.bot-av{width:36px;height:36px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--white);position:relative;flex-shrink:0}
+.bot-av{width:36px;height:36px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--white);position:relative;flex-shrink:0;overflow:hidden}
+.bot-av img{width:100%;height:100%;object-fit:cover}
 .bot-av::after{content:'';position:absolute;bottom:-2px;right:-2px;width:9px;height:9px;border-radius:50%;background:var(--green);border:2px solid var(--white)}
 .bot-name{font-size:14px;font-weight:700;color:var(--ink)}
 .bot-status{font-size:11px;color:var(--green)}
 .bot-msgs{flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:12px}
 .bmsg{display:flex;gap:9px;max-width:88%}
 .bmsg.u{align-self:flex-end;flex-direction:row-reverse}
-.bav{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
-.bmsg.b .bav{background:var(--blue);color:var(--white)}
+.bav{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;overflow:hidden}
+.bav.clara-mini-av{background:transparent;padding:0}
+.clara-mini-img{width:100%;height:100%;object-fit:cover;border-radius:7px;border:1px solid var(--border)}
+.bmsg.b .bav:not(.clara-mini-av){background:var(--blue);color:var(--white)}
 .bmsg.u .bav{background:var(--blue-bg);color:var(--blue)}
 .bbubble{padding:10px 14px;font-size:13px;line-height:1.65}
 .bmsg.b .bbubble{background:var(--off);color:var(--ink);border-radius:3px 12px 12px 12px}
 .bmsg.u .bbubble{background:var(--blue);color:var(--white);border-radius:12px 3px 12px 12px}
+.clara-cursor{display:inline-block;color:var(--green);font-weight:700;margin-left:1px;animation:claraCursorBlink 0.8s step-end infinite}
+@keyframes claraCursorBlink{0%,100%{opacity:1}50%{opacity:0}}
 .bot-input-row{padding:0.9rem 1.1rem;border-top:1px solid var(--border);display:flex;gap:8px}
 .bot-ta{flex:1;padding:9px 13px;border:1px solid var(--border);border-radius:var(--rs);font-size:13px;font-family:inherit;color:var(--ink);resize:none;line-height:1.5;transition:border-color 0.13s}
 .bot-ta:focus{outline:none;border-color:var(--blue)}
@@ -649,8 +723,11 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   .preview-charts{grid-template-columns:1fr}
   .services-strip,.proof-section,.pricing-section,.cta-banner{padding-left:1rem;padding-right:1rem}
   .svc-page{padding:2rem 1rem}
-  .bot-split{grid-template-columns:1fr;height:auto}
-  .bot-chat{min-height:520px}
+  .bot-layout{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .clara-avatar-panel{flex-direction:row;gap:1rem;text-align:left;padding:1rem;align-items:center}
+  .clara-avatar-wrap{width:88px;height:88px;margin:0}
+  .clara-caption,.clara-voice-toggle-row{display:none}
+  .bot-split{grid-template-columns:1fr;height:auto;min-height:520px}
   .rpt-charts-grid{grid-template-columns:1fr}
   .stmt-type-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -1082,12 +1159,32 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
     <div class="svc-hero">
       <div class="svc-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>CFO Advisor</div>
       <h1 class="svc-h1">Meet Clara.<br>Your on-call CFO.</h1>
-      <p class="svc-sub">Clara knows your numbers and gives you straight answers. Ask about cash flow, margins, debt, benchmarks — anything. No jargon. No fluff. Just clarity.</p>
+      <p class="svc-sub">Clara knows your numbers and gives you straight answers — with a face and voice, not just text. Ask about cash flow, margins, debt, benchmarks — anything. No jargon. No fluff. Just clarity.</p>
     </div>
-    <div class="bot-split">
+    <div class="bot-layout">
+      <aside class="clara-avatar-panel idle" id="clara-avatar-panel">
+        <div class="clara-avatar-wrap">
+          <div class="clara-avatar-ring"></div>
+          <img src="/assets/clara-avatar.png" alt="Clara — CFO Advisor" class="clara-avatar-photo" id="clara-avatar-photo">
+          <div class="clara-voice-bars" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+        </div>
+        <div class="clara-avatar-name">Clara</div>
+        <div class="clara-avatar-role">CFO Advisor</div>
+        <div class="clara-status-row">
+          <span class="clara-status-dot"></span>
+          <span id="clara-status-text">Ready to help</span>
+        </div>
+        <div class="clara-caption" id="clara-caption"></div>
+        <label class="clara-voice-toggle-row">
+          <input type="checkbox" id="clara-voice-toggle" checked>
+          Hear Clara speak
+        </label>
+      </aside>
+
+      <div class="bot-split">
       <div class="bot-chat">
         <div class="bot-header">
-          <div class="bot-av">C</div>
+          <div class="bot-av"><img src="/assets/clara-avatar.png" alt="Clara"></div>
           <div><div class="bot-name">Clara — CFO Advisor</div><div class="bot-status">● Online · ready to help</div></div>
         </div>
         <div class="bot-msgs" id="bot-msgs"></div>
@@ -1120,6 +1217,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
             <div class="cap-item">Help you prepare for bank or investor meetings</div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -1242,6 +1340,7 @@ function goPage(id, btn) {
   if (btn) btn.classList.add('active');
   window.scrollTo(0, 0);
   if (id === 'health' && typeof renderHealthPage === 'function') renderHealthPage();
+  if (id === 'bot' && typeof ensureBotInit === 'function') ensureBotInit();
 }
 
 // ── HERO CHARTS ──────────────────────────────────────
@@ -1260,7 +1359,6 @@ window.addEventListener('load', () => {
   // Health charts initialized by health-engine.js when data exists
 
   buildKPIs();
-  initBot();
   initUploadDropzone();
   updateStatementUploadCopy();
   if (typeof initHealthPage === 'function') initHealthPage();
@@ -1301,15 +1399,27 @@ function buildKPIs() {
 
 // ── CFO BOT ──────────────────────────────────────────
 let botHistory = [];
+let botInitialized = false;
+
+function ensureBotInit() {
+  if (botInitialized) return;
+  botInitialized = true;
+  initBot();
+}
 
 function initBot() {
-  addBotMsg(`Hi — I'm Clara, your CFO Advisor. I can help you understand any financial metric, explain what your numbers mean, or walk you through how to improve them.<br><br>Try one of the questions on the right, or just ask me anything.`);
+  if (typeof initClaraAvatar === 'function') initClaraAvatar();
+  deliverClaraHtml(`Hi — I'm Clara, your CFO Advisor. I can help you understand any financial metric, explain what your numbers mean, or walk you through how to improve them.<br><br>Try one of the questions on the right, or just ask me anything.`);
 }
 
 function addBotMsg(html) {
+  if (typeof deliverClaraHtml === 'function') {
+    deliverClaraHtml(html);
+    return;
+  }
   const el = document.createElement('div');
   el.className = 'bmsg b';
-  el.innerHTML = `<div class="bav">C</div><div class="bbubble">${html}</div>`;
+  el.innerHTML = `<div class="bav clara-mini-av"><img src="/assets/clara-avatar.png" alt="Clara" class="clara-mini-img"></div><div class="bbubble">${html}</div>`;
   document.getElementById('bot-msgs').appendChild(el);
   document.getElementById('bot-msgs').scrollTop = 99999;
 }
@@ -1323,14 +1433,19 @@ function addUserMsg(text) {
 }
 
 function showTyping() {
+  if (typeof onClaraThinking === 'function') onClaraThinking();
   const el = document.createElement('div');
   el.className = 'bmsg b'; el.id = 'bot-typing';
-  el.innerHTML = `<div class="bav">C</div><div class="typdots"><span></span><span></span><span></span></div>`;
+  el.innerHTML = `<div class="bav clara-mini-av"><img src="/assets/clara-avatar.png" alt="Clara" class="clara-mini-img"></div><div class="typdots"><span></span><span></span><span></span></div>`;
   document.getElementById('bot-msgs').appendChild(el);
   document.getElementById('bot-msgs').scrollTop = 99999;
 }
 
-function removeTyping() { const t = document.getElementById('bot-typing'); if(t) t.remove(); }
+function removeTyping() {
+  const t = document.getElementById('bot-typing');
+  if (t) t.remove();
+  if (typeof onClaraTypingRemoved === 'function') onClaraTypingRemoved();
+}
 
 function botAsk(q) { document.getElementById('bot-input').value = q; botSend(); }
 function botKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();botSend();} }
@@ -1359,14 +1474,14 @@ async function botSend() {
     removeTyping();
     const reply = json.reply || generateClaraReply(text);
     botHistory.push({role:'assistant', content: reply});
-    addBotMsg(escapeHtml(reply).replace(/\n/g,'<br>'));
+    deliverClaraReply(reply);
     document.getElementById('bot-send-btn').disabled = false;
   } catch (error) {
     window.setTimeout(() => {
       removeTyping();
       const reply = generateClaraReply(text);
       botHistory.push({role:'assistant', content: reply});
-      addBotMsg(escapeHtml(reply).replace(/\n/g,'<br>'));
+      deliverClaraReply(reply);
       document.getElementById('bot-send-btn').disabled = false;
     }, 350);
   }
@@ -2624,5 +2739,6 @@ Speak like a trusted advisor, not a report. Use their exact numbers. Keep respon
 </script>
 <script src="deck-engine.js"></script>
 <script src="health-engine.js"></script>
+<script src="clara-avatar.js"></script>
 </body>
 </html>
