@@ -398,11 +398,24 @@ function onKpiInputChange(kpiId) {
   const values = getKpiInputValues(kpiId);
   kpiInputCache[kpiId] = values;
   const result = kpi.calc(values);
+  const status = evaluateKpiStatus(kpi, result);
+  const statusLabel = status === 'good' ? 'On track' : status === 'warn' ? 'Watch' : status === 'bad' ? 'Needs attention' : '';
   const el = document.getElementById('kpi-result-' + kpiId);
   if (el) el.textContent = formatKpiResult(kpi, result);
   const block = el?.closest('.kpi-result-block');
   if (block) {
-    block.className = 'kpi-result-block kpi-status-' + evaluateKpiStatus(kpi, result);
+    block.className = 'kpi-result-block kpi-status-' + status;
+    let statusEl = block.querySelector('.kpi-result-status');
+    if (statusLabel) {
+      if (!statusEl) {
+        statusEl = document.createElement('div');
+        statusEl.className = 'kpi-result-status';
+        block.appendChild(statusEl);
+      }
+      statusEl.textContent = statusLabel;
+    } else if (statusEl) {
+      statusEl.remove();
+    }
   }
 }
 
@@ -509,17 +522,24 @@ function renderTrackedKpisPanel() {
     <div class="health-tracked-kpi-grid">
       ${ids.map(id => {
         const kpi = KPI_DEFS.find(k => k.id === id);
+        if (!kpi) return '';
         const trend = getTrackedKpiTrend(id);
         const latest = trend[trend.length - 1];
         const prior = trend.length > 1 ? trend[trend.length - 2] : null;
         const delta = latest && prior ? latest.value - prior.value : null;
-        const deltaClass = delta === null ? 'neutral' : (kpiDef.higherBetter ? (delta >= 0 ? 'up' : 'down') : (delta <= 0 ? 'up' : 'down'));
-        return `<div class="health-tracked-kpi-card">
-          <div class="health-kpi-label">${escapeHtml(kpiDef.name)}</div>
-          <div class="health-kpi-value">${latest ? formatKpiResult(kpiDef, latest.value) : '—'}</div>
+        const deltaClass = delta === null ? 'neutral' : (kpi.higherBetter ? (delta >= 0 ? 'up' : 'down') : (delta <= 0 ? 'up' : 'down'));
+        const status = latest ? evaluateKpiStatus(kpi, latest.value) : 'neutral';
+        const statusLabel = status === 'good' ? 'On track' : status === 'warn' ? 'Watch' : status === 'bad' ? 'Needs attention' : '';
+        return `<div class="health-tracked-kpi-card kpi-status-${status}">
+          <div class="health-tracked-kpi-head">
+            <div class="health-kpi-label">${escapeHtml(kpi.name)}</div>
+            <button type="button" class="health-kpi-remove" title="Stop tracking" onclick="removeTrackedKpi('${id}')">×</button>
+          </div>
+          <div class="health-kpi-value">${latest ? formatKpiResult(kpi, latest.value) : '—'}</div>
           <div class="health-kpi-meta">
             ${latest ? `<span class="health-kpi-change neutral">${escapeHtml(latest.monthLabel)}</span>` : '<span class="health-kpi-change neutral">Not recorded yet</span>'}
-            ${delta !== null ? `<span class="health-kpi-change ${deltaClass}">${delta >= 0 ? '+' : ''}${kpiDef.unit === 'percent' ? delta.toFixed(1) + ' pts' : kpiDef.unit === 'currency' ? fc(delta) : delta.toFixed(2)} vs prior</span>` : ''}
+            ${statusLabel ? `<span class="health-kpi-change ${status === 'good' ? 'up' : status === 'warn' ? 'neutral' : 'down'}">${statusLabel}</span>` : ''}
+            ${delta !== null ? `<span class="health-kpi-change ${deltaClass}">${delta >= 0 ? '+' : ''}${kpi.unit === 'percent' ? delta.toFixed(1) + ' pts' : kpi.unit === 'currency' ? fc(delta) : delta.toFixed(2)} vs prior</span>` : ''}
           </div>
         </div>`;
       }).join('')}
@@ -527,6 +547,9 @@ function renderTrackedKpisPanel() {
 }
 
 function removeTrackedKpi(kpiId) {
+  const kpi = KPI_DEFS.find(k => k.id === kpiId);
+  const name = kpi?.name || 'this KPI';
+  if (!confirm(`Stop tracking ${name}? Past monthly values will stay in history.`)) return;
   ensureHealthKpiStructure();
   healthStore.trackedKpiIds = healthStore.trackedKpiIds.filter(id => id !== kpiId);
   saveHealthStore();

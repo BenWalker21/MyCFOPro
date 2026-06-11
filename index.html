@@ -492,6 +492,12 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 .kpi-benchmark strong{color:var(--ink)}
 .health-tracked-kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
 .health-tracked-kpi-card{background:var(--off);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem}
+.health-tracked-kpi-card.kpi-status-good{border-color:#cceedd;background:var(--green-bg)}
+.health-tracked-kpi-card.kpi-status-warn{border-color:#f4dfad;background:var(--amber-bg)}
+.health-tracked-kpi-card.kpi-status-bad{border-color:#fecaca;background:#fef2f2}
+.health-tracked-kpi-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:2px}
+.health-kpi-remove{background:none;border:none;color:var(--ink-3);font-size:18px;line-height:1;cursor:pointer;padding:0 2px;border-radius:4px}
+.health-kpi-remove:hover{color:var(--red);background:#fef2f2}
 
 /* Slideshow preview */
 .slides-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:2rem}
