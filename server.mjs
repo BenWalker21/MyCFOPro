@@ -77,6 +77,7 @@ Analyze this normalized financial statement data and return ONLY valid JSON with
 Rules:
 - Be direct, practical, and owner-friendly.
 - Use the provided numbers. Do not invent missing cash, AR, AP, debt, or tax details.
+- Tailor the analysis to the statement type in the payload (income statement, balance sheet, cash flow, AR aging, or AP aging).
 - Mention when P&L-only data limits cash-flow conclusions.
 - Keep findings and actions specific to this business.
 - Include the reminder that this is informational and not a substitute for a CPA when relevant.
@@ -242,10 +243,15 @@ function normalizeList(value) {
 
 function trimFinancials(financials) {
   const pick = [
-    'filename', 'company', 'period', 'revenue', 'cogs', 'grossProfit',
+    'filename', 'company', 'period', 'statementType', 'revenue', 'cogs', 'grossProfit',
     'opex', 'opIncome', 'netIncome', 'grossMargin', 'netMargin',
     'opMargin', 'payroll', 'payrollPct', 'rent', 'marketing',
-    'interestExpense', 'hasBalanceSheet'
+    'interestExpense', 'hasBalanceSheet', 'totalAssets', 'totalLiabilities',
+    'totalEquity', 'currentAssets', 'currentLiabilities', 'cash',
+    'accountsReceivable', 'accountsPayable', 'inventory', 'longTermDebt',
+    'workingCapital', 'currentRatio', 'debtToEquity', 'operatingCashFlow',
+    'investingCashFlow', 'financingCashFlow', 'netCashChange', 'beginningCash',
+    'endingCash', 'totalBalance', 'overdueBalance', 'overduePct'
   ];
 
   const out = {};
@@ -256,6 +262,11 @@ function trimFinancials(financials) {
   out.serviceRevenue = trimItems(financials.serviceRevenue);
   out.serviceCogs = trimItems(financials.serviceCogs);
   out.expenseItems = trimItems(financials.expenseItems);
+  out.assetItems = trimItems(financials.assetItems);
+  out.liabilityItems = trimItems(financials.liabilityItems);
+  out.operatingItems = trimItems(financials.operatingItems);
+  out.topCounterparties = trimItems(financials.topCounterparties);
+  if (financials.agingBuckets) out.agingBuckets = financials.agingBuckets;
   return out;
 }
 

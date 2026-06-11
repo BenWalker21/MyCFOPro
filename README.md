@@ -39,3 +39,11 @@ Use the Node server when you want AI-generated CFO reports and Clara chat. API k
    ```
 
 When the backend is configured, uploaded financials first show an instant local preview, then the AI CFO engine replaces the report summary, findings, and action plan with generated analysis.
+
+On the Financial Analysis page, choose the statement type before uploading:
+
+- Income Statement (P&L)
+- Balance Sheet
+- Statement of Cash Flows
+- AR Summary (Aging)
+- AP Balance (Aging)

@@ -268,6 +268,27 @@ footer{background:var(--ink);padding:2rem;text-align:center}
 .uz-sub{font-size:13px;color:var(--ink-3)}
 .uz-sub span{color:var(--blue);font-weight:500}
 
+.analysis-controls{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;
+  margin-bottom:1rem;
+}
+.analysis-field{display:flex;flex-direction:column;gap:6px}
+.analysis-label{font-size:12px;font-weight:700;color:var(--ink-2);letter-spacing:0.2px}
+.analysis-select{
+  appearance:none;-webkit-appearance:none;
+  font:inherit;font-size:14px;font-weight:500;color:var(--ink);
+  background:var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23717171' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 14px center;
+  border:1px solid var(--border);border-radius:var(--rs);padding:11px 40px 11px 14px;
+  transition:border-color 0.13s, box-shadow 0.13s;
+}
+.analysis-select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,60,170,0.12)}
+.analysis-hint{font-size:12px;color:var(--ink-3);line-height:1.5}
+.stmt-pill{
+  font-size:11px;font-weight:700;letter-spacing:0.3px;
+  padding:6px 11px;border-radius:20px;background:var(--blue-bg);color:var(--blue);
+  white-space:nowrap;
+}
+
 /* KPI grid */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
 .kpi-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.3rem;cursor:pointer;transition:border-color 0.13s}
@@ -603,12 +624,25 @@ footer{background:var(--ink);padding:2rem;text-align:center}
       <div class="svc-hero">
         <div class="svc-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Financial Analysis</div>
         <h1 class="svc-h1">Upload once.<br>Understand everything.</h1>
-        <p class="svc-sub">Drop your QuickBooks, Xero, or Wave export. MyCFOPro reads your numbers and returns a complete CFO-grade report — health score, red flags, benchmarks, and a prioritized action plan.</p>
+        <p class="svc-sub">Choose your statement type, then drop your QuickBooks, Xero, or Wave export. MyCFOPro reads your numbers and returns a CFO-grade report tailored to that statement.</p>
+      </div>
+      <div class="analysis-controls">
+        <div class="analysis-field">
+          <label for="statement-type" class="analysis-label">Statement type</label>
+          <select id="statement-type" class="analysis-select" onchange="updateStatementUploadCopy()">
+            <option value="income_statement">Income Statement (P&amp;L)</option>
+            <option value="balance_sheet">Balance Sheet</option>
+            <option value="cash_flow">Statement of Cash Flows</option>
+            <option value="ar_summary">AR Summary (Aging)</option>
+            <option value="ap_balance">AP Balance (Aging)</option>
+          </select>
+          <div class="analysis-hint" id="statement-hint">Profit &amp; loss showing revenue, expenses, and net income for the period.</div>
+        </div>
       </div>
       <label class="upload-zone-big" for="analysis-file" id="analysis-dropzone">
         <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-        <div class="uz-title">Drop your P&L or Balance Sheet here</div>
-        <div class="uz-sub">or <span>click to browse</span> &nbsp;·&nbsp; Excel (.xlsx) · CSV · PDF · QuickBooks · Xero · Wave</div>
+        <div class="uz-title" id="uz-title">Drop your Income Statement (P&amp;L) here</div>
+        <div class="uz-sub" id="uz-sub">or <span>click to browse</span> &nbsp;·&nbsp; Excel (.xlsx) · CSV · PDF · QuickBooks · Xero · Wave</div>
       </label>
       <input type="file" id="analysis-file" style="display:none" accept=".xlsx,.xls,.csv,.pdf" onchange="handleAnalysisFile(event)">
       <div id="analysis-status" style="display:none;align-items:center;gap:10px;padding:14px 16px;background:var(--blue-bg);border-radius:var(--rs);margin-top:12px;font-size:13px;color:var(--blue)">
@@ -624,7 +658,8 @@ footer{background:var(--ink);padding:2rem;text-align:center}
           <div style="font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-0.4px;margin-bottom:3px" id="rpt-title">CFO Analysis Report</div>
           <div style="font-size:13px;color:var(--ink-3)" id="rpt-sub"></div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+          <span class="stmt-pill" id="rpt-statement-pill">Income Statement</span>
           <div class="health-pill" id="rpt-health-pill"></div>
           <button class="btn-outline" onclick="resetAnalysis()" style="font-size:12px;padding:7px 14px">← New analysis</button>
         </div>
@@ -636,19 +671,19 @@ footer{background:var(--ink);padding:2rem;text-align:center}
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem">
         <div class="health-chart-area" style="margin:0">
-          <div class="hca-header"><div><div class="hca-title">Revenue by service line</div><div class="hca-sub">Where your income comes from</div></div></div>
+          <div class="hca-header"><div><div class="hca-title" id="rpt-chart-1-title">Revenue by service line</div><div class="hca-sub" id="rpt-chart-1-sub">Where your income comes from</div></div></div>
           <div style="height:240px;position:relative"><canvas id="rpt-chart-revenue"></canvas></div>
         </div>
         <div class="health-chart-area" style="margin:0">
-          <div class="hca-header"><div><div class="hca-title">Gross margin by service</div><div class="hca-sub">Revenue vs. direct cost per line</div></div></div>
+          <div class="hca-header"><div><div class="hca-title" id="rpt-chart-2-title">Gross margin by service</div><div class="hca-sub" id="rpt-chart-2-sub">Revenue vs. direct cost per line</div></div></div>
           <div style="height:240px;position:relative"><canvas id="rpt-chart-margin"></canvas></div>
         </div>
         <div class="health-chart-area" style="margin:0">
-          <div class="hca-header"><div><div class="hca-title">Expense breakdown</div><div class="hca-sub">Operating cost distribution</div></div></div>
+          <div class="hca-header"><div><div class="hca-title" id="rpt-chart-3-title">Expense breakdown</div><div class="hca-sub" id="rpt-chart-3-sub">Operating cost distribution</div></div></div>
           <div style="height:240px;position:relative"><canvas id="rpt-chart-opex"></canvas></div>
         </div>
         <div class="health-chart-area" style="margin:0">
-          <div class="hca-header"><div><div class="hca-title">Financial health radar</div><div class="hca-sub">Your ratios vs. industry benchmark</div></div></div>
+          <div class="hca-header"><div><div class="hca-title" id="rpt-chart-4-title">Financial health radar</div><div class="hca-sub" id="rpt-chart-4-sub">Your ratios vs. industry benchmark</div></div></div>
           <div style="height:240px;position:relative"><canvas id="rpt-chart-radar"></canvas></div>
         </div>
       </div>
@@ -881,6 +916,7 @@ window.addEventListener('load', () => {
   buildKPIs();
   initBot();
   initUploadDropzone();
+  updateStatementUploadCopy();
 });
 
 // ── KPI LIBRARY ──────────────────────────────────────
@@ -1043,6 +1079,676 @@ function initUploadDropzone() {
 let analysisCharts = [];
 let currentData = null;
 
+const STATEMENT_TYPES = {
+  income_statement: {
+    label: 'Income Statement (P&L)',
+    reportLabel: 'Income Statement Analysis',
+    hint: 'Profit & loss showing revenue, expenses, and net income for the period.',
+    uploadTitle: 'Drop your Income Statement (P&L) here',
+    uploadSub: 'Export from QuickBooks, Xero, or Wave as Excel or CSV for best results.'
+  },
+  balance_sheet: {
+    label: 'Balance Sheet',
+    reportLabel: 'Balance Sheet Analysis',
+    hint: 'Snapshot of assets, liabilities, and equity at a point in time.',
+    uploadTitle: 'Drop your Balance Sheet here',
+    uploadSub: 'Include current assets, liabilities, and equity totals when possible.'
+  },
+  cash_flow: {
+    label: 'Statement of Cash Flows',
+    reportLabel: 'Cash Flow Analysis',
+    hint: 'How cash moved through operating, investing, and financing activities.',
+    uploadTitle: 'Drop your Statement of Cash Flows here',
+    uploadSub: 'Operating, investing, and financing sections help produce the best report.'
+  },
+  ar_summary: {
+    label: 'AR Summary (Aging)',
+    reportLabel: 'Accounts Receivable Analysis',
+    hint: 'Who owes you money and how overdue those balances are.',
+    uploadTitle: 'Drop your AR Aging Summary here',
+    uploadSub: 'Customer balances by aging bucket (Current, 1–30, 31–60, 61–90, 90+).'
+  },
+  ap_balance: {
+    label: 'AP Balance (Aging)',
+    reportLabel: 'Accounts Payable Analysis',
+    hint: 'What you owe vendors and how those balances are aging.',
+    uploadTitle: 'Drop your AP Balance / Aging report here',
+    uploadSub: 'Vendor balances by aging bucket (Current, 1–30, 31–60, 61–90, 90+).'
+  }
+};
+
+function getStatementType() {
+  return document.getElementById('statement-type')?.value || 'income_statement';
+}
+
+function updateStatementUploadCopy() {
+  const cfg = STATEMENT_TYPES[getStatementType()] || STATEMENT_TYPES.income_statement;
+  const hint = document.getElementById('statement-hint');
+  const title = document.getElementById('uz-title');
+  const sub = document.getElementById('uz-sub');
+  if (hint) hint.textContent = cfg.hint;
+  if (title) title.textContent = cfg.uploadTitle;
+  if (sub) sub.innerHTML = `or <span>click to browse</span> &nbsp;·&nbsp; ${cfg.uploadSub}`;
+}
+
+function scanRowItems(rows) {
+  const items = [];
+  rows.forEach(row => {
+    const label = String(row[0] || '').trim();
+    if (!label) return;
+    let val = cleanNum(row[1]);
+    if (val === null) val = cleanNum(row[2]);
+    if (val === null) {
+      for (let i = 1; i < row.length; i++) {
+        val = cleanNum(row[i]);
+        if (val !== null) break;
+      }
+    }
+    items.push({ label, val, ll: label.toLowerCase() });
+  });
+  return items;
+}
+
+function extractMeta(rows) {
+  return {
+    company: rows[0] && rows[0][0] ? String(rows[0][0]).trim() : '',
+    period: rows[2] && rows[2][0] ? String(rows[2][0]).trim() : ''
+  };
+}
+
+function matchAmount(items, patterns) {
+  for (const pattern of patterns) {
+    const hit = items.find(item => {
+      const ll = item.ll;
+      if (typeof pattern === 'string') return ll === pattern || ll.includes(pattern);
+      return pattern.test(ll);
+    });
+    if (hit && hit.val !== null) return hit.val;
+  }
+  return null;
+}
+
+function sumNumericColumns(row, startIndex = 1) {
+  let total = 0;
+  let found = false;
+  for (let i = startIndex; i < row.length; i++) {
+    const val = cleanNum(row[i]);
+    if (val !== null) {
+      total += val;
+      found = true;
+    }
+  }
+  return found ? total : null;
+}
+
+function parseFinancialRows(rows, filename, statementType) {
+  switch (statementType) {
+    case 'balance_sheet': return parseBalanceSheetRows(rows, filename);
+    case 'cash_flow': return parseCashFlowRows(rows, filename);
+    case 'ar_summary': return parseAgingRows(rows, filename, 'ar_summary');
+    case 'ap_balance': return parseAgingRows(rows, filename, 'ap_balance');
+    default: return parseQBORows(rows, filename);
+  }
+}
+
+function parseBalanceSheetRows(rows, filename) {
+  const meta = extractMeta(rows);
+  const items = scanRowItems(rows);
+  const data = {
+    filename,
+    statementType: 'balance_sheet',
+    company: meta.company,
+    period: meta.period,
+    lineItems: items.filter(item => item.val !== null).map(item => ({ label: item.label, val: item.val }))
+  };
+
+  data.totalAssets = matchAmount(items, ['total assets', 'assets total']);
+  data.totalLiabilities = matchAmount(items, ['total liabilities', 'liabilities total']);
+  data.totalEquity = matchAmount(items, ['total equity', 'total liabilities and equity', 'net worth', 'owner\'s equity', 'owners equity']);
+  data.currentAssets = matchAmount(items, ['total current assets', 'current assets total']);
+  data.currentLiabilities = matchAmount(items, ['total current liabilities', 'current liabilities total']);
+  data.cash = matchAmount(items, ['cash and cash equivalents', 'total bank accounts', 'cash', 'checking', 'total cash']);
+  data.accountsReceivable = matchAmount(items, ['accounts receivable', 'total accounts receivable', 'a/r', 'ar']);
+  data.accountsPayable = matchAmount(items, ['accounts payable', 'total accounts payable', 'a/p', 'ap']);
+  data.inventory = matchAmount(items, ['inventory', 'total inventory']);
+  data.longTermDebt = matchAmount(items, ['long-term debt', 'long term debt', 'notes payable', 'total long-term liabilities']);
+
+  if (!data.totalEquity && data.totalAssets !== null && data.totalLiabilities !== null) {
+    data.totalEquity = data.totalAssets - data.totalLiabilities;
+  }
+  data.workingCapital = (data.currentAssets || 0) - (data.currentLiabilities || 0);
+  data.currentRatio = data.currentLiabilities > 0 ? (data.currentAssets || 0) / data.currentLiabilities : 0;
+  data.debtToEquity = data.totalEquity > 0 ? (data.totalLiabilities || 0) / data.totalEquity : 0;
+  data.hasBalanceSheet = true;
+
+  const assetItems = items.filter(item => item.val !== null && !item.ll.startsWith('total') && item.val > 0 &&
+    /asset|cash|receivable|inventory|prepaid|equipment|property|bank|checking|savings|fixed/.test(item.ll));
+  const liabilityItems = items.filter(item => item.val !== null && !item.ll.startsWith('total') && item.val > 0 &&
+    /payable|liabilit|loan|debt|credit card|note|accrued|tax payable|mortgage/.test(item.ll));
+
+  data.assetItems = assetItems.slice(0, 12).map(item => ({ name: item.label, val: item.val }));
+  data.liabilityItems = liabilityItems.slice(0, 12).map(item => ({ name: item.label, val: item.val }));
+
+  return data;
+}
+
+function parseCashFlowRows(rows, filename) {
+  const meta = extractMeta(rows);
+  const items = scanRowItems(rows);
+  const data = {
+    filename,
+    statementType: 'cash_flow',
+    company: meta.company,
+    period: meta.period,
+    lineItems: items.filter(item => item.val !== null).map(item => ({ label: item.label, val: item.val }))
+  };
+
+  data.operatingCashFlow = matchAmount(items, [
+    'net cash provided by operating activities',
+    'net cash from operating activities',
+    'cash from operating activities',
+    'total operating activities',
+    'net cash provided by (used in) operating activities'
+  ]);
+  data.investingCashFlow = matchAmount(items, [
+    'net cash used in investing activities',
+    'net cash provided by investing activities',
+    'cash from investing activities',
+    'total investing activities'
+  ]);
+  data.financingCashFlow = matchAmount(items, [
+    'net cash provided by financing activities',
+    'net cash used in financing activities',
+    'cash from financing activities',
+    'total financing activities'
+  ]);
+  data.netCashChange = matchAmount(items, [
+    'net increase in cash',
+    'net decrease in cash',
+    'net change in cash',
+    'increase (decrease) in cash'
+  ]);
+  data.beginningCash = matchAmount(items, ['cash at beginning of period', 'beginning cash', 'cash beginning']);
+  data.endingCash = matchAmount(items, ['cash at end of period', 'ending cash', 'cash end']);
+
+  if (data.netCashChange === null && data.operatingCashFlow !== null) {
+    data.netCashChange = (data.operatingCashFlow || 0) + (data.investingCashFlow || 0) + (data.financingCashFlow || 0);
+  }
+
+  data.operatingItems = items.filter(item => item.val !== null && item.val !== 0 && !item.ll.startsWith('total') &&
+    /customer|receivable|payable|payroll|depreciation|amortization|net income|inventory|prepaid|accrued|operating/.test(item.ll))
+    .slice(0, 10).map(item => ({ name: item.label, val: item.val }));
+
+  return data;
+}
+
+function parseAgingRows(rows, filename, statementType) {
+  const meta = extractMeta(rows);
+  const data = {
+    filename,
+    statementType,
+    company: meta.company,
+    period: meta.period,
+    lineItems: [],
+    agingBuckets: { current: 0, d30: 0, d60: 0, d90: 0, d90plus: 0 },
+    counterparties: []
+  };
+
+  rows.forEach(row => {
+    const label = String(row[0] || '').trim();
+    if (!label) return;
+    const ll = label.toLowerCase();
+    const nums = row.slice(1).map(cleanNum);
+    const numeric = nums.filter(v => v !== null);
+    if (!numeric.length) return;
+
+    if (/^current\b|not due/.test(ll)) data.agingBuckets.current = numeric[numeric.length - 1];
+    else if (/1.?30|0.?30|1-30/.test(ll)) data.agingBuckets.d30 = numeric[numeric.length - 1];
+    else if (/31.?60|31-60/.test(ll)) data.agingBuckets.d60 = numeric[numeric.length - 1];
+    else if (/61.?90|61-90/.test(ll)) data.agingBuckets.d90 = numeric[numeric.length - 1];
+    else if (/90\+|91\+|over 90|>90/.test(ll)) data.agingBuckets.d90plus = numeric[numeric.length - 1];
+    else if (/^total\b|grand total/.test(ll)) data.totalBalance = numeric[numeric.length - 1];
+    else if (!/customer|client|vendor|name|date due|aging|report|company|period|as of/.test(ll)) {
+      if (numeric.length >= 4) {
+        const entry = {
+          name: label,
+          current: numeric[0] || 0,
+          d30: numeric[1] || 0,
+          d60: numeric[2] || 0,
+          d90: numeric[3] || 0,
+          d90plus: numeric[4] || 0,
+          val: numeric.reduce((sum, v) => sum + (v || 0), 0)
+        };
+        data.counterparties.push(entry);
+      } else {
+        data.counterparties.push({ name: label, val: numeric[numeric.length - 1] });
+      }
+    }
+  });
+
+  if (!data.totalBalance) {
+    const bucketTotal = Object.values(data.agingBuckets).reduce((sum, v) => sum + (v || 0), 0);
+    const counterpartyTotal = data.counterparties.reduce((sum, item) => sum + (item.val || 0), 0);
+    data.totalBalance = bucketTotal || counterpartyTotal;
+  }
+
+  data.overdueBalance = (data.agingBuckets.d30 || 0) + (data.agingBuckets.d60 || 0) +
+    (data.agingBuckets.d90 || 0) + (data.agingBuckets.d90plus || 0);
+  data.overduePct = data.totalBalance > 0 ? data.overdueBalance / data.totalBalance * 100 : 0;
+  data.topCounterparties = [...data.counterparties].sort((a, b) => (b.val || 0) - (a.val || 0)).slice(0, 8);
+  data.lineItems = data.topCounterparties.map(item => ({ label: item.name, val: item.val }));
+
+  return data;
+}
+
+function calcHealthScore(d) {
+  const type = d.statementType || 'income_statement';
+  if (type === 'balance_sheet') {
+    let s = 50;
+    if (d.currentRatio >= 1.5) s += 14; else if (d.currentRatio >= 1) s += 7; else s -= 12;
+    if ((d.totalEquity || 0) > 0) s += 10; else s -= 15;
+    if (d.debtToEquity <= 1) s += 10; else if (d.debtToEquity <= 2) s += 4; else s -= 8;
+    if ((d.workingCapital || 0) > 0) s += 8; else s -= 10;
+    return Math.max(0, Math.min(100, Math.round(s)));
+  }
+  if (type === 'cash_flow') {
+    let s = 50;
+    if ((d.operatingCashFlow || 0) > 0) s += 18; else s -= 15;
+    if ((d.netCashChange || 0) > 0) s += 12; else s -= 10;
+    if ((d.endingCash || 0) > 0) s += 8;
+    if ((d.financingCashFlow || 0) < 0 && (d.operatingCashFlow || 0) > 0) s += 6;
+    return Math.max(0, Math.min(100, Math.round(s)));
+  }
+  if (type === 'ar_summary' || type === 'ap_balance') {
+    let s = 70;
+    if (d.overduePct <= 15) s += 12; else if (d.overduePct <= 30) s += 4; else s -= 12;
+    if (d.overduePct >= 45) s -= 10;
+    const topShare = d.totalBalance > 0 && d.topCounterparties[0] ? d.topCounterparties[0].val / d.totalBalance * 100 : 0;
+    if (topShare >= 50) s -= 8;
+    return Math.max(0, Math.min(100, Math.round(s)));
+  }
+  return calcHealthPL(d);
+}
+
+function buildReportMetrics(d) {
+  const type = d.statementType || 'income_statement';
+  const h = calcHealthScore(d);
+
+  if (type === 'balance_sheet') {
+    return [
+      { l: 'Total Assets', v: fc(d.totalAssets || 0), n: 'Everything the business owns', f: '' },
+      { l: 'Total Liabilities', v: fc(d.totalLiabilities || 0), n: 'Everything the business owes', f: '' },
+      { l: 'Total Equity', v: fc(d.totalEquity || 0), n: 'Net worth', f: (d.totalEquity || 0) > 0 ? 'flag-good' : 'flag-bad' },
+      { l: 'Working Capital', v: fc(d.workingCapital || 0), n: 'Current assets minus current liabilities', f: (d.workingCapital || 0) > 0 ? 'flag-good' : 'flag-bad' },
+      { l: 'Current Ratio', v: (d.currentRatio || 0).toFixed(2), n: 'Benchmark ~1.5', f: d.currentRatio >= 1.5 ? 'flag-good' : d.currentRatio >= 1 ? 'flag-warn' : 'flag-bad' },
+      { l: 'Cash', v: fc(d.cash || 0), n: 'Cash and bank balances', f: (d.cash || 0) > 0 ? 'flag-good' : 'flag-warn' },
+      { l: 'Accounts Receivable', v: fc(d.accountsReceivable || 0), n: 'Money owed to you', f: '' },
+      { l: 'Health Score', v: h + '/100', n: 'Balance sheet strength', f: h >= 70 ? 'flag-good' : h >= 50 ? 'flag-warn' : 'flag-bad' }
+    ];
+  }
+
+  if (type === 'cash_flow') {
+    return [
+      { l: 'Operating Cash Flow', v: fc(d.operatingCashFlow || 0), n: 'Cash from core operations', f: (d.operatingCashFlow || 0) > 0 ? 'flag-good' : 'flag-bad' },
+      { l: 'Investing Cash Flow', v: fc(d.investingCashFlow || 0), n: 'Assets, capex, investments', f: '' },
+      { l: 'Financing Cash Flow', v: fc(d.financingCashFlow || 0), n: 'Debt, equity, distributions', f: '' },
+      { l: 'Net Cash Change', v: fc(d.netCashChange || 0), n: 'Overall cash movement', f: (d.netCashChange || 0) > 0 ? 'flag-good' : 'flag-bad' },
+      { l: 'Beginning Cash', v: fc(d.beginningCash || 0), n: 'Cash at start of period', f: '' },
+      { l: 'Ending Cash', v: fc(d.endingCash || 0), n: 'Cash at end of period', f: (d.endingCash || 0) > 0 ? 'flag-good' : 'flag-warn' },
+      { l: 'Health Score', v: h + '/100', n: 'Cash flow health', f: h >= 70 ? 'flag-good' : h >= 50 ? 'flag-warn' : 'flag-bad' }
+    ];
+  }
+
+  if (type === 'ar_summary' || type === 'ap_balance') {
+    const noun = type === 'ar_summary' ? 'receivable' : 'payable';
+    return [
+      { l: `Total ${type === 'ar_summary' ? 'AR' : 'AP'}`, v: fc(d.totalBalance || 0), n: `Total outstanding ${noun} balance`, f: '' },
+      { l: 'Current', v: fc(d.agingBuckets.current || 0), n: 'Not yet overdue', f: 'flag-good' },
+      { l: 'Overdue', v: fc(d.overdueBalance || 0), n: 'Past due balances', f: d.overduePct <= 20 ? 'flag-warn' : 'flag-bad' },
+      { l: 'Overdue %', v: fp(d.overduePct || 0), n: 'Share of total balance', f: d.overduePct <= 15 ? 'flag-good' : d.overduePct <= 30 ? 'flag-warn' : 'flag-bad' },
+      { l: '90+ Days', v: fc(d.agingBuckets.d90plus || 0), n: 'Most overdue bucket', f: (d.agingBuckets.d90plus || 0) === 0 ? 'flag-good' : 'flag-bad' },
+      { l: 'Top Balance', v: fc(d.topCounterparties[0]?.val || 0), n: d.topCounterparties[0]?.name || 'Largest account', f: '' },
+      { l: 'Health Score', v: h + '/100', n: type === 'ar_summary' ? 'Collections health' : 'Payables management', f: h >= 70 ? 'flag-good' : h >= 50 ? 'flag-warn' : 'flag-bad' }
+    ];
+  }
+
+  return [
+    { l: 'Revenue', v: fc(d.revenue), n: 'Total for period', f: '' },
+    { l: 'Gross Profit', v: fc(d.grossProfit), n: 'After direct costs', f: d.grossMargin >= 38 ? 'flag-good' : d.grossMargin >= 25 ? 'flag-warn' : 'flag-bad' },
+    { l: 'Gross Margin', v: fp(d.grossMargin), n: 'Benchmark ~38%', f: d.grossMargin >= 38 ? 'flag-good' : d.grossMargin >= 25 ? 'flag-warn' : 'flag-bad' },
+    { l: 'Net Income', v: fc(d.netIncome), n: 'Bottom line profit', f: d.netIncome > 0 ? 'flag-good' : 'flag-bad' },
+    { l: 'Net Margin', v: fp(d.netMargin), n: 'Revenue kept as profit', f: d.netMargin >= 8 ? 'flag-good' : d.netMargin >= 2 ? 'flag-warn' : 'flag-bad' },
+    { l: 'Operating Income', v: fc(d.opIncome || 0), n: 'Before interest & other', f: (d.opIncome || 0) > 0 ? 'flag-good' : 'flag-bad' },
+    { l: 'Total OpEx', v: fc(d.opex || 0), n: 'Operating expenses', f: '' },
+    { l: 'Health Score', v: h + '/100', n: 'Overall financial health', f: h >= 70 ? 'flag-good' : h >= 50 ? 'flag-warn' : 'flag-bad' }
+  ];
+}
+
+function buildReportFindings(d) {
+  const type = d.statementType || 'income_statement';
+  if (type === 'balance_sheet') return buildFindingsBS(d);
+  if (type === 'cash_flow') return buildFindingsCF(d);
+  if (type === 'ar_summary') return buildFindingsAR(d);
+  if (type === 'ap_balance') return buildFindingsAP(d);
+  return buildFindingsPL(d);
+}
+
+function buildReportActions(d) {
+  const type = d.statementType || 'income_statement';
+  if (type === 'balance_sheet') return buildActionsBS(d);
+  if (type === 'cash_flow') return buildActionsCF(d);
+  if (type === 'ar_summary') return buildActionsAR(d);
+  if (type === 'ap_balance') return buildActionsAP(d);
+  return buildActionsPL(d);
+}
+
+function buildReportSummary(d) {
+  const type = d.statementType || 'income_statement';
+  if (type === 'balance_sheet') return buildSummaryBS(d);
+  if (type === 'cash_flow') return buildSummaryCF(d);
+  if (type === 'ar_summary') return buildSummaryAR(d);
+  if (type === 'ap_balance') return buildSummaryAP(d);
+  return buildSummary(d);
+}
+
+function buildFindingsBS(d) {
+  const out = [];
+  if ((d.totalEquity || 0) > 0) out.push({ t: 'good', text: `Positive equity of ${fc(d.totalEquity)} — the business has net worth on the balance sheet.` });
+  else out.push({ t: 'bad', text: `Equity is ${fc(d.totalEquity || 0)} — liabilities exceed assets, which signals balance sheet stress.` });
+
+  if (d.currentRatio >= 1.5) out.push({ t: 'good', text: `Current ratio of ${(d.currentRatio || 0).toFixed(2)} suggests comfortable short-term liquidity.` });
+  else if (d.currentRatio >= 1) out.push({ t: 'warn', text: `Current ratio of ${(d.currentRatio || 0).toFixed(2)} is tight — monitor near-term cash needs closely.` });
+  else out.push({ t: 'bad', text: `Current ratio of ${(d.currentRatio || 0).toFixed(2)} means current liabilities exceed current assets.` });
+
+  if ((d.workingCapital || 0) > 0) out.push({ t: 'good', text: `Working capital of ${fc(d.workingCapital)} provides a cushion for day-to-day operations.` });
+  else out.push({ t: 'bad', text: `Negative working capital of ${fc(d.workingCapital || 0)} can create cash pressure even if the business is profitable.` });
+
+  if ((d.accountsReceivable || 0) > 0) out.push({ t: 'warn', text: `Accounts receivable of ${fc(d.accountsReceivable)} represents cash still owed to you — collections speed matters.` });
+  if ((d.accountsPayable || 0) > 0) out.push({ t: 'warn', text: `Accounts payable of ${fc(d.accountsPayable)} should be managed against cash on hand and vendor terms.` });
+  return out;
+}
+
+function buildFindingsCF(d) {
+  const out = [];
+  if ((d.operatingCashFlow || 0) > 0) out.push({ t: 'good', text: `Operating activities generated ${fc(d.operatingCashFlow)} in cash — the core business is funding itself.` });
+  else out.push({ t: 'bad', text: `Operating cash flow of ${fc(d.operatingCashFlow || 0)} means core operations are burning cash.` });
+
+  if ((d.netCashChange || 0) > 0) out.push({ t: 'good', text: `Cash increased by ${fc(d.netCashChange)} during the period.` });
+  else out.push({ t: 'warn', text: `Cash decreased by ${fc(Math.abs(d.netCashChange || 0))} during the period.` });
+
+  if ((d.investingCashFlow || 0) < 0) out.push({ t: 'warn', text: `Investing activities used ${fc(Math.abs(d.investingCashFlow))} — often normal if you're buying assets or equipment.` });
+  if ((d.financingCashFlow || 0) > 0) out.push({ t: 'warn', text: `Financing activities added ${fc(d.financingCashFlow)} — check whether growth is being funded by debt or owner investment.` });
+  if ((d.endingCash || 0) > 0) out.push({ t: 'good', text: `Ending cash of ${fc(d.endingCash)} is your starting point for the next period's forecast.` });
+  return out;
+}
+
+function buildFindingsAR(d) {
+  const out = [];
+  out.push({ t: 'good', text: `Total accounts receivable is ${fc(d.totalBalance || 0)} across ${d.counterparties.length || 'multiple'} customer balances.` });
+  if (d.overduePct <= 15) out.push({ t: 'good', text: `Only ${fp(d.overduePct || 0)} of AR is overdue — collections look relatively healthy.` });
+  else if (d.overduePct <= 30) out.push({ t: 'warn', text: `${fp(d.overduePct || 0)} of AR is overdue (${fc(d.overdueBalance)}). Follow-up should be a weekly habit.` });
+  else out.push({ t: 'bad', text: `${fp(d.overduePct || 0)} of AR is overdue (${fc(d.overdueBalance)}). Cash is likely stuck in slow-paying customers.` });
+
+  if ((d.agingBuckets.d90plus || 0) > 0) out.push({ t: 'bad', text: `${fc(d.agingBuckets.d90plus)} is over 90 days old — prioritize collection calls or write-off review.` });
+  if (d.topCounterparties[0]) out.push({ t: 'warn', text: `Largest customer balance: ${d.topCounterparties[0].name} at ${fc(d.topCounterparties[0].val)}.` });
+  return out;
+}
+
+function buildFindingsAP(d) {
+  const out = [];
+  out.push({ t: 'good', text: `Total accounts payable is ${fc(d.totalBalance || 0)} across ${d.counterparties.length || 'multiple'} vendor balances.` });
+  if (d.overduePct <= 15) out.push({ t: 'good', text: `${fp(d.overduePct || 0)} of AP is past due — vendor relationships look manageable.` });
+  else if (d.overduePct <= 30) out.push({ t: 'warn', text: `${fp(d.overduePct || 0)} of AP is past due (${fc(d.overdueBalance)}). Late payments can strain supplier terms.` });
+  else out.push({ t: 'bad', text: `${fp(d.overduePct || 0)} of AP is past due (${fc(d.overdueBalance)}). This can damage vendor trust and credit.` });
+
+  if ((d.agingBuckets.d90plus || 0) > 0) out.push({ t: 'bad', text: `${fc(d.agingBuckets.d90plus)} is over 90 days overdue — resolve these balances immediately.` });
+  if (d.topCounterparties[0]) out.push({ t: 'warn', text: `Largest vendor balance: ${d.topCounterparties[0].name} at ${fc(d.topCounterparties[0].val)}.` });
+  return out;
+}
+
+function buildActionsBS(d) {
+  return [
+    { title: 'Build a 13-week cash forecast', desc: 'A balance sheet shows position, not timing. Map upcoming inflows and outflows against current assets and liabilities.', impact: 'Surfaces cash gaps before they become crises.' },
+    { title: 'Review liquidity ratios monthly', desc: `Current ratio is ${(d.currentRatio || 0).toFixed(2)} and working capital is ${fc(d.workingCapital || 0)}. Track both monthly to catch deterioration early.`, impact: undefined },
+    { title: 'Audit receivables and payables', desc: `AR of ${fc(d.accountsReceivable || 0)} and AP of ${fc(d.accountsPayable || 0)} directly affect cash — tighten collections and prioritize overdue vendor conversations.`, impact: undefined }
+  ];
+}
+
+function buildActionsCF(d) {
+  return [
+    { title: 'Reconcile profit vs. operating cash', desc: 'If net income and operating cash flow diverge, find out whether receivables, payables, or inventory are absorbing cash.', impact: 'Explains why a profitable month can still feel cash-poor.' },
+    { title: 'Protect ending cash balance', desc: `Ending cash of ${fc(d.endingCash || 0)} should be compared against at least 6–8 weeks of fixed operating costs.`, impact: undefined },
+    { title: 'Review financing dependence', desc: `Financing cash flow of ${fc(d.financingCashFlow || 0)} shows whether the business relied on debt or owner funding during the period.`, impact: undefined }
+  ];
+}
+
+function buildActionsAR(d) {
+  return [
+    { title: 'Call overdue customers this week', desc: `Start with balances over 60 days, especially ${d.topCounterparties[0]?.name || 'your largest accounts'}.`, impact: `Recovering even 25% of overdue AR adds ${fc((d.overdueBalance || 0) * 0.25)} in cash.` },
+    { title: 'Tighten invoicing and follow-up', desc: 'Invoice same day, send reminders at 7/14/30 days, and require deposits on slow-pay accounts.', impact: undefined },
+    { title: 'Review credit terms', desc: 'Customers consistently in the 90+ bucket may need shorter terms, deposits, or credit holds.', impact: undefined }
+  ];
+}
+
+function buildActionsAP(d) {
+  return [
+    { title: 'Prioritize overdue vendor payments', desc: `Address ${fc(d.overdueBalance || 0)} in past-due AP, starting with ${d.topCounterparties[0]?.name || 'critical vendors'}.`, impact: 'Protects supply chain and credit terms.' },
+    { title: 'Align payment timing with cash inflows', desc: 'Schedule vendor payments after expected customer collections when possible.', impact: undefined },
+    { title: 'Renegotiate terms on large balances', desc: 'Large AP balances may qualify for payment plans or extended terms if communicated early.', impact: undefined }
+  ];
+}
+
+function buildSummaryBS(d) {
+  return `${d.company || 'Your business'} reported total assets of ${fc(d.totalAssets || 0)}, liabilities of ${fc(d.totalLiabilities || 0)}, and equity of ${fc(d.totalEquity || 0)} for ${d.period || 'the reported period'}. Working capital is ${fc(d.workingCapital || 0)} with a current ratio of ${(d.currentRatio || 0).toFixed(2)}. Focus next on liquidity, collections, and whether debt levels are sustainable.`;
+}
+
+function buildSummaryCF(d) {
+  return `${d.company || 'Your business'} generated operating cash flow of ${fc(d.operatingCashFlow || 0)}, investing cash flow of ${fc(d.investingCashFlow || 0)}, and financing cash flow of ${fc(d.financingCashFlow || 0)} for ${d.period || 'the reported period'}. Net cash change was ${fc(d.netCashChange || 0)}${d.endingCash ? ', leaving ending cash of ' + fc(d.endingCash) : ''}. The key question is whether core operations are producing enough cash to fund the business.`;
+}
+
+function buildSummaryAR(d) {
+  return `${d.company || 'Your business'} has ${fc(d.totalBalance || 0)} in outstanding receivables for ${d.period || 'the reported period'}. ${fp(d.overduePct || 0)} (${fc(d.overdueBalance || 0)}) is overdue. Collections follow-up should focus on the largest balances and anything over 60 days.`;
+}
+
+function buildSummaryAP(d) {
+  return `${d.company || 'Your business'} owes ${fc(d.totalBalance || 0)} across outstanding payables for ${d.period || 'the reported period'}. ${fp(d.overduePct || 0)} (${fc(d.overdueBalance || 0)}) is past due. Prioritize critical vendors and align payment timing with cash inflows.`;
+}
+
+function setChartTitles(titles) {
+  titles.forEach((entry, index) => {
+    const titleEl = document.getElementById('rpt-chart-' + (index + 1) + '-title');
+    const subEl = document.getElementById('rpt-chart-' + (index + 1) + '-sub');
+    if (titleEl) titleEl.textContent = entry[0];
+    if (subEl) subEl.textContent = entry[1];
+  });
+}
+
+function renderReportCharts(d) {
+  const type = d.statementType || 'income_statement';
+  const barColors = ['#1a3caa', '#c9922a', '#0a7c4e', '#6d28d9', '#0d9488', '#b91c1c', '#b45309', '#0369a1'];
+
+  if (type === 'balance_sheet') {
+    setChartTitles([
+      ['Asset composition', 'Major asset categories'],
+      ['Liability composition', 'Major liability categories'],
+      ['Liquidity snapshot', 'Cash, AR, AP, and inventory'],
+      ['Balance sheet health radar', 'Liquidity and leverage signals']
+    ]);
+    const assets = (d.assetItems && d.assetItems.length) ? d.assetItems : [{ name: 'Total assets', val: d.totalAssets || 0 }];
+    const liabilities = (d.liabilityItems && d.liabilityItems.length) ? d.liabilityItems : [{ name: 'Total liabilities', val: d.totalLiabilities || 0 }];
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-revenue'), {
+      type: 'bar',
+      data: { labels: assets.map(item => item.name), datasets: [{ data: assets.map(item => item.val), backgroundColor: assets.map((_, i) => barColors[i % barColors.length]), borderRadius: 4 }] },
+      options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' } } } }
+    }));
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-margin'), {
+      type: 'bar',
+      data: { labels: liabilities.map(item => item.name), datasets: [{ data: liabilities.map(item => item.val), backgroundColor: liabilities.map((_, i) => barColors[(i + 2) % barColors.length]), borderRadius: 4 }] },
+      options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' } } } }
+    }));
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-opex'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Cash', 'Accounts Receivable', 'Accounts Payable', 'Inventory'],
+        datasets: [{ data: [d.cash || 0, d.accountsReceivable || 0, d.accountsPayable || 0, d.inventory || 0], backgroundColor: barColors.slice(0, 4), borderWidth: 0 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } }, cutout: '60%' }
+    }));
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-radar'), {
+      type: 'radar',
+      data: {
+        labels: ['Current Ratio', 'Working Capital', 'Equity Strength', 'Debt Load', 'Cash Buffer'],
+        datasets: [
+          { label: 'Your Business', data: [Math.min((d.currentRatio || 0) / 2 * 100, 100), d.workingCapital > 0 ? 75 : 25, (d.totalEquity || 0) > 0 ? 80 : 20, Math.max(0, 100 - (d.debtToEquity || 0) * 25), Math.min(((d.cash || 0) / Math.max(d.totalAssets || 1, 1)) * 400, 100)], backgroundColor: 'rgba(26,60,170,0.12)', borderColor: '#1a3caa', borderWidth: 2 },
+          { label: 'Benchmark', data: [75, 70, 75, 70, 60], backgroundColor: 'rgba(201,146,42,0.1)', borderColor: '#c9922a', borderWidth: 1.5, borderDash: [5, 5] }
+        ]
+      },
+      options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { display: false } } }, plugins: { legend: { position: 'bottom' } } }
+    }));
+    return;
+  }
+
+  if (type === 'cash_flow') {
+    setChartTitles([
+      ['Cash flow by activity', 'Operating, investing, and financing'],
+      ['Operating detail', 'Major operating cash movements'],
+      ['Cash movement summary', 'Beginning vs ending cash'],
+      ['Cash flow health radar', 'Operating strength and cash outcome']
+    ]);
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-revenue'), {
+      type: 'bar',
+      data: {
+        labels: ['Operating', 'Investing', 'Financing', 'Net Change'],
+        datasets: [{ data: [d.operatingCashFlow || 0, d.investingCashFlow || 0, d.financingCashFlow || 0, d.netCashChange || 0], backgroundColor: ['#0a7c4e', '#1a3caa', '#c9922a', '#6d28d9'], borderRadius: 4 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' } } } }
+    }));
+    const opItems = (d.operatingItems && d.operatingItems.length) ? d.operatingItems.slice(0, 6) : [{ name: 'Operating cash flow', val: d.operatingCashFlow || 0 }];
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-margin'), {
+      type: 'bar',
+      data: { labels: opItems.map(item => item.name), datasets: [{ data: opItems.map(item => item.val), backgroundColor: opItems.map((_, i) => barColors[i % barColors.length]), borderRadius: 4 }] },
+      options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    }));
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-opex'), {
+      type: 'bar',
+      data: {
+        labels: ['Beginning Cash', 'Net Change', 'Ending Cash'],
+        datasets: [{ data: [d.beginningCash || 0, d.netCashChange || 0, d.endingCash || 0], backgroundColor: ['#1a3caa', '#c9922a', '#0a7c4e'], borderRadius: 4 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    }));
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-radar'), {
+      type: 'radar',
+      data: {
+        labels: ['Operating Cash', 'Net Change', 'Ending Cash', 'Investing Discipline', 'Financing Reliance'],
+        datasets: [
+          { label: 'Your Business', data: [(d.operatingCashFlow || 0) > 0 ? 80 : 20, (d.netCashChange || 0) > 0 ? 75 : 25, (d.endingCash || 0) > 0 ? 75 : 20, 60, (d.financingCashFlow || 0) > 0 ? 35 : 70], backgroundColor: 'rgba(26,60,170,0.12)', borderColor: '#1a3caa', borderWidth: 2 },
+          { label: 'Benchmark', data: [75, 70, 70, 65, 60], backgroundColor: 'rgba(201,146,42,0.1)', borderColor: '#c9922a', borderWidth: 1.5, borderDash: [5, 5] }
+        ]
+      },
+      options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { display: false } } }, plugins: { legend: { position: 'bottom' } } }
+    }));
+    return;
+  }
+
+  if (type === 'ar_summary' || type === 'ap_balance') {
+    const noun = type === 'ar_summary' ? 'customer' : 'vendor';
+    setChartTitles([
+      ['Aging buckets', 'Current vs overdue balances'],
+      [`Top ${noun} balances`, 'Largest outstanding accounts'],
+      ['Overdue mix', 'Share of total balance'],
+      ['Collections health radar', type === 'ar_summary' ? 'AR quality signals' : 'AP management signals']
+    ]);
+    const buckets = d.agingBuckets || {};
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-revenue'), {
+      type: 'bar',
+      data: {
+        labels: ['Current', '1-30', '31-60', '61-90', '90+'],
+        datasets: [{ data: [buckets.current || 0, buckets.d30 || 0, buckets.d60 || 0, buckets.d90 || 0, buckets.d90plus || 0], backgroundColor: barColors, borderRadius: 4 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' } } } }
+    }));
+    const top = d.topCounterparties && d.topCounterparties.length ? d.topCounterparties.slice(0, 6) : [{ name: 'Total', val: d.totalBalance || 0 }];
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-margin'), {
+      type: 'bar',
+      data: { labels: top.map(item => item.name), datasets: [{ data: top.map(item => item.val), backgroundColor: top.map((_, i) => barColors[i % barColors.length]), borderRadius: 4 }] },
+      options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+    }));
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-opex'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Current', 'Overdue'],
+        datasets: [{ data: [buckets.current || 0, d.overdueBalance || 0], backgroundColor: ['#0a7c4e', '#b91c1c'], borderWidth: 0 }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } }, cutout: '60%' }
+    }));
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-radar'), {
+      type: 'radar',
+      data: {
+        labels: ['Current %', 'Low Overdue', '90+ Control', 'Concentration', 'Total Balance Health'],
+        datasets: [
+          { label: 'Your Business', data: [Math.max(0, 100 - (d.overduePct || 0)), d.overduePct <= 20 ? 80 : 35, (buckets.d90plus || 0) === 0 ? 85 : 25, d.topCounterparties[0] && d.totalBalance ? Math.max(0, 100 - (d.topCounterparties[0].val / d.totalBalance * 100)) : 70, calcHealthScore(d)], backgroundColor: 'rgba(26,60,170,0.12)', borderColor: '#1a3caa', borderWidth: 2 },
+          { label: 'Benchmark', data: [80, 75, 80, 70, 75], backgroundColor: 'rgba(201,146,42,0.1)', borderColor: '#c9922a', borderWidth: 1.5, borderDash: [5, 5] }
+        ]
+      },
+      options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { display: false } } }, plugins: { legend: { position: 'bottom' } } }
+    }));
+    return;
+  }
+
+  setChartTitles([
+    ['Revenue by service line', 'Where your income comes from'],
+    ['Gross margin by service', 'Revenue vs. direct cost per line'],
+    ['Expense breakdown', 'Operating cost distribution'],
+    ['Financial health radar', 'Your ratios vs. industry benchmark']
+  ]);
+
+  const svcRevenue = (d.serviceRevenue && d.serviceRevenue.length) ? d.serviceRevenue : [{ name: 'Revenue', val: d.revenue }];
+  const svcLabels = svcRevenue.map(s => s.name);
+  const svcVals = svcRevenue.map(s => s.val);
+  analysisCharts.push(new Chart(document.getElementById('rpt-chart-revenue'), {
+    type: 'bar',
+    data: { labels: svcLabels, datasets: [{ label: 'Revenue', data: svcVals, backgroundColor: svcLabels.map((_, i) => barColors[i % barColors.length]), borderRadius: 4, borderSkipped: false }] },
+    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' }, grid: { color: 'rgba(0,0,0,0.04)' } }, y: { ticks: { font: { size: 11 } } } } }
+  }));
+
+  const svcCogs = d.serviceCogs || [];
+  const sharedSvcs = svcRevenue.filter(s => svcCogs.find(c => c.name === s.name));
+  const mLabels = sharedSvcs.length > 0 ? sharedSvcs.map(s => s.name) : svcLabels.slice(0, 5);
+  const mRevVals = sharedSvcs.length > 0 ? sharedSvcs.map(s => s.val) : svcVals.slice(0, 5);
+  const mCogsVals = sharedSvcs.length > 0 ? sharedSvcs.map(s => { const c = svcCogs.find(x => x.name === s.name); return c ? c.val : 0; }) : mRevVals.map(v => v * (d.cogs / d.revenue));
+  analysisCharts.push(new Chart(document.getElementById('rpt-chart-margin'), {
+    type: 'bar',
+    data: { labels: mLabels, datasets: [{ label: 'Revenue', data: mRevVals, backgroundColor: 'rgba(26,60,170,0.8)', borderRadius: 4 }, { label: 'Direct Cost', data: mCogsVals, backgroundColor: 'rgba(185,28,28,0.7)', borderRadius: 4 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10, boxWidth: 10 } } }, scales: { x: { ticks: { font: { size: 10 } } }, y: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' }, grid: { color: 'rgba(0,0,0,0.04)' } } } }
+  }));
+
+  const opexItems = (d.expenseItems && d.expenseItems.length) ? d.expenseItems : [{ name: 'Operating expenses', val: d.opex || 0 }];
+  const topOpex = opexItems.slice(0, 7);
+  analysisCharts.push(new Chart(document.getElementById('rpt-chart-opex'), {
+    type: 'doughnut',
+    data: { labels: topOpex.map(e => e.name), datasets: [{ data: topOpex.map(e => e.val), backgroundColor: barColors.slice(0, 7), borderWidth: 0, hoverOffset: 8 }] },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 10 }, padding: 8, boxWidth: 10 } }, tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.toLocaleString('en-US', { maximumFractionDigits: 0 }) } } }, cutout: '60%' }
+  }));
+
+  const gmScore = Math.min(d.grossMargin / 50 * 100, 100);
+  const nmScore = Math.min(d.netMargin / 15 * 100, 100);
+  const omScore = Math.min((d.opMargin || 0) / 15 * 100, 100);
+  const prScore = Math.max(0, 100 - (d.payrollPct || 0));
+  const profScore = d.netIncome > 0 ? 75 : 20;
+  analysisCharts.push(new Chart(document.getElementById('rpt-chart-radar'), {
+    type: 'radar',
+    data: {
+      labels: ['Gross Margin', 'Net Margin', 'Op. Margin', 'Payroll Efficiency', 'Profitability'],
+      datasets: [
+        { label: 'Your Business', data: [gmScore, nmScore, omScore, prScore, profScore], backgroundColor: 'rgba(26,60,170,0.12)', borderColor: '#1a3caa', pointBackgroundColor: '#1a3caa', borderWidth: 2, pointRadius: 4 },
+        { label: 'Benchmark', data: [76, 60, 65, 70, 75], backgroundColor: 'rgba(201,146,42,0.1)', borderColor: '#c9922a', pointBackgroundColor: '#c9922a', borderWidth: 1.5, borderDash: [5, 5], pointRadius: 3 }
+      ]
+    },
+    options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: 'rgba(0,0,0,0.05)' } } }, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } } } }
+  }));
+}
+
 function handleAnalysisFile(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -1111,7 +1817,8 @@ function handleAnalysisFile(e) {
 function processRows(rows, filename) {
   showAnalysisStatus('Analyzing your financials...');
   setTimeout(() => {
-    const data = parseQBORows(rows, filename);
+    const statementType = getStatementType();
+    const data = parseFinancialRows(rows, filename, statementType);
     currentData = data;
     setTimeout(() => {
       renderReport(data);
@@ -1342,6 +2049,7 @@ function parseQBORows(rows, filename) {
 
   // We don't have balance sheet from P&L — use what we have
   data.hasBalanceSheet = false;
+  data.statementType = 'income_statement';
 
   return data;
 }
@@ -1470,39 +2178,33 @@ function renderReport(d) {
   document.getElementById('analysis-upload-view').style.display = 'none';
   document.getElementById('analysis-report').style.display = 'block';
 
-  const h = calcHealthPL(d);
-  document.getElementById('rpt-title').textContent = (d.company || 'CFO') + ' — Analysis Report';
-  document.getElementById('rpt-sub').textContent = (d.period || '') + ' · Generated ' + new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  const type = d.statementType || 'income_statement';
+  const cfg = STATEMENT_TYPES[type] || STATEMENT_TYPES.income_statement;
+  const h = calcHealthScore(d);
+
+  document.getElementById('rpt-title').textContent = (d.company || 'CFO') + ' — ' + cfg.reportLabel;
+  document.getElementById('rpt-sub').textContent = (d.period || '') + ' · ' + cfg.label + ' · Generated ' + new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+  document.getElementById('rpt-statement-pill').textContent = cfg.label;
 
   const hp = document.getElementById('rpt-health-pill');
-  hp.textContent = (h>=70?'● Healthy — ':h>=50?'● Moderate — ':'● Needs Attention — ') + h + '/100';
-  hp.className = 'health-pill ' + (h>=70?'health-good':h>=50?'health-warn':'health-bad');
+  hp.textContent = (h >= 70 ? '● Healthy — ' : h >= 50 ? '● Moderate — ' : '● Needs Attention — ') + h + '/100';
+  hp.className = 'health-pill ' + (h >= 70 ? 'health-good' : h >= 50 ? 'health-warn' : 'health-bad');
 
-  // Metrics — fully inline styles so hidden-div CSS issue can't break them
   function flagColor(f) {
-    if (f==='flag-good') return '#0a7c4e';
-    if (f==='flag-warn') return '#b45309';
-    if (f==='flag-bad')  return '#b91c1c';
+    if (f === 'flag-good') return '#0a7c4e';
+    if (f === 'flag-warn') return '#b45309';
+    if (f === 'flag-bad') return '#b91c1c';
     return '#1a3caa';
   }
   function flagBorder(f) {
-    if (f==='flag-good') return '#0a7c4e';
-    if (f==='flag-warn') return '#c9922a';
-    if (f==='flag-bad')  return '#b91c1c';
+    if (f === 'flag-good') return '#0a7c4e';
+    if (f === 'flag-warn') return '#c9922a';
+    if (f === 'flag-bad') return '#b91c1c';
     return '#e4e3df';
   }
-  const metrics = [
-    {l:'Revenue',v:fc(d.revenue),n:'Total for period',f:''},
-    {l:'Gross Profit',v:fc(d.grossProfit),n:'After direct costs',f:d.grossMargin>=38?'flag-good':d.grossMargin>=25?'flag-warn':'flag-bad'},
-    {l:'Gross Margin',v:fp(d.grossMargin),n:'Benchmark ~38%',f:d.grossMargin>=38?'flag-good':d.grossMargin>=25?'flag-warn':'flag-bad'},
-    {l:'Net Income',v:fc(d.netIncome),n:'Bottom line profit',f:d.netIncome>0?'flag-good':'flag-bad'},
-    {l:'Net Margin',v:fp(d.netMargin),n:'Revenue kept as profit',f:d.netMargin>=8?'flag-good':d.netMargin>=2?'flag-warn':'flag-bad'},
-    {l:'Operating Income',v:fc(d.opIncome||0),n:'Before interest & other',f:(d.opIncome||0)>0?'flag-good':'flag-bad'},
-    {l:'Total OpEx',v:fc(d.opex||0),n:'Operating expenses',f:''},
-    {l:'Health Score',v:h+'/100',n:'Overall financial health',f:h>=70?'flag-good':h>=50?'flag-warn':'flag-bad'}
-  ];
 
-  document.getElementById('rpt-metrics').innerHTML = metrics.map(m=>`
+  const metrics = buildReportMetrics(d);
+  document.getElementById('rpt-metrics').innerHTML = metrics.map(m => `
     <div style="background:#fff;border:1px solid ${flagBorder(m.f)};border-radius:12px;padding:14px">
       <div style="font-size:11px;color:#717171;margin-bottom:6px">${m.l}</div>
       <div style="font-size:24px;font-weight:800;color:${flagColor(m.f)}">${m.v}</div>
@@ -1510,160 +2212,55 @@ function renderReport(d) {
     </div>
   `).join('');
 
-  // Destroy old charts
-// Destroy old charts
   analysisCharts.forEach(c => c.destroy());
   analysisCharts = [];
+  renderReportCharts(d);
 
-  // ── Chart 1: Revenue by service line (horizontal bar) ──
-  const svcRevenue = (d.serviceRevenue && d.serviceRevenue.length) ? d.serviceRevenue : [{ name: 'Revenue', val: d.revenue }];
-  const svcLabels  = svcRevenue.map(s => s.name);
-  const svcVals    = svcRevenue.map(s => s.val);
-  const barColors  = ['#1a3caa','#c9922a','#0a7c4e','#6d28d9','#0d9488','#b91c1c','#b45309','#0369a1'];
-
-  analysisCharts.push(new Chart(document.getElementById('rpt-chart-revenue'), {
-    type: 'bar',
-    data: {
-      labels: svcLabels,
-      datasets: [{
-        label: 'Revenue',
-        data: svcVals,
-        backgroundColor: svcLabels.map((_,i) => barColors[i % barColors.length]),
-        borderRadius: 4,
-        borderSkipped: false,
-      }]
-    },
-    options: {
-      indexAxis: 'y',
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { display: false } },
-      scales: {
-        x: { ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'K' }, grid: { color: 'rgba(0,0,0,0.04)' } },
-        y: { ticks: { font: { size: 11 } } }
-      }
-    }
-  }));
-
-  // ── Chart 2: Revenue vs COGS by service (grouped bar) ──
-  const svcCogs   = d.serviceCogs || [];
-  const sharedSvcs = svcRevenue.filter(s => svcCogs.find(c => c.name === s.name));
-  const mLabels   = sharedSvcs.length > 0
-    ? sharedSvcs.map(s => s.name)
-    : svcLabels.slice(0, 5);
-  const mRevVals  = sharedSvcs.length > 0
-    ? sharedSvcs.map(s => s.val)
-    : svcVals.slice(0, 5);
-  const mCogsVals = sharedSvcs.length > 0
-    ? sharedSvcs.map(s => { const c = svcCogs.find(x => x.name === s.name); return c ? c.val : 0; })
-    : mRevVals.map(v => v * (d.cogs / d.revenue));
-
-  analysisCharts.push(new Chart(document.getElementById('rpt-chart-margin'), {
-    type: 'bar',
-    data: {
-      labels: mLabels,
-      datasets: [
-        { label: 'Revenue', data: mRevVals,  backgroundColor: 'rgba(26,60,170,0.8)',  borderRadius: 4 },
-        { label: 'Direct Cost', data: mCogsVals, backgroundColor: 'rgba(185,28,28,0.7)', borderRadius: 4 }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10, boxWidth: 10 } } },
-      scales: {
-        x: { ticks: { font: { size: 10 } } },
-        y: { ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'K' }, grid: { color: 'rgba(0,0,0,0.04)' } }
-      }
-    }
-  }));
-
-  // ── Chart 3: OpEx breakdown donut ──
-  const opexItems = (d.expenseItems && d.expenseItems.length) ? d.expenseItems : [{ name: 'Operating expenses', val: d.opex || 0 }];
-  const topOpex   = opexItems.slice(0, 7);
-  const opexColors = ['#c9922a','#1a3caa','#6d28d9','#0d9488','#b45309','#0369a1','#7c3aed'];
-
-  analysisCharts.push(new Chart(document.getElementById('rpt-chart-opex'), {
-    type: 'doughnut',
-    data: {
-      labels: topOpex.map(e => e.name),
-      datasets: [{
-        data: topOpex.map(e => e.val),
-        backgroundColor: opexColors,
-        borderWidth: 0,
-        hoverOffset: 8
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: { position: 'right', labels: { font: { size: 10 }, padding: 8, boxWidth: 10 } },
-        tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.toLocaleString('en-US', {maximumFractionDigits:0}) } }
-      },
-      cutout: '60%'
-    }
-  }));
-
-  // ── Chart 4: Health radar ──
-  const gmScore  = Math.min(d.grossMargin / 50 * 100, 100);
-  const nmScore  = Math.min(d.netMargin  / 15 * 100, 100);
-  const omScore  = Math.min((d.opMargin || 0) / 15 * 100, 100);
-  const prScore  = Math.max(0, 100 - (d.payrollPct || 0));
-  const profScore= d.netIncome > 0 ? 75 : 20;
-
-  analysisCharts.push(new Chart(document.getElementById('rpt-chart-radar'), {
-    type: 'radar',
-    data: {
-      labels: ['Gross Margin', 'Net Margin', 'Op. Margin', 'Payroll Efficiency', 'Profitability'],
-      datasets: [
-        { label: 'Your Business', data: [gmScore,nmScore,omScore,prScore,profScore], backgroundColor: 'rgba(26,60,170,0.12)', borderColor: '#1a3caa', pointBackgroundColor: '#1a3caa', borderWidth: 2, pointRadius: 4 },
-        { label: 'Benchmark',    data: [76,60,65,70,75], backgroundColor: 'rgba(201,146,42,0.1)', borderColor: '#c9922a', pointBackgroundColor: '#c9922a', borderWidth: 1.5, borderDash: [5,5], pointRadius: 3 }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: 'rgba(0,0,0,0.05)' } } },
-      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } } }
-    }
-  }));
-
-  // Findings
-  document.getElementById('rpt-findings').innerHTML = buildFindingsPL(d).map(f=>`
+  document.getElementById('rpt-findings').innerHTML = buildReportFindings(d).map(f => `
     <div class="finding-card">
-      <span class="finding-tag tag-${f.t==='good'?'good':f.t==='warn'?'warn':'bad'}">
-        <span class="tag-dot"></span>${f.t==='good'?'Strength':f.t==='warn'?'Watch closely':'Critical'}
+      <span class="finding-tag tag-${f.t === 'good' ? 'good' : f.t === 'warn' ? 'warn' : 'bad'}">
+        <span class="tag-dot"></span>${f.t === 'good' ? 'Strength' : f.t === 'warn' ? 'Watch closely' : 'Critical'}
       </span>
       <div class="finding-text">${f.text}</div>
     </div>`).join('');
 
-  // Actions
-  document.getElementById('rpt-actions').innerHTML = buildActionsPL(d).map((a,i)=>`
+  document.getElementById('rpt-actions').innerHTML = buildReportActions(d).map((a, i) => `
     <div class="action-card">
-      <div class="action-number">${i+1}</div>
+      <div class="action-number">${i + 1}</div>
       <div class="action-body">
         <div class="action-title">${a.title}</div>
         <div class="action-desc">${a.desc}</div>
-        ${a.impact?`<span class="action-impact">${a.impact}</span>`:''}
+        ${a.impact ? `<span class="action-impact">${a.impact}</span>` : ''}
       </div>
     </div>`).join('');
 
-  // Summary
-  document.getElementById('rpt-summary').textContent = buildSummary(d);
+  document.getElementById('rpt-summary').textContent = buildReportSummary(d);
 
-  // Also sync Clara with this data
   syncClaraWithData(d);
+  if (type === 'income_statement') buildDeck(d);
 
-  // Build slide deck from same data
-  buildDeck(d);
-
-  document.getElementById('analysis-report').scrollIntoView({behavior:'smooth', block:'start'});
+  document.getElementById('analysis-report').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function syncClaraWithData(d) {
-  const h = calcHealthPL(d);
-  window.claraContext = `You are Clara, a warm and direct CFO advisor. You have analyzed the following real financial data for ${d.company||'this business'} (${d.period||'current period'}):
-Revenue: ${fc(d.revenue)} | COGS: ${fc(d.cogs||0)} | Gross Profit: ${fc(d.grossProfit)} (${fp(d.grossMargin)} margin) | Operating Expenses: ${fc(d.opex||0)} | Operating Income: ${fc(d.opIncome||0)} | Net Income: ${fc(d.netIncome)} (${fp(d.netMargin)} margin) | Payroll: ${fc(d.payroll)} (${fp(d.payrollPct)} of revenue) | Health Score: ${h}/100
+  const type = d.statementType || 'income_statement';
+  const h = calcHealthScore(d);
+  let facts = '';
+
+  if (type === 'balance_sheet') {
+    facts = `Statement type: Balance Sheet. Total Assets: ${fc(d.totalAssets || 0)} | Total Liabilities: ${fc(d.totalLiabilities || 0)} | Total Equity: ${fc(d.totalEquity || 0)} | Working Capital: ${fc(d.workingCapital || 0)} | Current Ratio: ${(d.currentRatio || 0).toFixed(2)} | Cash: ${fc(d.cash || 0)} | AR: ${fc(d.accountsReceivable || 0)} | AP: ${fc(d.accountsPayable || 0)} | Health Score: ${h}/100`;
+  } else if (type === 'cash_flow') {
+    facts = `Statement type: Cash Flow. Operating Cash Flow: ${fc(d.operatingCashFlow || 0)} | Investing Cash Flow: ${fc(d.investingCashFlow || 0)} | Financing Cash Flow: ${fc(d.financingCashFlow || 0)} | Net Cash Change: ${fc(d.netCashChange || 0)} | Ending Cash: ${fc(d.endingCash || 0)} | Health Score: ${h}/100`;
+  } else if (type === 'ar_summary') {
+    facts = `Statement type: AR Aging Summary. Total AR: ${fc(d.totalBalance || 0)} | Overdue AR: ${fc(d.overdueBalance || 0)} (${fp(d.overduePct || 0)}) | 90+ Days: ${fc(d.agingBuckets?.d90plus || 0)} | Health Score: ${h}/100`;
+  } else if (type === 'ap_balance') {
+    facts = `Statement type: AP Aging Summary. Total AP: ${fc(d.totalBalance || 0)} | Overdue AP: ${fc(d.overdueBalance || 0)} (${fp(d.overduePct || 0)}) | 90+ Days: ${fc(d.agingBuckets?.d90plus || 0)} | Health Score: ${h}/100`;
+  } else {
+    facts = `Statement type: Income Statement. Revenue: ${fc(d.revenue)} | COGS: ${fc(d.cogs || 0)} | Gross Profit: ${fc(d.grossProfit)} (${fp(d.grossMargin)} margin) | Operating Expenses: ${fc(d.opex || 0)} | Operating Income: ${fc(d.opIncome || 0)} | Net Income: ${fc(d.netIncome)} (${fp(d.netMargin)} margin) | Payroll: ${fc(d.payroll)} (${fp(d.payrollPct)} of revenue) | Health Score: ${h}/100`;
+  }
+
+  window.claraContext = `You are Clara, a warm and direct CFO advisor. You have analyzed the following real financial data for ${d.company || 'this business'} (${d.period || 'current period'}):
+${facts}
 Speak like a trusted advisor, not a report. Use their exact numbers. Keep responses to 3–5 sentences unless more detail is asked for. Be encouraging but direct about problems.`;
 }
 
