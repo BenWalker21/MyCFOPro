@@ -340,6 +340,19 @@ footer{background:var(--ink);padding:2rem;text-align:center}
 
 /* Section dividers */
 .sec-divider{height:1px;background:var(--border);margin:2.5rem 0}
+.ai-status{
+  display:none;align-items:flex-start;gap:10px;
+  padding:12px 14px;border-radius:var(--rs);
+  font-size:12px;line-height:1.5;margin:-0.5rem 0 1.25rem;
+  border:1px solid var(--border);background:var(--off);color:var(--ink-3);
+}
+.ai-status::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--ink-4);margin-top:5px;flex-shrink:0}
+.ai-status.pending{display:flex;background:var(--blue-bg);border-color:#d4def5;color:var(--blue)}
+.ai-status.pending::before{background:var(--blue)}
+.ai-status.success{display:flex;background:var(--green-bg);border-color:#cceedd;color:var(--green)}
+.ai-status.success::before{background:var(--green)}
+.ai-status.warn{display:flex;background:var(--amber-bg);border-color:#f4dfad;color:var(--amber)}
+.ai-status.warn::before{background:var(--amber)}
 
 
 /* Responsive layout */
@@ -616,6 +629,8 @@ footer{background:var(--ink);padding:2rem;text-align:center}
           <button class="btn-outline" onclick="resetAnalysis()" style="font-size:12px;padding:7px 14px">← New analysis</button>
         </div>
       </div>
+
+      <div class="ai-status pending" id="ai-status">Instant local preview ready. AI CFO analysis will appear here when the backend is connected.</div>
 
       <div class="metrics-grid" id="rpt-metrics" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1.5rem"></div>
 
@@ -946,13 +961,32 @@ async function botSend() {
   botHistory.push({role:'user', content: text});
   showTyping();
 
-  window.setTimeout(() => {
+  try {
+    const response = await fetch('/api/chat', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        message: text,
+        financials: currentData,
+        history: botHistory.slice(-8)
+      })
+    });
+    if (!response.ok) throw new Error('AI chat unavailable');
+    const json = await response.json();
     removeTyping();
-    const reply = generateClaraReply(text);
+    const reply = json.reply || generateClaraReply(text);
     botHistory.push({role:'assistant', content: reply});
     addBotMsg(escapeHtml(reply).replace(/\n/g,'<br>'));
     document.getElementById('bot-send-btn').disabled = false;
-  }, 450);
+  } catch (error) {
+    window.setTimeout(() => {
+      removeTyping();
+      const reply = generateClaraReply(text);
+      botHistory.push({role:'assistant', content: reply});
+      addBotMsg(escapeHtml(reply).replace(/\n/g,'<br>'));
+      document.getElementById('bot-send-btn').disabled = false;
+    }, 350);
+  }
 }
 
 function generateClaraReply(text) {
@@ -1079,8 +1113,68 @@ function processRows(rows, filename) {
   setTimeout(() => {
     const data = parseQBORows(rows, filename);
     currentData = data;
-    setTimeout(() => renderReport(data), 600);
+    setTimeout(() => {
+      renderReport(data);
+      requestAIReport(data);
+    }, 600);
   }, 300);
+}
+
+async function requestAIReport(data) {
+  setAIStatus('Local preview ready. Generating AI CFO analysis from your numbers...', 'pending');
+  try {
+    const response = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ financials: data })
+    });
+
+    if (!response.ok) {
+      const detail = await response.json().catch(() => ({}));
+      throw new Error(detail.error || 'AI analysis unavailable');
+    }
+
+    const json = await response.json();
+    applyAIReport(json.report, json.provider, json.model);
+  } catch (error) {
+    setAIStatus('Demo mode: start the Node server and add an AI API key to enable generated CFO analysis. The local report below is still usable.', 'warn');
+  }
+}
+
+function applyAIReport(report, provider, model) {
+  if (!report) return;
+  window.latestAIReport = report;
+
+  if (report.findings && report.findings.length) {
+    document.getElementById('rpt-findings').innerHTML = report.findings.map(f=>`
+      <div class="finding-card">
+        <span class="finding-tag tag-${f.type==='good'?'good':f.type==='bad'?'bad':'warn'}">
+          <span class="tag-dot"></span>${f.type==='good'?'Strength':f.type==='bad'?'Critical':'Watch closely'}
+        </span>
+        <div class="finding-text">${escapeHtml(f.text)}</div>
+      </div>`).join('');
+  }
+
+  if (report.actions && report.actions.length) {
+    document.getElementById('rpt-actions').innerHTML = report.actions.map((a,i)=>`
+      <div class="action-card">
+        <div class="action-number">${i+1}</div>
+        <div class="action-body">
+          <div class="action-title">${escapeHtml(a.title || 'Recommended action')}</div>
+          <div class="action-desc">${escapeHtml(a.description || '')}</div>
+          ${a.impact?`<span class="action-impact">${escapeHtml(a.impact)}</span>`:''}
+        </div>
+      </div>`).join('');
+  }
+
+  if (report.summary) {
+    const questions = report.questions && report.questions.length
+      ? '\n\nQuestions to answer next: ' + report.questions.map(q => '• ' + q).join(' ')
+      : '';
+    document.getElementById('rpt-summary').textContent = report.summary + questions;
+  }
+
+  setAIStatus(`AI CFO analysis generated${provider ? ' with ' + provider : ''}${model ? ' (' + model + ')' : ''}.`, 'success');
 }
 
 async function extractPDFText(arrayBuffer, filename) {
@@ -1353,6 +1447,13 @@ function hideAnalysisStatus() {
   document.getElementById('analysis-status').style.display = 'none';
 }
 
+function setAIStatus(message, tone) {
+  const el = document.getElementById('ai-status');
+  if (!el) return;
+  el.textContent = message;
+  el.className = 'ai-status ' + (tone || 'pending');
+}
+
 function resetAnalysis() {
   document.getElementById('analysis-report').style.display = 'none';
   document.getElementById('analysis-upload-view').style.display = 'block';
@@ -1360,6 +1461,8 @@ function resetAnalysis() {
   analysisCharts.forEach(c => c.destroy());
   analysisCharts = [];
   currentData = null;
+  window.latestAIReport = null;
+  setAIStatus('Instant local preview ready. AI CFO analysis will appear here when the backend is connected.', 'pending');
 }
 
 function renderReport(d) {
