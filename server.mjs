@@ -1,5 +1,6 @@
 import { createReadStream, existsSync, statSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
+import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { extname, join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -71,11 +72,32 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(port, () => {
-  console.log(`MyCFOPro running at http://localhost:${port}`);
+  const url = `http://localhost:${port}`;
+  console.log('');
+  console.log('  MyCFOPro is running');
+  console.log(`  Open in your browser: ${url}`);
+  console.log('');
+  if (process.env.OPEN_BROWSER !== '0') {
+    openBrowser(url);
+  }
   if (!process.env.SESSION_SECRET) {
     console.warn('Warning: SESSION_SECRET not set — using dev default. Set it in .env before production.');
   }
 });
+
+function openBrowser(url) {
+  try {
+    if (process.platform === 'win32') {
+      spawn('cmd', ['/c', 'start', '', url], { detached: true, stdio: 'ignore' }).unref();
+    } else if (process.platform === 'darwin') {
+      spawn('open', [url], { detached: true, stdio: 'ignore' }).unref();
+    } else {
+      spawn('xdg-open', [url], { detached: true, stdio: 'ignore' }).unref();
+    }
+  } catch {
+    console.log('  Could not open browser automatically — paste the link above into Chrome or Edge.');
+  }
+}
 
 async function handleAuthAndCompanyRoutes(req, res, url) {
   if (req.method === 'GET' && url.pathname === '/api/auth/status') {
