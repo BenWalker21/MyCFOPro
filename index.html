@@ -595,6 +595,24 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 .clara-avatar-wrap{
   position:relative;width:148px;height:148px;margin:0.25rem 0 0.85rem;flex-shrink:0
 }
+.clara-mouth-overlay{
+  position:absolute;left:50%;bottom:18%;transform:translateX(-50%);
+  width:34%;height:12%;pointer-events:none;z-index:2;display:flex;
+  align-items:center;justify-content:center;overflow:hidden
+}
+.clara-mouth{
+  width:100%;height:100%;background:rgba(28,18,14,0.82);border-radius:999px;
+  transform:scaleY(0.12);transform-origin:center;transition:transform 0.05s linear;
+  box-shadow:inset 0 -2px 4px rgba(255,255,255,0.08)
+}
+.clara-avatar-panel.speaking .clara-mouth-overlay{opacity:1}
+.clara-voice-mode{
+  display:inline-block;margin-top:0.45rem;font-size:10px;font-weight:700;
+  letter-spacing:0.2px;padding:4px 8px;border-radius:999px;
+  background:var(--green-bg);color:var(--green);border:1px solid #cceedd
+}
+.clara-voice-mode.fallback{background:var(--amber-bg);color:var(--amber);border-color:#f4dfad}
+.clara-voice-mode.natural{background:var(--green-bg);color:var(--green);border-color:#cceedd}
 .clara-avatar-ring{
   position:absolute;inset:-6px;border-radius:50%;
   border:2px solid rgba(15,37,112,0.12);transition:all 0.25s
@@ -1166,10 +1184,12 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
         <div class="clara-avatar-wrap">
           <div class="clara-avatar-ring"></div>
           <img src="/assets/clara-avatar.png" alt="Clara — CFO Advisor" class="clara-avatar-photo" id="clara-avatar-photo">
+          <div class="clara-mouth-overlay" aria-hidden="true"><div class="clara-mouth" id="clara-mouth"></div></div>
           <div class="clara-voice-bars" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
         </div>
         <div class="clara-avatar-name">Clara</div>
         <div class="clara-avatar-role">CFO Advisor</div>
+        <div class="clara-voice-mode" id="clara-voice-mode">Loading voice…</div>
         <div class="clara-status-row">
           <span class="clara-status-dot"></span>
           <span id="clara-status-text">Ready to help</span>

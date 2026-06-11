@@ -35,6 +35,16 @@ const server = createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === 'GET' && url.pathname === '/api/voice/status') {
+      handleVoiceStatus(res);
+      return;
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/tts') {
+      await handleTts(req, res);
+      return;
+    }
+
     if (req.method === 'GET' || req.method === 'HEAD') {
       await serveStatic(url.pathname, req, res);
       return;
@@ -136,6 +146,115 @@ This is informational and not a substitute for a CPA or licensed advisor.`,
     model: ai.model,
     reply: ai.text.trim()
   });
+}
+
+function handleVoiceStatus(res) {
+  const provider = getVoiceProvider();
+  sendJson(res, 200, {
+    provider: provider.id,
+    label: provider.label,
+    natural: provider.id !== 'browser'
+  });
+}
+
+function getVoiceProvider() {
+  if (process.env.ELEVENLABS_API_KEY) {
+    return { id: 'elevenlabs', label: 'ElevenLabs natural voice' };
+  }
+  if (process.env.OPENAI_API_KEY) {
+    return { id: 'openai', label: 'OpenAI natural voice' };
+  }
+  return { id: 'browser', label: 'Browser voice (add API key for natural speech)' };
+}
+
+async function handleTts(req, res) {
+  const body = await readJsonBody(req);
+  const text = String(body?.text || '').trim();
+
+  if (!text) {
+    sendJson(res, 400, { error: 'Missing text for speech synthesis' });
+    return;
+  }
+
+  const input = text.slice(0, 4000);
+
+  if (process.env.ELEVENLABS_API_KEY) {
+    const audio = await synthesizeElevenLabs(input);
+    sendAudio(res, 200, audio, 'elevenlabs');
+    return;
+  }
+
+  if (process.env.OPENAI_API_KEY) {
+    const audio = await synthesizeOpenAi(input);
+    sendAudio(res, 200, audio, 'openai');
+    return;
+  }
+
+  sendJson(res, 503, { error: 'No TTS provider configured. Add OPENAI_API_KEY or ELEVENLABS_API_KEY to .env' });
+}
+
+async function synthesizeOpenAi(text) {
+  const model = process.env.OPENAI_TTS_MODEL || 'tts-1-hd';
+  const voice = process.env.OPENAI_TTS_VOICE || 'nova';
+  const response = await fetch('https://api.openai.com/v1/audio/speech', {
+    method: 'POST',
+    headers: {
+      authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      'content-type': 'application/json'
+    },
+    body: JSON.stringify({
+      model,
+      voice,
+      input: text,
+      response_format: 'mp3',
+      speed: 1.0
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`OpenAI TTS failed: ${response.status} ${await response.text()}`);
+  }
+
+  return Buffer.from(await response.arrayBuffer());
+}
+
+async function synthesizeElevenLabs(text) {
+  const voiceId = process.env.ELEVENLABS_VOICE_ID || 'EXAVITQu4vr4xnSDxMaL';
+  const modelId = process.env.ELEVENLABS_MODEL || 'eleven_multilingual_v2';
+  const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+    method: 'POST',
+    headers: {
+      'xi-api-key': process.env.ELEVENLABS_API_KEY,
+      'content-type': 'application/json',
+      accept: 'audio/mpeg'
+    },
+    body: JSON.stringify({
+      text,
+      model_id: modelId,
+      voice_settings: {
+        stability: 0.42,
+        similarity_boost: 0.78,
+        style: 0.35,
+        use_speaker_boost: true
+      }
+    })
+  });
+
+  if (!response.ok) {
+    throw new Error(`ElevenLabs TTS failed: ${response.status} ${await response.text()}`);
+  }
+
+  return Buffer.from(await response.arrayBuffer());
+}
+
+function sendAudio(res, statusCode, buffer, provider) {
+  res.writeHead(statusCode, {
+    'content-type': 'audio/mpeg',
+    'content-length': buffer.length,
+    'x-voice-provider': provider,
+    'cache-control': 'no-store'
+  });
+  res.end(buffer);
 }
 
 async function callAiModel({ system, messages, maxTokens }) {

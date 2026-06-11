@@ -1,8 +1,15 @@
-// ── CLARA AVATAR (face + voice) ──────────────────────────────────────
+// ── CLARA AVATAR (face + natural voice + lip sync) ───────────────────
 const CLARA_AVATAR_SRC = '/assets/clara-avatar.png';
 let claraVoiceEnabled = true;
-let claraSpeech = null;
+let claraVoiceMode = 'loading';
 let claraTypewriterTimer = null;
+let claraAudio = null;
+let claraAudioUrl = null;
+let claraAudioCtx = null;
+let claraAnalyser = null;
+let claraLipSyncFrame = null;
+let claraSpeechActive = false;
+let claraBrowserUtterance = null;
 
 function initClaraAvatar() {
   const toggle = document.getElementById('clara-voice-toggle');
@@ -14,6 +21,40 @@ function initClaraAvatar() {
     });
   }
   setClaraState('idle');
+  loadClaraVoiceStatus();
+}
+
+async function loadClaraVoiceStatus() {
+  const badge = document.getElementById('clara-voice-mode');
+  try {
+    const res = await fetch('/api/voice/status');
+    if (!res.ok) throw new Error('status unavailable');
+    const json = await res.json();
+    claraVoiceMode = json.provider || 'browser';
+    if (badge) {
+      badge.textContent = json.label || 'Voice ready';
+      badge.className = 'clara-voice-mode' + (json.natural ? ' natural' : ' fallback');
+    }
+  } catch {
+    claraVoiceMode = 'browser';
+    if (badge) {
+      badge.textContent = 'Browser voice (run npm start for natural voice)';
+      badge.className = 'clara-voice-mode fallback';
+    }
+  }
+}
+
+function setClaraVoiceMode(provider) {
+  claraVoiceMode = provider || 'browser';
+  const badge = document.getElementById('clara-voice-mode');
+  if (!badge) return;
+  const labels = {
+    elevenlabs: 'ElevenLabs natural voice',
+    openai: 'OpenAI natural voice',
+    browser: 'Browser voice fallback'
+  };
+  badge.textContent = labels[provider] || labels.browser;
+  badge.className = 'clara-voice-mode' + (provider === 'browser' ? ' fallback' : ' natural');
 }
 
 function setClaraState(state) {
@@ -43,49 +84,191 @@ function claraMiniAvatarHtml() {
   return `<img src="${CLARA_AVATAR_SRC}" alt="Clara" class="clara-mini-img">`;
 }
 
+function stopLipSync() {
+  if (claraLipSyncFrame) {
+    cancelAnimationFrame(claraLipSyncFrame);
+    claraLipSyncFrame = null;
+  }
+  const mouth = document.getElementById('clara-mouth');
+  if (mouth) mouth.style.transform = 'scaleY(0.12)';
+}
+
+function startLipSync() {
+  stopLipSync();
+  const mouth = document.getElementById('clara-mouth');
+  if (!mouth || !claraAnalyser) return;
+
+  const data = new Uint8Array(claraAnalyser.frequencyBinCount);
+  const tick = () => {
+    claraAnalyser.getByteFrequencyData(data);
+    let sum = 0;
+    for (let i = 2; i < data.length * 0.35; i++) sum += data[i];
+    const avg = sum / Math.max(1, Math.floor(data.length * 0.35) - 2);
+    const open = Math.min(1, avg / 95);
+    mouth.style.transform = `scaleY(${0.12 + open * 0.88})`;
+    claraLipSyncFrame = requestAnimationFrame(tick);
+  };
+  tick();
+}
+
 function stopClaraSpeech() {
+  claraSpeechActive = false;
+  stopLipSync();
+
+  if (claraAudio) {
+    claraAudio.pause();
+    claraAudio.src = '';
+    claraAudio = null;
+  }
+  if (claraAudioUrl) {
+    URL.revokeObjectURL(claraAudioUrl);
+    claraAudioUrl = null;
+  }
+  if (claraAudioCtx) {
+    claraAudioCtx.close().catch(() => {});
+    claraAudioCtx = null;
+  }
+  claraAnalyser = null;
+
   if (window.speechSynthesis) window.speechSynthesis.cancel();
-  claraSpeech = null;
+  claraBrowserUtterance = null;
 }
 
-function pickClaraVoice() {
-  if (!window.speechSynthesis) return null;
-  const voices = window.speechSynthesis.getVoices();
-  const preferred = voices.find(v =>
-    /female|samantha|victoria|karen|moira|zira|jenny|aria|google us english/i.test(v.name)
-  );
-  return preferred || voices.find(v => v.lang.startsWith('en')) || voices[0] || null;
-}
-
-function speakClara(text) {
-  if (!claraVoiceEnabled || !window.speechSynthesis || !text) return;
+async function speakClara(text) {
+  if (!claraVoiceEnabled || !text) {
+    return { played: false, durationMs: estimateSpeechDuration(text) };
+  }
 
   stopClaraSpeech();
   const plain = String(text).replace(/\s+/g, ' ').trim();
-  if (!plain) return;
+  if (!plain) return { played: false, durationMs: 0 };
 
-  const utter = new SpeechSynthesisUtterance(plain);
-  utter.rate = 1.02;
-  utter.pitch = 1.05;
-  const voice = pickClaraVoice();
-  if (voice) utter.voice = voice;
+  try {
+    const res = await fetch('/api/tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text: plain.slice(0, 4000) })
+    });
 
-  utter.onstart = () => setClaraState('speaking');
-  utter.onend = () => {
-    claraSpeech = null;
-    if (!claraTypewriterTimer) setClaraState('idle');
-  };
-  utter.onerror = () => {
-    claraSpeech = null;
-    if (!claraTypewriterTimer) setClaraState('idle');
-  };
+    if (!res.ok) throw new Error(await res.text());
 
-  claraSpeech = utter;
-  window.speechSynthesis.speak(utter);
+    const provider = res.headers.get('x-voice-provider') || 'openai';
+    setClaraVoiceMode(provider);
+    const blob = await res.blob();
+    return await playNaturalVoice(blob);
+  } catch (error) {
+    console.warn('Natural TTS unavailable, using browser voice:', error);
+    setClaraVoiceMode('browser');
+    return speakBrowserVoice(plain);
+  }
 }
 
-if (typeof window !== 'undefined' && window.speechSynthesis) {
-  window.speechSynthesis.onvoiceschanged = () => pickClaraVoice();
+function playNaturalVoice(blob) {
+  return new Promise(resolve => {
+    claraAudioUrl = URL.createObjectURL(blob);
+    claraAudio = new Audio(claraAudioUrl);
+    claraAudio.preload = 'auto';
+    claraSpeechActive = true;
+
+    const finish = (result) => {
+      claraSpeechActive = false;
+      stopLipSync();
+      resolve(result);
+    };
+
+    claraAudio.addEventListener('loadedmetadata', () => {
+      try {
+        claraAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const source = claraAudioCtx.createMediaElementSource(claraAudio);
+        claraAnalyser = claraAudioCtx.createAnalyser();
+        claraAnalyser.fftSize = 512;
+        claraAnalyser.smoothingTimeConstant = 0.65;
+        source.connect(claraAnalyser);
+        claraAnalyser.connect(claraAudioCtx.destination);
+      } catch (err) {
+        console.warn('Web Audio lip sync unavailable:', err);
+      }
+    }, { once: true });
+
+    claraAudio.onplay = () => {
+      setClaraState('speaking');
+      if (claraAudioCtx?.state === 'suspended') claraAudioCtx.resume();
+      startLipSync();
+    };
+
+    claraAudio.onended = () => {
+      finish({ played: true, durationMs: (claraAudio?.duration || 0) * 1000 });
+      if (!claraTypewriterTimer) {
+        setClaraState('idle');
+        setClaraCaption('');
+      }
+    };
+
+    claraAudio.onerror = () => finish({ played: false, durationMs: estimateSpeechDuration('') });
+
+    claraAudio.play().catch(() => {
+      finish({ played: false, durationMs: estimateSpeechDuration('') });
+    });
+  });
+}
+
+function speakBrowserVoice(text) {
+  return new Promise(resolve => {
+    if (!window.speechSynthesis) {
+      resolve({ played: false, durationMs: estimateSpeechDuration(text) });
+      return;
+    }
+
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.rate = 0.98;
+    utter.pitch = 1.02;
+    const voices = window.speechSynthesis.getVoices();
+    const voice = voices.find(v => /female|samantha|victoria|karen|jenny|aria|nova|shimmer/i.test(v.name))
+      || voices.find(v => v.lang.startsWith('en'));
+    if (voice) utter.voice = voice;
+
+    claraSpeechActive = true;
+    utter.onstart = () => {
+      setClaraState('speaking');
+      startBrowserLipSync();
+    };
+    utter.onend = () => {
+      claraSpeechActive = false;
+      stopLipSync();
+      resolve({ played: true, durationMs: estimateSpeechDuration(text) });
+      if (!claraTypewriterTimer) {
+        setClaraState('idle');
+        setClaraCaption('');
+      }
+    };
+    utter.onerror = () => {
+      claraSpeechActive = false;
+      stopLipSync();
+      resolve({ played: false, durationMs: estimateSpeechDuration(text) });
+    };
+
+    claraBrowserUtterance = utter;
+    window.speechSynthesis.speak(utter);
+  });
+}
+
+function startBrowserLipSync() {
+  stopLipSync();
+  const mouth = document.getElementById('clara-mouth');
+  if (!mouth) return;
+  let t = 0;
+  const tick = () => {
+    t += 0.14;
+    const open = 0.25 + Math.abs(Math.sin(t * 3.2)) * 0.55 + Math.abs(Math.sin(t * 7.1)) * 0.15;
+    mouth.style.transform = `scaleY(${Math.min(1, open)})`;
+    if (claraSpeechActive) claraLipSyncFrame = requestAnimationFrame(tick);
+  };
+  tick();
+}
+
+function estimateSpeechDuration(text) {
+  const words = String(text || '').trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1800, words * 340);
 }
 
 function clearClaraTypewriter() {
@@ -93,6 +276,30 @@ function clearClaraTypewriter() {
     clearInterval(claraTypewriterTimer);
     claraTypewriterTimer = null;
   }
+}
+
+function runTypewriter(span, cursor, plain, html, msgs, durationMs) {
+  let i = 0;
+  const totalMs = Math.max(durationMs || estimateSpeechDuration(plain), 1200);
+  const step = Math.max(12, totalMs / Math.max(plain.length, 1));
+
+  claraTypewriterTimer = window.setInterval(() => {
+    i += plain.length > 320 ? 2 : 1;
+    span.innerHTML = escapeHtml(plain.slice(0, i)).replace(/\n/g, '<br>');
+    msgs.scrollTop = msgs.scrollHeight;
+
+    if (i >= plain.length) {
+      clearClaraTypewriter();
+      if (cursor) cursor.style.display = 'none';
+      span.innerHTML = html;
+      window.setTimeout(() => {
+        if (!claraSpeechActive) {
+          setClaraState('idle');
+          setClaraCaption('');
+        }
+      }, 400);
+    }
+  }, step);
 }
 
 function deliverClaraReply(text) {
@@ -112,28 +319,11 @@ function deliverClaraReply(text) {
 
   const span = el.querySelector('.clara-typewriter');
   const cursor = el.querySelector('.clara-cursor');
-  let i = 0;
 
   window.setTimeout(() => {
-    setClaraState('speaking');
     setClaraCaption(plain);
+    runTypewriter(span, cursor, plain, html, msgs, estimateSpeechDuration(plain));
     speakClara(plain);
-
-    claraTypewriterTimer = window.setInterval(() => {
-      i += plain.length > 280 ? 2 : 1;
-      span.innerHTML = escapeHtml(plain.slice(0, i)).replace(/\n/g, '<br>');
-      msgs.scrollTop = msgs.scrollHeight;
-
-      if (i >= plain.length) {
-        clearClaraTypewriter();
-        if (cursor) cursor.style.display = 'none';
-        span.innerHTML = html;
-        window.setTimeout(() => {
-          if (!claraSpeech) setClaraState('idle');
-          setClaraCaption('');
-        }, 400);
-      }
-    }, plain.length > 280 ? 14 : 18);
   }, 280);
 }
 
@@ -147,5 +337,5 @@ function onClaraThinking() {
 }
 
 function onClaraTypingRemoved() {
-  if (!claraTypewriterTimer && !claraSpeech) setClaraState('idle');
+  if (!claraTypewriterTimer && !claraSpeechActive) setClaraState('idle');
 }
