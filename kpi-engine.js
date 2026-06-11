@@ -440,7 +440,8 @@ function trackKpiToHealth(kpiId) {
   if (!kpi) return;
   const value = calculateKpi(kpiId);
   if (value === null || Number.isNaN(value)) {
-    alert('Enter valid numbers to calculate this KPI first.');
+    if (typeof showToast === 'function') showToast('Enter valid numbers to calculate this KPI first.');
+    else alert('Enter valid numbers to calculate this KPI first.');
     return;
   }
 

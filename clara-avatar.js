@@ -1,5 +1,35 @@
 // ── CLARA AVATAR (face + natural voice + lip sync) ───────────────────
 const CLARA_AVATAR_SRC = '/assets/clara-avatar.png';
+const CLARA_AVATAR_FALLBACK = '/assets/clara-avatar.svg';
+
+function claraAvatarImgHtml(className, alt) {
+  return `<img src="${CLARA_AVATAR_SRC}" alt="${alt || 'Clara'}" class="${className || ''}">`;
+}
+
+function claraAvatarFallback(className) {
+  const el = document.createElement('div');
+  el.className = (className || '').includes('mini') ? 'clara-mini-fallback' : 'clara-avatar-fallback';
+  el.textContent = 'C';
+  el.setAttribute('aria-label', 'Clara');
+  return el;
+}
+
+function bindClaraAvatarImage(img) {
+  if (!img || img.dataset.claraBound) return;
+  img.dataset.claraBound = '1';
+  img.onerror = () => {
+    if (img.dataset.fallbackAttempted !== 'svg' && !img.src.includes('clara-avatar.svg')) {
+      img.dataset.fallbackAttempted = 'svg';
+      img.src = CLARA_AVATAR_FALLBACK;
+      return;
+    }
+    img.replaceWith(claraAvatarFallback(img.className));
+  };
+}
+
+function initClaraAvatarImages() {
+  document.querySelectorAll('img[src*="clara-avatar"]').forEach(bindClaraAvatarImage);
+}
 let claraVoiceEnabled = true;
 let claraVoiceMode = 'loading';
 let claraTypewriterTimer = null;
@@ -12,6 +42,7 @@ let claraSpeechActive = false;
 let claraBrowserUtterance = null;
 
 function initClaraAvatar() {
+  initClaraAvatarImages();
   const toggle = document.getElementById('clara-voice-toggle');
   if (toggle) {
     toggle.checked = claraVoiceEnabled;
@@ -81,7 +112,7 @@ function setClaraCaption(text) {
 }
 
 function claraMiniAvatarHtml() {
-  return `<img src="${CLARA_AVATAR_SRC}" alt="Clara" class="clara-mini-img">`;
+  return claraAvatarImgHtml('clara-mini-img', 'Clara');
 }
 
 function stopLipSync() {
@@ -315,6 +346,7 @@ function deliverClaraReply(text) {
   el.className = 'bmsg b';
   el.innerHTML = `<div class="bav clara-mini-av">${claraMiniAvatarHtml()}</div><div class="bbubble"><span class="clara-typewriter"></span><span class="clara-cursor">|</span></div>`;
   msgs.appendChild(el);
+  el.querySelectorAll('img[src*="clara-avatar"]').forEach(bindClaraAvatarImage);
   msgs.scrollTop = msgs.scrollHeight;
 
   const span = el.querySelector('.clara-typewriter');

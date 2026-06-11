@@ -438,22 +438,93 @@ function updateNavCompanyBadge() {
   el.textContent = companyStore.company || companyStore.latest.financials.company;
 }
 
+function calcCashRunwayMonths(d) {
+  if (!d) return null;
+  const cash = d.cash || d.endingCash || 0;
+  const monthlyBurn = d.opex ? d.opex / 12 : (d.netIncome < 0 ? Math.abs(d.netIncome) / 12 : 0);
+  if (!cash || !monthlyBurn) return null;
+  return cash / monthlyBurn;
+}
+
+function getClaraApiPayload() {
+  loadCompanyStore();
+  const entries = [...(companyStore.health.entries || [])].sort((a, b) => a.monthKey.localeCompare(b.monthKey));
+  const latestEntry = entries[entries.length - 1] || null;
+  const priorEntry = entries.length > 1 ? entries[entries.length - 2] : null;
+  let healthSummary = '';
+  if (latestEntry) {
+    healthSummary += `Latest tracked month: ${latestEntry.monthLabel} (health ${Math.round(latestEntry.metrics?.healthScore || 0)}/100). `;
+    if (priorEntry) {
+      const hsDelta = (latestEntry.metrics?.healthScore || 0) - (priorEntry.metrics?.healthScore || 0);
+      healthSummary += `Health score change vs prior month: ${hsDelta >= 0 ? '+' : ''}${hsDelta.toFixed(0)} pts. `;
+      if (priorEntry.metrics?.revenue) {
+        const revDelta = ((latestEntry.metrics.revenue - priorEntry.metrics.revenue) / Math.abs(priorEntry.metrics.revenue)) * 100;
+        healthSummary += `Revenue change vs prior month: ${revDelta >= 0 ? '+' : ''}${revDelta.toFixed(1)}%. `;
+      }
+    }
+    healthSummary += `${entries.length} month${entries.length === 1 ? '' : 's'} on file.`;
+  }
+  return {
+    claraContext: window.claraContext || '',
+    aiReport: window.latestAIReport || companyStore.latest?.aiReport || null,
+    healthSummary,
+    company: companyStore.company || companyStore.latest?.financials?.company || ''
+  };
+}
+
 function updateHeroFromStore() {
   const summary = getConnectedFlowSummary();
-  if (!summary) return;
+  const badge = document.getElementById('hero-preview-badge');
+  const urlEl = document.getElementById('hero-preview-url');
 
-  const healthEl = document.querySelector('.hero-preview .pm-card:nth-child(1) .pm-value');
-  const marginEl = document.querySelector('.hero-preview .pm-card:nth-child(2) .pm-value');
-  const incomeEl = document.querySelector('.hero-preview .pm-card:nth-child(4) .pm-value');
-  if (healthEl) {
-    healthEl.textContent = summary.healthScore + '/100';
-    healthEl.className = 'pm-value ' + (summary.healthScore >= 70 ? 'pm-green' : summary.healthScore >= 50 ? 'pm-amber' : 'pm-red');
+  if (!summary) {
+    if (badge) badge.style.display = 'inline-flex';
+    if (urlEl) urlEl.textContent = 'mycfopro.ai/dashboard';
+    if (typeof initHeroPreviewCharts === 'function') initHeroPreviewCharts(null);
+    return;
   }
-  if (marginEl) marginEl.textContent = fp(summary.grossMargin);
-  if (incomeEl) {
-    incomeEl.textContent = fc(summary.netIncome);
-    incomeEl.className = 'pm-value ' + (summary.netIncome >= 0 ? 'pm-green' : 'pm-red');
+
+  if (badge) badge.style.display = 'none';
+  if (urlEl) urlEl.textContent = `mycfopro.ai/${(summary.company || 'dashboard').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'dashboard'}`;
+
+  loadCompanyStore();
+  const d = companyStore.latest.financials;
+  const healthScore = summary.healthScore;
+  const runway = calcCashRunwayMonths(d);
+
+  setHeroMetric('hero-health-value', healthScore + '/100', healthScore >= 70 ? 'pm-green' : healthScore >= 50 ? 'pm-amber' : 'pm-red');
+  setHeroMetricNote('hero-health-note', healthScore >= 70 ? 'Strong' : healthScore >= 50 ? 'Fair' : 'Needs attention', healthScore >= 70 ? 'pm-green' : healthScore >= 50 ? 'pm-amber' : 'pm-red');
+
+  setHeroMetric('hero-margin-value', fp(summary.grossMargin), summary.grossMargin >= 38 ? 'pm-green' : summary.grossMargin >= 25 ? 'pm-amber' : 'pm-red');
+  setHeroMetricNote('hero-margin-note', 'Benchmark: 38%', '');
+
+  if (runway !== null) {
+    setHeroMetric('hero-runway-value', runway.toFixed(1) + ' mo', runway >= 6 ? 'pm-green' : runway >= 3 ? 'pm-amber' : 'pm-red');
+    setHeroMetricNote('hero-runway-note', runway >= 6 ? 'Healthy' : runway >= 3 ? 'Watch' : 'Critical', runway >= 6 ? 'pm-green' : runway >= 3 ? 'pm-amber' : 'pm-red');
+  } else {
+    setHeroMetric('hero-runway-value', '—', '');
+    setHeroMetricNote('hero-runway-note', 'Upload balance sheet for cash', '');
   }
+
+  setHeroMetric('hero-income-value', fc(summary.netIncome), summary.netIncome >= 0 ? 'pm-green' : 'pm-red');
+  setHeroMetricNote('hero-income-note', summary.netIncome >= 0 ? 'Profitable' : 'Loss period', summary.netIncome >= 0 ? 'pm-green' : 'pm-red');
+
+  if (typeof updateHeroPreviewCharts === 'function') updateHeroPreviewCharts(d);
+}
+
+function setHeroMetric(id, value, colorClass) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = value;
+  el.className = 'pm-value' + (colorClass ? ' ' + colorClass : '');
+}
+
+function setHeroMetricNote(id, text, colorClass) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.textContent = text;
+  el.className = 'pm-note' + (colorClass ? ' ' + colorClass : '');
+  if (!colorClass) el.style.color = 'var(--ink-3)';
 }
 
 function clearCompanyMemory() {

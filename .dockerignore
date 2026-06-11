@@ -1,0 +1,13 @@
+node_modules
+.git
+.gitignore
+.env
+.env.*
+!.env.example
+data
+*.md
+MyCFOPro-v4*
+Open MyCFOPro.bat
+MyCFOPro.url
+terminals
+.cursor
