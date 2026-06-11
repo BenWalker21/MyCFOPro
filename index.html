@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MyCFOPro.AI — CFO Intelligence for Small Business</title>
+<meta name="description" content="Upload small-business financials and get CFO-grade insights, KPI tracking, presentation decks, and practical action plans in minutes.">
+<meta property="og:title" content="MyCFOPro.AI — CFO Intelligence for Small Business">
+<meta property="og:description" content="Turn QuickBooks, Xero, Wave, Excel, CSV, or PDF exports into plain-English business insights.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#0f2570">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#1a3caa;
+  --blue-d:#0f2570;
+  --blue-l:#2a52d4;
+  --blue-bg:#eef2fb;
+  --gold:#c9922a;
+  --gold-l:#e8b84b;
+  --gold-bg:#fdf6e3;
+  --ink:#0e0e0e;
+  --ink-2:#3a3a3a;
+  --ink-3:#717171;
+  --ink-4:#a8a8a8;
+  --white:#ffffff;
+  --off:#f8f8f6;
+  --off2:#f2f1ee;
+  --border:#e4e3df;
+  --green:#0a7c4e;
+  --green-bg:#edfaf4;
+  --amber:#b45309;
+  --amber-bg:#fef9ec;
+  --red:#b91c1c;
+  --red-bg:#fef2f2;
+  --r:12px;--rs:8px;--rxs:6px;
+}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth}
+body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--white);color:var(--ink);min-height:100vh}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:inherit}
+
+/* ── NAV ── */
+.nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(255,255,255,0.95);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+  padding:0 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  height:62px;
+}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-mark{
+  width:36px;height:36px;background:var(--blue);border-radius:9px;
+  display:flex;align-items:center;justify-content:center;position:relative;
+}
+.nav-mark::after{content:'';position:absolute;bottom:-3px;right:-3px;width:10px;height:10px;background:var(--gold);border-radius:50%;border:2px solid var(--white)}
+.nav-mark svg{width:18px;height:18px}
+.nav-wordmark{display:flex;flex-direction:column;line-height:1}
+.nav-name{font-size:16px;font-weight:800;color:var(--ink);letter-spacing:-0.4px}
+.nav-name b{color:var(--blue)}
+.nav-name s{text-decoration:none;color:var(--gold)}
+.nav-sub{font-size:10px;color:var(--ink-4);margin-top:2px;letter-spacing:0.1px}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-link{
+  font-size:13px;font-weight:500;color:var(--ink-3);
+  padding:7px 13px;border-radius:var(--rs);border:none;background:none;
+  transition:all 0.13s;white-space:nowrap;
+}
+.nav-link:hover{background:var(--off);color:var(--ink)}
+.nav-link.active{background:var(--blue-bg);color:var(--blue);font-weight:600}
+.nav-cta{
+  font-size:13px;font-weight:700;
+  background:var(--blue);color:var(--white);
+  border:none;border-radius:var(--rs);padding:9px 18px;
+  transition:background 0.13s;white-space:nowrap;
+}
+.nav-cta:hover{background:var(--blue-l)}
+
+/* ── PAGES ── */
+.page{display:none}
+.page.active{display:block}
+
+/* ═══════════════════════════════════════
+   HOME PAGE
+═══════════════════════════════════════ */
+/* HERO */
+.hero{
+  background:var(--blue-d);
+  padding:5rem 2rem 0;
+  overflow:hidden;
+  position:relative;
+}
+.hero-inner{max-width:1100px;margin:0 auto}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:12px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;
+  color:var(--gold-l);background:rgba(201,146,42,0.15);
+  padding:6px 14px;border-radius:20px;margin-bottom:1.5rem;
+  border:1px solid rgba(201,146,42,0.25);
+}
+.hero-eyebrow span{width:6px;height:6px;border-radius:50%;background:var(--gold-l);display:inline-block}
+.hero-h1{
+  font-size:clamp(2.4rem,5vw,3.8rem);font-weight:900;
+  color:var(--white);line-height:1.1;letter-spacing:-0.05em;
+  margin-bottom:1.25rem;max-width:700px;
+}
+.hero-h1 em{font-style:normal;color:var(--gold-l)}
+.hero-sub{
+  font-size:17px;color:rgba(255,255,255,0.62);
+  line-height:1.7;max-width:540px;margin-bottom:2.25rem;
+}
+.hero-actions{display:flex;align-items:center;gap:12px;margin-bottom:3rem;flex-wrap:wrap}
+.btn-gold{
+  font-size:15px;font-weight:700;
+  background:var(--gold);color:var(--ink);
+  border:none;border-radius:var(--rs);padding:13px 26px;
+  transition:background 0.13s;
+}
+.btn-gold:hover{background:var(--gold-l)}
+.btn-ghost{
+  font-size:15px;font-weight:500;color:rgba(255,255,255,0.65);
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
+  border-radius:var(--rs);padding:12px 22px;transition:all 0.13s;
+}
+.btn-ghost:hover{background:rgba(255,255,255,0.14);color:var(--white)}
+.hero-trust{display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.trust-item{display:flex;align-items:center;gap:6px;font-size:12px;color:rgba(255,255,255,0.4)}
+.trust-item svg{width:13px;height:13px}
+.trust-sep{width:1px;height:14px;background:rgba(255,255,255,0.15)}
+
+/* HERO DASHBOARD PREVIEW */
+.hero-preview{
+  margin-top:3rem;
+  background:var(--white);
+  border-radius:16px 16px 0 0;
+  border:1px solid rgba(255,255,255,0.1);
+  border-bottom:none;
+  padding:1.5rem 1.5rem 0;
+  max-width:900px;
+}
+.preview-bar{display:flex;align-items:center;gap:7px;margin-bottom:1.25rem}
+.pb-dot{width:10px;height:10px;border-radius:50%}
+.pb-dot.r{background:#ff5f57}.pb-dot.y{background:#febc2e}.pb-dot.g{background:#28c840}
+.pb-url{font-size:11px;color:var(--ink-4);margin-left:6px}
+.preview-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:12px}
+.pm-card{background:var(--off);border-radius:var(--rs);padding:12px 14px}
+.pm-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:var(--ink-4);margin-bottom:5px}
+.pm-value{font-size:20px;font-weight:800;letter-spacing:-0.5px;color:var(--ink);margin-bottom:2px}
+.pm-note{font-size:11px}
+.pm-green{color:var(--green)}.pm-amber{color:var(--amber)}.pm-red{color:var(--red)}
+.preview-charts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pc-card{background:var(--off);border-radius:var(--rs);padding:12px 14px}
+.pc-title{font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:10px}
+.pc-chart{height:90px;position:relative}
+
+/* SERVICES STRIP */
+.services-strip{background:var(--off2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:3.5rem 2rem}
+.strip-inner{max-width:1100px;margin:0 auto}
+.strip-label{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--ink-4);text-align:center;margin-bottom:2.5rem}
+.services-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.service-card{
+  background:var(--white);border:1px solid var(--border);
+  border-radius:var(--r);padding:1.4rem 1.25rem;
+  cursor:pointer;transition:all 0.15s;
+  display:flex;flex-direction:column;gap:10px;
+}
+.service-card:hover{border-color:var(--blue);transform:translateY(-2px)}
+.service-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center}
+.service-icon svg{width:20px;height:20px}
+.si-blue{background:var(--blue-bg);color:var(--blue)}
+.si-gold{background:var(--gold-bg);color:var(--gold)}
+.si-green{background:var(--green-bg);color:var(--green)}
+.si-purple{background:#f3f0ff;color:#6d28d9}
+.si-teal{background:#e8faf8;color:#0d9488}
+.service-name{font-size:14px;font-weight:700;color:var(--ink)}
+.service-desc{font-size:12px;color:var(--ink-3);line-height:1.55}
+.service-cta{font-size:12px;font-weight:600;color:var(--blue);margin-top:auto}
+
+/* SOCIAL PROOF */
+.proof-section{padding:5rem 2rem;max-width:1100px;margin:0 auto;text-align:center}
+.proof-h2{font-size:clamp(1.8rem,3.5vw,2.8rem);font-weight:900;color:var(--ink);letter-spacing:-0.05em;margin-bottom:0.75rem;line-height:1.2}
+.proof-sub{font-size:16px;color:var(--ink-3);margin-bottom:3.5rem;max-width:500px;margin-left:auto;margin-right:auto}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:2rem;margin-bottom:4rem}
+.stat-item{text-align:center}
+.stat-num{font-size:3rem;font-weight:900;color:var(--blue);letter-spacing:-0.05em;line-height:1}
+.stat-label{font-size:13px;color:var(--ink-3);margin-top:6px}
+.testimonials{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;text-align:left}
+.testi{background:var(--off);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem}
+.testi-stars{color:var(--gold);font-size:13px;margin-bottom:10px;letter-spacing:2px}
+.testi-text{font-size:14px;color:var(--ink-2);line-height:1.7;margin-bottom:1rem;font-style:italic}
+.testi-author{font-size:12px;font-weight:700;color:var(--ink-3)}
+
+/* PRICING */
+.pricing-section{background:var(--off2);border-top:1px solid var(--border);padding:5rem 2rem}
+.pricing-inner{max-width:900px;margin:0 auto}
+.section-eyebrow{font-size:11px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:var(--blue);text-align:center;margin-bottom:0.75rem}
+.section-h2{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:900;color:var(--ink);letter-spacing:-0.04em;text-align:center;margin-bottom:0.5rem;line-height:1.2}
+.section-sub{font-size:15px;color:var(--ink-3);text-align:center;margin-bottom:3rem}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.plan{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.75rem}
+.plan.featured{border:2px solid var(--blue);position:relative}
+.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;background:var(--blue);color:var(--white);padding:4px 14px;border-radius:20px;white-space:nowrap}
+.plan-name{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--ink-3);margin-bottom:8px}
+.plan-price{font-size:38px;font-weight:900;color:var(--ink);letter-spacing:-0.06em;line-height:1;margin-bottom:4px}
+.plan-price sup{font-size:20px;vertical-align:top;margin-top:8px;font-weight:700}
+.plan-price sub{font-size:14px;font-weight:500;color:var(--ink-3)}
+.plan-desc{font-size:13px;color:var(--ink-3);margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border);line-height:1.5}
+.plan-features{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:1.5rem}
+.plan-features li{font-size:13px;color:var(--ink-2);display:flex;align-items:flex-start;gap:8px;line-height:1.4}
+.plan-features li::before{content:"✓";color:var(--green);font-weight:800;flex-shrink:0;margin-top:1px}
+.plan-features li.no::before{content:"—";color:var(--ink-4)}
+.plan-features li.no{color:var(--ink-4)}
+.plan-btn{width:100%;padding:11px;border-radius:var(--rs);font-size:14px;font-weight:700;border:1.5px solid var(--border);background:var(--white);color:var(--ink);transition:all 0.13s}
+.plan-btn:hover{border-color:var(--blue);color:var(--blue)}
+.plan-btn.primary{background:var(--blue);color:var(--white);border-color:var(--blue)}
+.plan-btn.primary:hover{background:var(--blue-l)}
+
+/* CTA BANNER */
+.cta-banner{background:var(--blue);padding:5rem 2rem;text-align:center}
+.cta-inner{max-width:600px;margin:0 auto}
+.cta-h2{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--white);letter-spacing:-0.05em;margin-bottom:0.75rem;line-height:1.15}
+.cta-sub{font-size:16px;color:rgba(255,255,255,0.6);margin-bottom:2rem}
+.cta-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+
+/* FOOTER */
+footer{background:var(--ink);padding:2rem;text-align:center}
+.footer-txt{font-size:12px;color:rgba(255,255,255,0.3);line-height:1.6}
+
+/* ═══════════════════════════════════════
+   SERVICE PAGES — SHARED
+═══════════════════════════════════════ */
+.svc-page{max-width:1100px;margin:0 auto;padding:3rem 2rem}
+.svc-hero{margin-bottom:3rem}
+.svc-eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:var(--blue);background:var(--blue-bg);padding:5px 12px;border-radius:20px;margin-bottom:1rem}
+.svc-h1{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--ink);letter-spacing:-0.05em;margin-bottom:0.75rem;line-height:1.15}
+.svc-sub{font-size:16px;color:var(--ink-3);max-width:580px;line-height:1.7;margin-bottom:1.5rem}
+.svc-actions{display:flex;gap:10px;flex-wrap:wrap}
+.btn-blue{font-size:14px;font-weight:700;background:var(--blue);color:var(--white);border:none;border-radius:var(--rs);padding:12px 22px;transition:background 0.13s}
+.btn-blue:hover{background:var(--blue-l)}
+.btn-outline{font-size:14px;font-weight:500;background:none;color:var(--ink-2);border:1.5px solid var(--border);border-radius:var(--rs);padding:11px 20px;transition:all 0.13s}
+.btn-outline:hover{border-color:var(--blue);color:var(--blue)}
+
+.coming-soon-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--amber);background:var(--amber-bg);padding:5px 12px;border-radius:20px;margin-bottom:1.5rem}
+
+/* Feature grid */
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-bottom:2.5rem}
+.feature-card{background:var(--off);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem}
+.fc-icon{width:38px;height:38px;border-radius:9px;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
+.fc-icon svg{width:18px;height:18px}
+.fc-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.fc-desc{font-size:13px;color:var(--ink-3);line-height:1.6}
+
+/* Upload zone */
+.upload-zone-big{
+  border:2px dashed var(--border);border-radius:var(--r);
+  padding:4rem 2rem;text-align:center;cursor:pointer;
+  transition:all 0.15s;background:var(--off);margin-bottom:1.5rem;
+}
+.upload-zone-big:hover,.upload-zone-big:focus-within,.upload-zone-big.dragover{border-color:var(--blue);background:var(--blue-bg);transform:translateY(-1px)}
+.uz-icon{width:60px;height:60px;background:var(--blue-bg);border-radius:15px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+.uz-icon svg{width:26px;height:26px;color:var(--blue)}
+.uz-title{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.uz-sub{font-size:13px;color:var(--ink-3)}
+.uz-sub span{color:var(--blue);font-weight:500}
+
+/* KPI grid */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.kpi-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.3rem;cursor:pointer;transition:border-color 0.13s}
+.kpi-card:hover{border-color:var(--blue)}
+.kpi-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;padding:3px 8px;border-radius:10px;display:inline-block;margin-bottom:9px}
+.kpi-name{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.kpi-formula{font-size:11px;font-family:monospace;color:var(--blue);background:var(--blue-bg);padding:3px 8px;border-radius:5px;display:inline-block;margin-bottom:8px}
+.kpi-desc{font-size:12px;color:var(--ink-3);line-height:1.6}
+.kpi-benchmark{display:flex;align-items:center;gap:6px;margin-top:9px;padding-top:9px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-3)}
+.kpi-benchmark strong{color:var(--ink)}
+
+/* Slideshow preview */
+.slides-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:2rem}
+.slide-thumb{border-radius:10px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:all 0.13s}
+.slide-thumb:hover{border-color:var(--blue);transform:translateY(-2px)}
+.slide-thumb-inner{aspect-ratio:16/9;display:flex;flex-direction:column;justify-content:flex-end;padding:12px}
+.st-cover{background:var(--blue-d)}
+.st-white{background:var(--white)}
+.st-navy{background:var(--blue)}
+.slide-thumb-label{font-size:10px;font-weight:600;color:rgba(255,255,255,0.6);text-align:center;padding:6px;background:var(--off)}
+
+/* Health chart area */
+.health-chart-area{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem}
+.hca-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:8px}
+.hca-title{font-size:15px;font-weight:700;color:var(--ink)}
+.hca-sub{font-size:12px;color:var(--ink-3)}
+.period-tabs{display:flex;gap:4px}
+.period-tab{font-size:12px;font-weight:500;color:var(--ink-3);background:none;border:1px solid var(--border);border-radius:6px;padding:5px 11px;transition:all 0.12s}
+.period-tab.active,.period-tab:hover{background:var(--blue-bg);color:var(--blue);border-color:var(--blue)}
+.hca-chart{height:240px;position:relative}
+
+/* Bot page */
+.bot-split{display:grid;grid-template-columns:1fr 300px;gap:16px;height:560px}
+.bot-chat{background:var(--white);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;overflow:hidden}
+.bot-header{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.bot-av{width:36px;height:36px;background:var(--blue);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:var(--white);position:relative;flex-shrink:0}
+.bot-av::after{content:'';position:absolute;bottom:-2px;right:-2px;width:9px;height:9px;border-radius:50%;background:var(--green);border:2px solid var(--white)}
+.bot-name{font-size:14px;font-weight:700;color:var(--ink)}
+.bot-status{font-size:11px;color:var(--green)}
+.bot-msgs{flex:1;overflow-y:auto;padding:1.25rem;display:flex;flex-direction:column;gap:12px}
+.bmsg{display:flex;gap:9px;max-width:88%}
+.bmsg.u{align-self:flex-end;flex-direction:row-reverse}
+.bav{width:28px;height:28px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px}
+.bmsg.b .bav{background:var(--blue);color:var(--white)}
+.bmsg.u .bav{background:var(--blue-bg);color:var(--blue)}
+.bbubble{padding:10px 14px;font-size:13px;line-height:1.65}
+.bmsg.b .bbubble{background:var(--off);color:var(--ink);border-radius:3px 12px 12px 12px}
+.bmsg.u .bbubble{background:var(--blue);color:var(--white);border-radius:12px 3px 12px 12px}
+.bot-input-row{padding:0.9rem 1.1rem;border-top:1px solid var(--border);display:flex;gap:8px}
+.bot-ta{flex:1;padding:9px 13px;border:1px solid var(--border);border-radius:var(--rs);font-size:13px;font-family:inherit;color:var(--ink);resize:none;line-height:1.5;transition:border-color 0.13s}
+.bot-ta:focus{outline:none;border-color:var(--blue)}
+.bot-ta::placeholder{color:var(--ink-4)}
+.bot-send{width:38px;height:38px;border-radius:var(--rs);background:var(--blue);border:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background 0.13s}
+.bot-send:hover{background:var(--blue-l)}
+.bot-send:disabled{background:var(--ink-4)}
+.bot-send svg{width:15px;height:15px;color:var(--white)}
+.typdots{display:flex;gap:4px;align-items:center;padding:10px 14px;background:var(--off);border-radius:3px 12px 12px 12px;width:fit-content}
+.typdots span{width:6px;height:6px;border-radius:50%;background:var(--ink-4);animation:td 1.2s infinite}
+.typdots span:nth-child(2){animation-delay:.2s}
+.typdots span:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+.bot-panel{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
+.bp-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.9px;color:var(--ink-4);margin-bottom:8px}
+.qs{display:flex;flex-direction:column;gap:6px}
+.qbtn{width:100%;text-align:left;font-size:12px;font-weight:500;color:var(--blue);background:var(--blue-bg);border:none;border-radius:var(--rxs);padding:8px 10px;line-height:1.4;transition:background .12s}
+.qbtn:hover{background:#dce6f8}
+.cap-list{display:flex;flex-direction:column;gap:6px}
+.cap-item{font-size:12px;color:var(--ink-2);display:flex;gap:8px;align-items:flex-start;padding:8px 10px;background:var(--off);border-radius:var(--rxs)}
+.cap-item::before{content:"✦";color:var(--gold);flex-shrink:0;font-size:10px;margin-top:1px}
+
+/* Section dividers */
+.sec-divider{height:1px;background:var(--border);margin:2.5rem 0}
+
+
+/* Responsive layout */
+@media (max-width: 920px) {
+  .nav{position:relative;height:auto;padding:0.85rem 1rem;align-items:flex-start;gap:0.75rem;flex-direction:column}
+  .nav-logo{width:100%;justify-content:space-between}
+  .nav-links{width:100%;overflow-x:auto;padding-bottom:0.25rem;scrollbar-width:thin}
+  .nav-link{flex:0 0 auto}
+  .nav-cta{width:100%}
+  .hero{padding:3.25rem 1rem 0}
+  .hero-actions,.hero-trust{align-items:stretch}
+  .btn-gold,.btn-ghost,.btn-blue,.btn-outline{width:100%;text-align:center}
+  .preview-metrics{grid-template-columns:repeat(2,1fr)}
+  .preview-charts{grid-template-columns:1fr}
+  .services-strip,.proof-section,.pricing-section,.cta-banner{padding-left:1rem;padding-right:1rem}
+  .svc-page{padding:2rem 1rem}
+  .bot-split{grid-template-columns:1fr;height:auto}
+  .bot-chat{min-height:520px}
+  #analysis-report > div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr !important}
+}
+
+@media (max-width: 560px) {
+  .hero-h1,.svc-h1,.proof-h2,.section-h2,.cta-h2{letter-spacing:-0.035em}
+  .hero-preview{padding:1rem 1rem 0;margin-top:2rem}
+  .preview-metrics,.stats-row,.plans{grid-template-columns:1fr}
+  .trust-sep{display:none}
+  .upload-zone-big{padding:2.5rem 1rem}
+  .bot-panel{max-height:none}
+  .bmsg{max-width:100%}
+  .period-tabs{width:100%;overflow-x:auto}
+  #deck-viewer{min-height:220px}
+}
+
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-mark">
+      <svg viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M2 13.5L6.5 8L10 11.5L13 7L16 10" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    <div class="nav-wordmark">
+      <span class="nav-name">My<b>CFO</b>Pro<s>.</s>AI</span>
+      <span class="nav-sub">CFO Intelligence Platform</span>
+    </div>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="goPage('home',this)">Home</button>
+    <button class="nav-link" onclick="goPage('analysis',this)">Financial Analysis</button>
+    <button class="nav-link" onclick="goPage('slides',this)">Slide Deck</button>
+    <button class="nav-link" onclick="goPage('kpi',this)">KPI Library</button>
+    <button class="nav-link" onclick="goPage('bot',this)">CFO Advisor</button>
+    <button class="nav-link" onclick="goPage('health',this)">Company Health</button>
+  </div>
+  <button class="nav-cta" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Get Started Free</button>
+</nav>
+
+<!-- ══════════════════════════════════════
+  HOME PAGE
+══════════════════════════════════════ -->
+<div class="page active" id="page-home">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow"><span></span>AI-Powered CFO Platform for Small Business</div>
+      <h1 class="hero-h1">Your numbers,<br><em>finally working for you.</em></h1>
+      <p class="hero-sub">Upload your financials and get a complete CFO experience — instant analysis, CEO-ready slide decks, KPI tracking, and a CFO advisor you can actually talk to.</p>
+      <div class="hero-actions">
+        <button class="btn-gold" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Analyze my financials free</button>
+        <button class="btn-ghost" onclick="goPage('kpi',document.querySelectorAll('.nav-link')[3])">Explore the KPI library</button>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Your data is never stored</div>
+        <div class="trust-sep"></div>
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Results in under 60 seconds</div>
+        <div class="trust-sep"></div>
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>Cheaper than a real CFO</div>
+      </div>
+
+      <!-- PREVIEW WINDOW -->
+      <div class="hero-preview">
+        <div class="preview-bar">
+          <div class="pb-dot r"></div><div class="pb-dot y"></div><div class="pb-dot g"></div>
+          <span class="pb-url">mycfopro.ai/dashboard</span>
+        </div>
+        <div class="preview-metrics">
+          <div class="pm-card"><div class="pm-label">Health Score</div><div class="pm-value pm-amber">68/100</div><div class="pm-note pm-amber">Needs attention</div></div>
+          <div class="pm-card"><div class="pm-label">Gross Margin</div><div class="pm-value pm-amber">33%</div><div class="pm-note" style="color:var(--ink-3)">Benchmark: 38%</div></div>
+          <div class="pm-card"><div class="pm-label">Cash Runway</div><div class="pm-value pm-red">1.6 mo</div><div class="pm-note pm-red">Critical</div></div>
+          <div class="pm-card"><div class="pm-label">Net Income</div><div class="pm-value pm-green">$116K</div><div class="pm-note pm-green">Profitable</div></div>
+        </div>
+        <div class="preview-charts">
+          <div class="pc-card"><div class="pc-title">P&L Overview</div><div class="pc-chart"><canvas id="hero-chart1"></canvas></div></div>
+          <div class="pc-card"><div class="pc-title">Cost breakdown</div><div class="pc-chart"><canvas id="hero-chart2"></canvas></div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services-strip">
+    <div class="strip-inner">
+      <div class="strip-label">Everything you need to run your finances with confidence</div>
+      <div class="services-grid">
+        <div class="service-card" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">
+          <div class="service-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
+          <div class="service-name">Financial Analysis</div>
+          <div class="service-desc">Upload your P&L or balance sheet and get a full CFO-grade report with red flags and action items.</div>
+          <div class="service-cta">Analyze now →</div>
+        </div>
+        <div class="service-card" onclick="goPage('slides',document.querySelectorAll('.nav-link')[2])">
+          <div class="service-icon si-gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+          <div class="service-name">CEO Slide Deck</div>
+          <div class="service-desc">Auto-generate a polished, presentation-ready slide deck from your financial data. Walk into any boardroom ready.</div>
+          <div class="service-cta">Build a deck →</div>
+        </div>
+        <div class="service-card" onclick="goPage('kpi',document.querySelectorAll('.nav-link')[3])">
+          <div class="service-icon si-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <div class="service-name">KPI Library</div>
+          <div class="service-desc">50+ key performance indicators — what they mean, how to calculate them, and what good looks like for your industry.</div>
+          <div class="service-cta">Explore KPIs →</div>
+        </div>
+        <div class="service-card" onclick="goPage('bot',document.querySelectorAll('.nav-link')[4])">
+          <div class="service-icon si-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+          <div class="service-name">CFO Advisor</div>
+          <div class="service-desc">Ask Clara anything about your financials. She knows your numbers and gives straight answers, not reports.</div>
+          <div class="service-cta">Talk to Clara →</div>
+        </div>
+        <div class="service-card" onclick="goPage('health',document.querySelectorAll('.nav-link')[5])">
+          <div class="service-icon si-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+          <div class="service-name">Company Health</div>
+          <div class="service-desc">Track your financial performance over time. See trends, spot problems early, and watch your health score improve.</div>
+          <div class="service-cta">View health →</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROOF -->
+  <section class="proof-section">
+    <h2 class="proof-h2">Built for the business owner<br>who wears every hat.</h2>
+    <p class="proof-sub">You don't have time to become a financial expert. MyCFOPro gives you CFO-level insight without the $200K/year salary.</p>
+    <div class="stats-row">
+      <div class="stat-item"><div class="stat-num">$180K</div><div class="stat-label">Average CFO salary MyCFOPro replaces</div></div>
+      <div class="stat-item"><div class="stat-num">&lt;60s</div><div class="stat-label">From upload to full CFO report</div></div>
+      <div class="stat-item"><div class="stat-num">50+</div><div class="stat-label">KPIs tracked and explained</div></div>
+      <div class="stat-item"><div class="stat-num">$49</div><div class="stat-label">Per month for unlimited access</div></div>
+    </div>
+    <div class="testimonials">
+      <div class="testi">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"I finally understand why we're profitable but always short on cash. MyCFOPro spotted the receivables problem in the first report and told me exactly what to do about it."</div>
+        <div class="testi-author">Marcus T. — Owner, logistics company</div>
+      </div>
+      <div class="testi">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"My accountant tells me what happened. Clara tells me what to do about it. I use MyCFOPro every month before my bank meeting."</div>
+        <div class="testi-author">Sarah K. — Owner, boutique retail</div>
+      </div>
+      <div class="testi">
+        <div class="testi-stars">★★★★★</div>
+        <div class="testi-text">"The slide deck alone is worth the $49. I walked into our board meeting with a report that looked like we had a full finance team."</div>
+        <div class="testi-author">James R. — Founder, services firm</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section class="pricing-section">
+    <div class="pricing-inner">
+      <div class="section-eyebrow">Pricing</div>
+      <h2 class="section-h2">Simple, honest pricing.</h2>
+      <p class="section-sub">No contracts. Cancel anytime.</p>
+      <div class="plans">
+        <div class="plan">
+          <div class="plan-name">Starter</div>
+          <div class="plan-price"><sup>$</sup>0<sub>/mo</sub></div>
+          <p class="plan-desc">See what MyCFOPro can do. No credit card required.</p>
+          <ul class="plan-features">
+            <li>1 financial analysis/month</li>
+            <li>Full CFO report</li>
+            <li>KPI library access</li>
+            <li class="no">CEO slide deck</li>
+            <li class="no">CFO Advisor (Clara)</li>
+            <li class="no">Company health tracking</li>
+          </ul>
+          <button class="plan-btn" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Start for free</button>
+        </div>
+        <div class="plan featured">
+          <div class="plan-badge">Most popular</div>
+          <div class="plan-name">Pro</div>
+          <div class="plan-price"><sup>$</sup>49<sub>/mo</sub></div>
+          <p class="plan-desc">Everything you need to run your finances with confidence.</p>
+          <ul class="plan-features">
+            <li>Unlimited analyses</li>
+            <li>CEO slide deck builder</li>
+            <li>CFO Advisor (Clara)</li>
+            <li>Company health tracking</li>
+            <li>PDF & PowerPoint export</li>
+            <li>Monthly email delivery</li>
+          </ul>
+          <button class="plan-btn primary">Get Pro — $49/mo</button>
+        </div>
+        <div class="plan">
+          <div class="plan-name">Business</div>
+          <div class="plan-price"><sup>$</sup>149<sub>/mo</sub></div>
+          <p class="plan-desc">Multiple entities, team access, and custom benchmarks.</p>
+          <ul class="plan-features">
+            <li>Everything in Pro</li>
+            <li>Up to 5 entities</li>
+            <li>3 team seats</li>
+            <li>Custom industry benchmarks</li>
+            <li>White-label reports</li>
+            <li>Priority support</li>
+          </ul>
+          <button class="plan-btn">Get Business</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="cta-banner">
+    <div class="cta-inner">
+      <h2 class="cta-h2">Know your numbers.<br>Run your business.</h2>
+      <p class="cta-sub">Your first analysis is free. No credit card. No setup. Just answers.</p>
+      <div class="cta-actions">
+        <button class="btn-gold" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Analyze my financials free</button>
+        <button class="btn-ghost" onclick="goPage('bot',document.querySelectorAll('.nav-link')[4])">Talk to Clara first</button>
+      </div>
+    </div>
+  </section>
+
+  <footer><p class="footer-txt">© 2026 MyCFOPro.AI &nbsp;·&nbsp; Not financial advice. Always consult a qualified CPA or financial advisor for major decisions.</p></footer>
+</div>
+
+<!-- ══════════════════════════════════════
+  FINANCIAL ANALYSIS PAGE
+══════════════════════════════════════ -->
+<div class="page" id="page-analysis">
+  <div class="svc-page">
+    <div id="analysis-upload-view">
+      <div class="svc-hero">
+        <div class="svc-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Financial Analysis</div>
+        <h1 class="svc-h1">Upload once.<br>Understand everything.</h1>
+        <p class="svc-sub">Drop your QuickBooks, Xero, or Wave export. MyCFOPro reads your numbers and returns a complete CFO-grade report — health score, red flags, benchmarks, and a prioritized action plan.</p>
+      </div>
+      <label class="upload-zone-big" for="analysis-file" id="analysis-dropzone">
+        <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+        <div class="uz-title">Drop your P&L or Balance Sheet here</div>
+        <div class="uz-sub">or <span>click to browse</span> &nbsp;·&nbsp; Excel (.xlsx) · CSV · PDF · QuickBooks · Xero · Wave</div>
+      </label>
+      <input type="file" id="analysis-file" style="display:none" accept=".xlsx,.xls,.csv,.pdf" onchange="handleAnalysisFile(event)">
+      <div id="analysis-status" style="display:none;align-items:center;gap:10px;padding:14px 16px;background:var(--blue-bg);border-radius:var(--rs);margin-top:12px;font-size:13px;color:var(--blue)">
+        <div style="width:15px;height:15px;border:2px solid var(--blue-bg);border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0"></div>
+        <span id="analysis-status-text">Reading your file...</span>
+      </div>
+      <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+    </div>
+
+    <div id="analysis-report" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-0.4px;margin-bottom:3px" id="rpt-title">CFO Analysis Report</div>
+          <div style="font-size:13px;color:var(--ink-3)" id="rpt-sub"></div>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="health-pill" id="rpt-health-pill"></div>
+          <button class="btn-outline" onclick="resetAnalysis()" style="font-size:12px;padding:7px 14px">← New analysis</button>
+        </div>
+      </div>
+
+      <div class="metrics-grid" id="rpt-metrics" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1.5rem"></div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem">
+        <div class="health-chart-area" style="margin:0">
+          <div class="hca-header"><div><div class="hca-title">Revenue by service line</div><div class="hca-sub">Where your income comes from</div></div></div>
+          <div style="height:240px;position:relative"><canvas id="rpt-chart-revenue"></canvas></div>
+        </div>
+        <div class="health-chart-area" style="margin:0">
+          <div class="hca-header"><div><div class="hca-title">Gross margin by service</div><div class="hca-sub">Revenue vs. direct cost per line</div></div></div>
+          <div style="height:240px;position:relative"><canvas id="rpt-chart-margin"></canvas></div>
+        </div>
+        <div class="health-chart-area" style="margin:0">
+          <div class="hca-header"><div><div class="hca-title">Expense breakdown</div><div class="hca-sub">Operating cost distribution</div></div></div>
+          <div style="height:240px;position:relative"><canvas id="rpt-chart-opex"></canvas></div>
+        </div>
+        <div class="health-chart-area" style="margin:0">
+          <div class="hca-header"><div><div class="hca-title">Financial health radar</div><div class="hca-sub">Your ratios vs. industry benchmark</div></div></div>
+          <div style="height:240px;position:relative"><canvas id="rpt-chart-radar"></canvas></div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.5rem">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.9px;color:var(--ink-4);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px">Key Findings</div>
+        <div class="findings-grid" id="rpt-findings"></div>
+      </div>
+
+      <div style="margin-bottom:1.5rem">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.9px;color:var(--ink-4);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px">Priority Action Plan</div>
+        <div class="actions-stack" id="rpt-actions"></div>
+      </div>
+
+      <div style="background:var(--blue-d);border-radius:var(--r);padding:1.5rem 1.75rem">
+        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.9px;color:rgba(255,255,255,0.4);margin-bottom:10px">CFO Summary</div>
+        <div style="font-size:14px;color:rgba(255,255,255,0.8);line-height:1.85" id="rpt-summary"></div>
+      </div>
+
+      <div style="margin-top:1rem;font-size:11px;color:var(--ink-4);text-align:center">For informational purposes only. Not financial advice. Consult a qualified CPA or financial advisor for major decisions.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  SLIDE DECK PAGE
+══════════════════════════════════════ -->
+<div class="page" id="page-slides">
+  <div class="svc-page">
+
+    <!-- NO DATA STATE -->
+    <div id="deck-nodata">
+      <div class="svc-hero">
+        <div class="svc-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="3" width="20" height="14" rx="2"/></svg>CEO Slide Deck</div>
+        <h1 class="svc-h1">Walk into any meeting<br>looking like you have a team.</h1>
+        <p class="svc-sub">Upload your financials on the Financial Analysis page and MyCFOPro instantly builds a complete, CEO-ready presentation — populated with your real numbers, color-coded by performance.</p>
+        <div class="svc-actions">
+          <button class="btn-blue" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Go to Financial Analysis to get started</button>
+        </div>
+      </div>
+      <div style="background:var(--off);border:1px solid var(--border);border-radius:var(--r);padding:3rem;text-align:center;margin-top:1rem">
+        <div style="font-size:48px;margin-bottom:1rem">📊</div>
+        <div style="font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px">Your deck will appear here</div>
+        <div style="font-size:13px;color:var(--ink-3)">Upload a financial file first — the deck builds automatically from your data.</div>
+      </div>
+    </div>
+
+    <!-- DECK STATE -->
+    <div id="deck-ready" style="display:none">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:10px">
+        <div>
+          <div style="font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-0.4px" id="deck-title">CEO Presentation</div>
+          <div style="font-size:13px;color:var(--ink-3)" id="deck-sub"></div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="btn-outline" onclick="deckPrev()" style="padding:8px 14px;font-size:13px">← Prev</button>
+          <span style="font-size:12px;color:var(--ink-3);min-width:70px;text-align:center" id="deck-counter">Slide 1 of 6</span>
+          <button class="btn-outline" onclick="deckNext()" style="padding:8px 14px;font-size:13px">Next →</button>
+        </div>
+      </div>
+
+      <!-- SLIDE VIEWER -->
+      <div id="deck-viewer" style="background:#1c1c2a;border-radius:var(--r);border:1px solid var(--border);aspect-ratio:16/9;position:relative;overflow:hidden;margin-bottom:1.25rem"></div>
+
+      <!-- THUMBNAIL STRIP -->
+      <div id="deck-thumbs" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-bottom:1.5rem"></div>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn-blue" onclick="alert('PDF export coming in Pro plan!')">Export PDF</button>
+        <button class="btn-outline" onclick="alert('PowerPoint export coming in Pro plan!')">Export PowerPoint</button>
+        <button class="btn-outline" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">← Back to analysis</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  KPI LIBRARY PAGE
+══════════════════════════════════════ -->
+<div class="page" id="page-kpi">
+  <div class="svc-page">
+    <div class="svc-hero">
+      <div class="svc-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>KPI Library</div>
+      <h1 class="svc-h1">50+ KPIs explained.<br>In plain English.</h1>
+      <p class="svc-sub">Every key performance indicator your business should be tracking — what it means, how to calculate it, what a healthy number looks like, and why it matters.</p>
+    </div>
+    <div class="kpi-grid" id="kpi-grid"></div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  CFO ADVISOR PAGE
+══════════════════════════════════════ -->
+<div class="page" id="page-bot">
+  <div class="svc-page">
+    <div class="svc-hero">
+      <div class="svc-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>CFO Advisor</div>
+      <h1 class="svc-h1">Meet Clara.<br>Your on-call CFO.</h1>
+      <p class="svc-sub">Clara knows your numbers and gives you straight answers. Ask about cash flow, margins, debt, benchmarks — anything. No jargon. No fluff. Just clarity.</p>
+    </div>
+    <div class="bot-split">
+      <div class="bot-chat">
+        <div class="bot-header">
+          <div class="bot-av">C</div>
+          <div><div class="bot-name">Clara — CFO Advisor</div><div class="bot-status">● Online · ready to help</div></div>
+        </div>
+        <div class="bot-msgs" id="bot-msgs"></div>
+        <div class="bot-input-row">
+          <textarea class="bot-ta" id="bot-input" rows="1" placeholder="Ask Clara about your financials..." onkeydown="botKey(event)"></textarea>
+          <button class="bot-send" id="bot-send-btn" onclick="botSend()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </div>
+      </div>
+      <div class="bot-panel">
+        <div>
+          <div class="bp-title">Ask Clara</div>
+          <div class="qs">
+            <button class="qbtn" onclick="botAsk('What should I prioritize to improve my financial health?')">What should I prioritize first?</button>
+            <button class="qbtn" onclick="botAsk('How do I know if my gross margin is good?')">Is my gross margin healthy?</button>
+            <button class="qbtn" onclick="botAsk('What is Days Sales Outstanding and how do I improve it?')">What is DSO and why does it matter?</button>
+            <button class="qbtn" onclick="botAsk('How much cash should a small business keep on hand?')">How much cash should I have?</button>
+            <button class="qbtn" onclick="botAsk('What is a good debt ratio for a small business?')">What is a healthy debt ratio?</button>
+            <button class="qbtn" onclick="botAsk('How do I build a 13-week cash flow forecast?')">How do I build a cash forecast?</button>
+          </div>
+        </div>
+        <div>
+          <div class="bp-title">What Clara can do</div>
+          <div class="cap-list">
+            <div class="cap-item">Explain any financial metric in plain English</div>
+            <div class="cap-item">Analyze your specific numbers (upload a file first)</div>
+            <div class="cap-item">Recommend actions based on your situation</div>
+            <div class="cap-item">Benchmark you against industry standards</div>
+            <div class="cap-item">Help you prepare for bank or investor meetings</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+  COMPANY HEALTH PAGE
+══════════════════════════════════════ -->
+<div class="page" id="page-health">
+  <div class="svc-page">
+    <div class="svc-hero">
+      <div class="svc-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Company Health</div>
+      <h1 class="svc-h1">See where you've been.<br>Know where you're going.</h1>
+      <p class="svc-sub">Upload your financials each month and watch your health score trend over time. Catch problems before they become crises, and see the impact of your decisions in real numbers.</p>
+      <div class="coming-soon-badge">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Coming soon — upload your first month to get started
+      </div>
+    </div>
+    <div class="health-chart-area">
+      <div class="hca-header">
+        <div><div class="hca-title">Health score over time</div><div class="hca-sub">Monthly trend — last 6 months</div></div>
+        <div class="period-tabs">
+          <button class="period-tab active">6 months</button>
+          <button class="period-tab">12 months</button>
+          <button class="period-tab">All time</button>
+        </div>
+      </div>
+      <div class="hca-chart"><canvas id="health-chart"></canvas></div>
+    </div>
+    <div class="health-chart-area">
+      <div class="hca-header">
+        <div><div class="hca-title">Key metrics trend</div><div class="hca-sub">Gross margin, net margin, and cash runway</div></div>
+      </div>
+      <div class="hca-chart"><canvas id="metrics-chart"></canvas></div>
+    </div>
+    <div class="feature-grid">
+      <div class="feature-card"><div class="fc-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="fc-title">Monthly health tracking</div><div class="fc-desc">Upload your financials each month and MyCFOPro builds your trend automatically.</div></div>
+      <div class="feature-card"><div class="fc-icon si-gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div><div class="fc-title">Metric benchmarking</div><div class="fc-desc">See each metric vs. your industry benchmark, updated monthly as your numbers change.</div></div>
+      <div class="feature-card"><div class="fc-icon si-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 17H2a3 3 0 000 6h20a3 3 0 000-6z"/><path d="M6 17V3"/><path d="M10 17V8"/><path d="M14 17V13"/><path d="M18 17V5"/></svg></div><div class="fc-title">Trend alerts</div><div class="fc-desc">Get notified when a key metric moves in the wrong direction — before it becomes a problem. <span style="color:var(--amber);font-size:11px;font-weight:600">Pro</span></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── NAV ──────────────────────────────────────────────
+function goPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if (btn) btn.classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ── HERO CHARTS ──────────────────────────────────────
+window.addEventListener('load', () => {
+  new Chart(document.getElementById('hero-chart1'), {
+    type:'bar',
+    data:{labels:['Revenue','COGS','Gross P.','OpEx','Net Inc.'],datasets:[{data:[1850,1240,610,472,116],backgroundColor:['#1a3caa','#b91c1c','#0a7c4e','#c9922a','#1a3caa'],borderRadius:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{callback:v=>'$'+v+'K',font:{size:9}}}}}
+  });
+  new Chart(document.getElementById('hero-chart2'), {
+    type:'doughnut',
+    data:{labels:['COGS','OpEx','Profit'],datasets:[{data:[1240,472,116],backgroundColor:['#b91c1c','#c9922a','#0a7c4e'],borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:9},boxWidth:10,padding:8}}}}
+  });
+
+  // Health charts (demo data)
+  new Chart(document.getElementById('health-chart'), {
+    type:'line',
+    data:{
+      labels:['Jan','Feb','Mar','Apr','May','Jun'],
+      datasets:[
+        {label:'Health Score',data:[51,54,58,55,62,68],borderColor:'#1a3caa',backgroundColor:'rgba(26,60,170,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#1a3caa',pointRadius:5},
+        {label:'Benchmark',data:[65,65,65,65,65,65],borderColor:'#c9922a',borderDash:[5,5],tension:0,fill:false,pointRadius:0}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:12}}}},scales:{y:{min:40,max:100,ticks:{callback:v=>v+'/100'}}}}
+  });
+  new Chart(document.getElementById('metrics-chart'), {
+    type:'line',
+    data:{
+      labels:['Jan','Feb','Mar','Apr','May','Jun'],
+      datasets:[
+        {label:'Gross Margin %',data:[30,31,33,32,34,33],borderColor:'#1a3caa',tension:0.4,fill:false,pointRadius:4},
+        {label:'Net Margin %',data:[4,5,6,5,7,6.3],borderColor:'#0a7c4e',tension:0.4,fill:false,pointRadius:4},
+        {label:'Cash Runway (mo)',data:[3,2.5,2,2.8,1.8,1.6],borderColor:'#b91c1c',tension:0.4,fill:false,pointRadius:4}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:12}}}}}
+  });
+
+  buildKPIs();
+  initBot();
+  initUploadDropzone();
+});
+
+// ── KPI LIBRARY ──────────────────────────────────────
+const KPIS = [
+  {cat:'Profitability',catColor:'#0a7c4e',catBg:'#edfaf4',name:'Gross Margin',formula:'Gross Profit / Revenue',desc:'The percentage of revenue remaining after deducting direct costs. Shows how efficiently you produce your product or service.',benchmark:'Varies by industry — retail 25–35%, services 50–70%'},
+  {cat:'Profitability',catColor:'#0a7c4e',catBg:'#edfaf4',name:'Net Profit Margin',formula:'Net Income / Revenue',desc:'The percentage of revenue that becomes actual profit after all expenses. The bottom line — what you actually keep.',benchmark:'Healthy: 8–15% depending on industry'},
+  {cat:'Profitability',catColor:'#0a7c4e',catBg:'#edfaf4',name:'EBITDA Margin',formula:'EBITDA / Revenue',desc:'Earnings before interest, taxes, depreciation, and amortization. Shows core operating profitability without accounting choices.',benchmark:'Strong: 15%+ for most businesses'},
+  {cat:'Profitability',catColor:'#0a7c4e',catBg:'#edfaf4',name:'Return on Assets',formula:'Net Income / Total Assets',desc:'How efficiently you use your assets to generate profit. Higher = better use of what you own.',benchmark:'Good: 5%+, excellent: 10%+'},
+  {cat:'Liquidity',catColor:'#1a3caa',catBg:'#eef2fb',name:'Current Ratio',formula:'Current Assets / Current Liabilities',desc:'Can you pay your short-term bills? A ratio above 1 means yes. Below 1 means you may struggle.',benchmark:'Healthy: 1.5–2.0'},
+  {cat:'Liquidity',catColor:'#1a3caa',catBg:'#eef2fb',name:'Cash Runway',formula:'Cash / Monthly Burn Rate',desc:'How many months you can operate without new revenue or funding. The most important survival metric for small businesses.',benchmark:'Target: 6+ months minimum'},
+  {cat:'Liquidity',catColor:'#1a3caa',catBg:'#eef2fb',name:'Quick Ratio',formula:'(Cash + AR) / Current Liabilities',desc:'Like the current ratio, but excludes inventory — a stricter test of whether you can cover immediate obligations.',benchmark:'Healthy: 1.0+'},
+  {cat:'Efficiency',catColor:'#b45309',catBg:'#fef9ec',name:'Days Sales Outstanding',formula:'AR / (Revenue / 365)',desc:'How long on average it takes customers to pay you. Lower is better — money sitting in AR is money you can\'t use.',benchmark:'Industry avg: 30–45 days'},
+  {cat:'Efficiency',catColor:'#b45309',catBg:'#fef9ec',name:'Inventory Turnover',formula:'COGS / Average Inventory',desc:'How many times you sell through your inventory in a year. Low turnover = cash tied up in unsold goods.',benchmark:'Higher is generally better — varies by industry'},
+  {cat:'Efficiency',catColor:'#b45309',catBg:'#fef9ec',name:'Accounts Payable Days',formula:'AP / (COGS / 365)',desc:'How long you take to pay your suppliers. Longer is better for your cash flow — as long as you stay within agreed terms.',benchmark:'30–60 days is typical'},
+  {cat:'Efficiency',catColor:'#b45309',catBg:'#fef9ec',name:'Revenue per Employee',formula:'Revenue / Number of Employees',desc:'A productivity measure. How much revenue does each person on the team generate? Rising trend = growing efficiently.',benchmark:'Varies — services: $100–200K/employee'},
+  {cat:'Leverage',catColor:'#6d28d9',catBg:'#f3f0ff',name:'Debt-to-Equity Ratio',formula:'Total Debt / Total Equity',desc:'How much you owe vs. how much owners have invested. High ratio means you\'re heavily reliant on borrowed money.',benchmark:'Healthy: below 2.0 for most industries'},
+  {cat:'Leverage',catColor:'#6d28d9',catBg:'#f3f0ff',name:'Debt Ratio',formula:'Total Liabilities / Total Assets',desc:'What percentage of your assets are financed by debt. Higher = riskier — less cushion if revenue drops.',benchmark:'Healthy: below 50%, concerning: 80%+'},
+  {cat:'Leverage',catColor:'#6d28d9',catBg:'#f3f0ff',name:'Interest Coverage Ratio',formula:'EBIT / Interest Expense',desc:'Can your business earnings cover your interest payments? Below 1.5 is a warning sign.',benchmark:'Healthy: 3.0+'},
+  {cat:'Growth',catColor:'#0d9488',catBg:'#e8faf8',name:'Revenue Growth Rate',formula:'(Current Revenue - Prior Revenue) / Prior Revenue',desc:'How fast your revenue is growing year-over-year. The most fundamental indicator of business momentum.',benchmark:'Strong: 15–25% YoY for established businesses'},
+  {cat:'Growth',catColor:'#0d9488',catBg:'#e8faf8',name:'Customer Acquisition Cost',formula:'Sales & Marketing Spend / New Customers',desc:'How much it costs to win one new customer. Must be significantly lower than your customer lifetime value.',benchmark:'Target: LTV at least 3x your CAC'},
+  {cat:'Growth',catColor:'#0d9488',catBg:'#e8faf8',name:'Customer Lifetime Value',formula:'Avg Purchase × Frequency × Avg Customer Lifespan',desc:'The total revenue you can expect from a single customer over the whole relationship. Your most valuable growth metric.',benchmark:'Higher is always better — track the trend'},
+];
+
+function buildKPIs() {
+  document.getElementById('kpi-grid').innerHTML = KPIS.map(k => `
+    <div class="kpi-card">
+      <span class="kpi-cat" style="background:${k.catBg};color:${k.catColor}">${k.cat}</span>
+      <div class="kpi-name">${k.name}</div>
+      <div class="kpi-formula">${k.formula}</div>
+      <div class="kpi-desc">${k.desc}</div>
+      <div class="kpi-benchmark"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><strong>Benchmark:</strong> ${k.benchmark}</div>
+    </div>
+  `).join('');
+}
+
+// ── CFO BOT ──────────────────────────────────────────
+let botHistory = [];
+
+function initBot() {
+  addBotMsg(`Hi — I'm Clara, your CFO Advisor. I can help you understand any financial metric, explain what your numbers mean, or walk you through how to improve them.<br><br>Try one of the questions on the right, or just ask me anything.`);
+}
+
+function addBotMsg(html) {
+  const el = document.createElement('div');
+  el.className = 'bmsg b';
+  el.innerHTML = `<div class="bav">C</div><div class="bbubble">${html}</div>`;
+  document.getElementById('bot-msgs').appendChild(el);
+  document.getElementById('bot-msgs').scrollTop = 99999;
+}
+
+function addUserMsg(text) {
+  const el = document.createElement('div');
+  el.className = 'bmsg u';
+  el.innerHTML = `<div class="bav">Me</div><div class="bbubble">${escapeHtml(text)}</div>`;
+  document.getElementById('bot-msgs').appendChild(el);
+  document.getElementById('bot-msgs').scrollTop = 99999;
+}
+
+function showTyping() {
+  const el = document.createElement('div');
+  el.className = 'bmsg b'; el.id = 'bot-typing';
+  el.innerHTML = `<div class="bav">C</div><div class="typdots"><span></span><span></span><span></span></div>`;
+  document.getElementById('bot-msgs').appendChild(el);
+  document.getElementById('bot-msgs').scrollTop = 99999;
+}
+
+function removeTyping() { const t = document.getElementById('bot-typing'); if(t) t.remove(); }
+
+function botAsk(q) { document.getElementById('bot-input').value = q; botSend(); }
+function botKey(e) { if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();botSend();} }
+
+async function botSend() {
+  const inp = document.getElementById('bot-input');
+  const text = inp.value.trim(); if (!text) return;
+  inp.value = '';
+  document.getElementById('bot-send-btn').disabled = true;
+  addUserMsg(text);
+  botHistory.push({role:'user', content: text});
+  showTyping();
+
+  window.setTimeout(() => {
+    removeTyping();
+    const reply = generateClaraReply(text);
+    botHistory.push({role:'assistant', content: reply});
+    addBotMsg(escapeHtml(reply).replace(/\n/g,'<br>'));
+    document.getElementById('bot-send-btn').disabled = false;
+  }, 450);
+}
+
+function generateClaraReply(text) {
+  const q = text.toLowerCase();
+  const d = currentData;
+  if (!d) {
+    if (q.includes('cash') || q.includes('forecast') || q.includes('runway')) {
+      return "A healthy small business should know its next 13 weeks of cash inflows and outflows. Start with current cash, expected customer collections, payroll, rent, debt payments, taxes, and any large one-time expenses. Upload your P&L or balance sheet and I can tailor the next steps to your numbers.";
+    }
+    if (q.includes('gross margin')) {
+      return "Gross margin is revenue minus direct costs, divided by revenue. For many service businesses, 50%+ can be healthy; for retail or trades, the benchmark can be lower. Upload your financials and I will compare your margin against practical small-business benchmarks.";
+    }
+    return "I can explain CFO concepts right now, and I become much more specific after you upload financials on the Financial Analysis page. Once your numbers are loaded, I can point to your margins, operating expenses, net income, and the highest-priority actions.";
+  }
+
+  const h = calcHealthPL(d);
+  const actions = buildActionsPL(d).slice(0, 2).map(a => a.title.toLowerCase()).join(' and ');
+  if (q.includes('priorit') || q.includes('first') || q.includes('improve')) {
+    return `Your health score is ${h}/100. I would prioritize ${actions || 'a 13-week cash forecast and an operating expense review'} because those steps improve visibility and protect cash. Your net margin is ${fp(d.netMargin)}, so every cost and pricing decision matters.`;
+  }
+  if (q.includes('gross margin') || q.includes('margin')) {
+    return `Your gross margin is ${fp(d.grossMargin)} on revenue of ${fc(d.revenue)}. ${d.grossMargin >= 38 ? 'That is at or above the benchmark I use for this prototype, so direct costs look reasonably controlled.' : 'That is below the benchmark I use for this prototype, so pricing, materials, labor, or delivery costs deserve attention.'} Every 1 point of gross margin is worth about ${fc(d.revenue * 0.01)} for this period.`;
+  }
+  if (q.includes('cash') || q.includes('runway') || q.includes('forecast')) {
+    return `A P&L alone does not show cash timing, but your net income is ${fc(d.netIncome)} and operating expenses are ${fc(d.opex || 0)}. Build a 13-week forecast using expected collections, payroll, rent, tax, debt, and vendor payments. If collections lag or payroll spikes, you will see the shortfall early enough to act.`;
+  }
+  if (q.includes('expense') || q.includes('cost')) {
+    return `Your operating expenses are ${fc(d.opex || 0)}, and COGS are ${fc(d.cogs || 0)}. Start by reviewing the largest recurring categories, then separate must-have costs from discretionary spend. If gross margin is weak, focus on direct costs first; if net margin is weak, review both operating expenses and pricing.`;
+  }
+  return buildSummary(d);
+}
+
+
+function initUploadDropzone() {
+  const zone = document.getElementById('analysis-dropzone');
+  const input = document.getElementById('analysis-file');
+  if (!zone || !input) return;
+  ['dragenter','dragover'].forEach(evt => zone.addEventListener(evt, e => {
+    e.preventDefault();
+    zone.classList.add('dragover');
+  }));
+  ['dragleave','drop'].forEach(evt => zone.addEventListener(evt, e => {
+    e.preventDefault();
+    zone.classList.remove('dragover');
+  }));
+  zone.addEventListener('drop', e => {
+    if (!e.dataTransfer.files || !e.dataTransfer.files.length) return;
+    input.files = e.dataTransfer.files;
+    handleAnalysisFile({ target: input });
+  });
+}
+
+// ── FINANCIAL ANALYSIS ENGINE ─────────────────────────────────────────
+let analysisCharts = [];
+let currentData = null;
+
+function handleAnalysisFile(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const name = file.name.toLowerCase();
+  showAnalysisStatus('Reading ' + file.name + '...');
+
+  if (name.endsWith('.csv')) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        const rows = parseCSV(ev.target.result);
+        processRows(rows, file.name);
+      } catch(err) {
+        showAnalysisError();
+      }
+    };
+    reader.readAsText(file);
+
+  } else if (name.endsWith('.xlsx') || name.endsWith('.xls')) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      try {
+        // cellFormula:false + cellNF:false forces SheetJS to use cached values not formula strings
+        const wb   = XLSX.read(ev.target.result, { type: 'binary', cellFormula: false, cellNF: false, cellStyles: false });
+        const ws   = wb.Sheets[wb.SheetNames[0]];
+        const raw  = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '', raw: true });
+        // Walk every row — find label in col A, value in first numeric col B/C/D
+        const rows = raw.map(r => {
+          const label = String(r[0] || '').trim();
+          // Find first numeric value in the row (skip col 0)
+          let val = '';
+          for (let i = 1; i < r.length; i++) {
+            const v = r[i];
+            if (v !== '' && v !== null && v !== undefined && typeof v === 'number') {
+              val = v; break;
+            }
+            // Also handle string numbers like "1234.56"
+            if (typeof v === 'string' && v.trim() !== '') {
+              const n = parseFloat(v.replace(/[$,]/g,''));
+              if (!isNaN(n)) { val = n; break; }
+            }
+          }
+          return [label, val];
+        });
+        processRows(rows, file.name);
+      } catch(err) {
+        console.error('XLSX parse error:', err);
+        showAnalysisError();
+      }
+    };
+    reader.readAsBinaryString(file);
+
+  } else if (name.endsWith('.pdf')) {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      extractPDFText(ev.target.result, file.name);
+    };
+    reader.readAsArrayBuffer(file);
+
+  } else {
+    hideAnalysisStatus();
+    alert('Please upload an Excel (.xlsx), CSV, or PDF file.');
+  }
+}
+
+function processRows(rows, filename) {
+  showAnalysisStatus('Analyzing your financials...');
+  setTimeout(() => {
+    const data = parseQBORows(rows, filename);
+    currentData = data;
+    setTimeout(() => renderReport(data), 600);
+  }, 300);
+}
+
+async function extractPDFText(arrayBuffer, filename) {
+  try {
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    const pdf  = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+    let fullText = '';
+    for (let i = 1; i <= pdf.numPages; i++) {
+      const page  = await pdf.getPage(i);
+      const tc    = await page.getTextContent();
+      fullText   += tc.items.map(item => item.str).join(' ') + '\n';
+    }
+    // Parse the raw text into rows by looking for label + number patterns
+    const lines = fullText.split(/\n|\r/).map(l => l.trim()).filter(Boolean);
+    const rows  = [];
+    const numRe = /\$?([\d,]+(?:\.\d+)?)/;
+    lines.forEach(line => {
+      const match = line.match(numRe);
+      if (match) {
+        const label = line.replace(match[0], '').trim();
+        const val   = parseFloat(match[1].replace(/,/g,''));
+        if (label && !isNaN(val)) rows.push([label, val]);
+      } else {
+        rows.push([line, '']);
+      }
+    });
+    processRows(rows, filename);
+  } catch(err) {
+    hideAnalysisStatus();
+    alert('Could not extract text from this PDF. Try exporting as CSV or Excel from your accounting software for best results.');
+  }
+}
+
+function showAnalysisError() {
+  hideAnalysisStatus();
+  alert('Could not read file. Try exporting as CSV or Excel directly from QuickBooks, Xero, or Wave.');
+}
+
+function parseCSV(text) {
+  return text.split('\n').map(line => {
+    const cols = [];
+    let cur = '', inQ = false;
+    for (let c of line) {
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { cols.push(cur.trim()); cur = ''; }
+      else cur += c;
+    }
+    cols.push(cur.trim());
+    return cols;
+  });
+}
+
+function cleanNum(v) {
+  if (v === null || v === undefined || String(v).trim() === '') return null;
+  const s = String(v).replace(/[$,\s]/g,'').replace(/\(([^)]+)\)/, '-$1');
+  const n = parseFloat(s);
+  return isNaN(n) ? null : n;
+}
+
+function parseQBORows(rows, filename) {
+  const data = { filename, lineItems: [], serviceRevenue: [], serviceCogs: [], expenseItems: [] };
+  let section = '';
+
+  // Extract company name and period from top rows
+  if (rows[0] && rows[0][0]) data.company = rows[0][0].trim();
+  if (rows[2] && rows[2][0]) data.period = rows[2][0].trim();
+
+  // Build a lookup from all labeled rows
+  rows.forEach(row => {
+    const label = (row[0] || '').trim();
+    const valFromSecondColumn = cleanNum(row[1]);
+    const val = valFromSecondColumn !== null ? valFromSecondColumn : cleanNum(row[2]);
+    if (!label) return;
+    if (val !== null) data.lineItems.push({ label, val });
+    const ll = label.toLowerCase();
+    const isTotalLine = ll.startsWith('total') || ['gross profit','net income','net profit','net earnings','operating income','net operating income','profit'].includes(ll);
+
+    if (['income','revenue','sales'].includes(ll) && val === null) section = 'income';
+    else if (['cost of goods sold','cogs','direct costs','cost of sales'].includes(ll)) section = 'cogs';
+    else if (['expenses','operating expenses','expense'].includes(ll)) section = 'expenses';
+
+    if (val !== null && !isTotalLine) {
+      if (section === 'income') data.serviceRevenue.push({ name: label, val });
+      else if (section === 'cogs') data.serviceCogs.push({ name: label, val });
+      else if (section === 'expenses') data.expenseItems.push({ name: label, val });
+    }
+
+    // Key totals — order matters (use last match for duplicates)
+    // Revenue — many label variants
+    if (ll === 'total for income' || ll === 'total income' || ll === 'total revenue' ||
+        ll === 'net revenue' || ll === 'total sales' || ll === 'sales' ||
+        ll === 'revenue' || ll === 'gross revenue') data.revenue = val;
+
+    // COGS
+    if (ll === 'total for cost of goods sold' || ll === 'total cost of goods sold' ||
+        ll === 'cost of goods sold' || ll === 'cogs' || ll === 'total cogs' ||
+        ll === 'cost of sales' || ll === 'direct costs') data.cogs = val;
+
+    // Gross Profit
+    if (ll === 'gross profit' || ll === 'total gross profit') data.grossProfit = val;
+
+    // OpEx
+    if (ll === 'total for expenses' || ll === 'total expenses' ||
+        ll === 'total operating expenses' || ll === 'operating expenses' ||
+        ll === 'total for operating expenses') data.opex = val;
+
+    // Operating Income
+    if (ll === 'net operating income' || ll === 'operating income' ||
+        ll === 'income from operations' || ll === 'ebit') data.opIncome = val;
+
+    // Net Income
+    if (ll === 'net income' || ll === 'net profit' ||
+        ll === 'net earnings' || ll === 'profit') data.netIncome = val;
+
+    // Other
+    if (ll === 'total for other expenses' || ll === 'total other expenses') data.otherExpenses = val;
+    if (ll === 'interest expense' || ll === 'interest') data.interestExpense = val;
+    if (ll === 'salaries' || ll === 'wages' || ll === 'salaries and wages') data.salaries = val;
+    if (ll === 'payroll taxes' || ll === 'payroll tax') data.payrollTaxes = val;
+    if (ll === 'rent & lease' || ll === 'rent and lease' || ll === 'rent') data.rent = val;
+    if (ll === 'advertising & marketing' || ll === 'advertising and marketing' ||
+        ll === 'marketing' || ll === 'advertising') data.marketing = val;
+    if (ll === 'health benefits' || ll === 'health insurance' || ll === 'benefits') data.healthBenefits = val;
+    if (ll === 'depreciation' || ll === 'depreciation & amortization') data.depreciation = val;
+  });
+
+  // If totals are missing, derive them from line items
+  // Revenue: sum all income line items if total not found
+  if (!data.revenue && data.serviceRevenue && data.serviceRevenue.length) {
+    data.revenue = data.serviceRevenue.reduce((s,x) => s + x.val, 0);
+  }
+  // COGS: sum all cogs line items if total not found
+  if (!data.cogs && data.serviceCogs && data.serviceCogs.length) {
+    data.cogs = data.serviceCogs.reduce((s,x) => s + x.val, 0);
+  }
+  // Expenses: sum all expense line items if total not found
+  if (!data.opex && data.expenseItems && data.expenseItems.length) {
+    data.opex = data.expenseItems.reduce((s,x) => s + x.val, 0);
+  }
+
+  // Derive combined payroll
+  data.payroll = (data.salaries || 0) + (data.payrollTaxes || 0) + (data.healthBenefits || 0);
+
+  const rev = data.revenue || 0;
+  const cogs = data.cogs || 0;
+  data.grossProfit = data.grossProfit || (rev - cogs);
+  // Derive net income if missing
+  if (!data.netIncome && data.opIncome) {
+    data.netIncome = data.opIncome - (data.otherExpenses || data.interestExpense || 0);
+  }
+  if (!data.netIncome && data.grossProfit && data.opex) {
+    data.netIncome = data.grossProfit - data.opex - (data.interestExpense || 0);
+  }
+  data.netIncome = data.netIncome || 0;
+  // Derive opIncome if missing
+  if (!data.opIncome && data.grossProfit && data.opex) {
+    data.opIncome = data.grossProfit - data.opex;
+  }
+
+  // Ratios
+  data.grossMargin = rev > 0 ? data.grossProfit / rev * 100 : 0;
+  data.netMargin   = rev > 0 ? data.netIncome / rev * 100 : 0;
+  data.opMargin    = rev > 0 ? (data.opIncome || 0) / rev * 100 : 0;
+  data.payrollPct  = rev > 0 ? data.payroll / rev * 100 : 0;
+
+  // We don't have balance sheet from P&L — use what we have
+  data.hasBalanceSheet = false;
+
+  return data;
+}
+
+function fc(n) {
+  const value = Number(n) || 0;
+  const sign = value < 0 ? '-' : '';
+  return sign + '$' + Math.abs(value).toLocaleString('en-US', {maximumFractionDigits:0});
+}
+function fp(n) { return (Number(n)||0).toFixed(1) + '%'; }
+function pctOf(part, total) { return total > 0 ? (part / total * 100) : 0; }
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+
+function calcHealthPL(d) {
+  let s = 50;
+  if (d.grossMargin >= 38) s += 12; else if (d.grossMargin >= 25) s += 6; else s -= 5;
+  if (d.netMargin >= 8) s += 12; else if (d.netMargin >= 3) s += 6; else if (d.netMargin < 0) s -= 10;
+  if (d.opMargin >= 10) s += 8; else if (d.opMargin >= 4) s += 4;
+  if (d.payrollPct <= 30) s += 8; else if (d.payrollPct <= 45) s += 2; else s -= 5;
+  if (d.netIncome > 0) s += 10;
+  return Math.max(0, Math.min(100, Math.round(s)));
+}
+
+function buildFindingsPL(d) {
+  const out = [];
+  if (d.netIncome > 0) out.push({t:'good', text:`Business is profitable — net income of ${fc(d.netIncome)} (${fp(d.netMargin)} margin) for the period.`});
+  else out.push({t:'bad', text:`Business ran a net loss of ${fc(Math.abs(d.netIncome))} this period. Immediate cost review needed.`});
+
+  if (d.grossMargin >= 38) out.push({t:'good', text:`Gross margin of ${fp(d.grossMargin)} is at or above the typical benchmark of 38%. Strong cost management on direct costs.`});
+  else if (d.grossMargin >= 25) out.push({t:'warn', text:`Gross margin of ${fp(d.grossMargin)} is below the ~38% benchmark. Every point gained is worth ${fc(d.revenue * 0.01)} in added gross profit.`});
+  else out.push({t:'bad', text:`Gross margin of ${fp(d.grossMargin)} is critically low. COGS of ${fc(d.cogs)} consumes ${fp(pctOf(d.cogs,d.revenue))} of revenue — pricing or direct costs need urgent review.`});
+
+  if (d.payroll > 0) {
+    if (d.payrollPct <= 30) out.push({t:'good', text:`Payroll (including taxes and benefits) is ${fp(d.payrollPct)} of revenue — well-managed relative to output.`});
+    else if (d.payrollPct <= 45) out.push({t:'warn', text:`Payroll is ${fp(d.payrollPct)} of revenue (${fc(d.payroll)}). As revenue fluctuates, this is your biggest variable cost to watch.`});
+    else out.push({t:'bad', text:`Payroll is ${fp(d.payrollPct)} of revenue (${fc(d.payroll)}) — unusually high. Review headcount efficiency and whether revenue is keeping pace.`});
+  }
+
+  if (d.opex > 0) {
+    const opexPct = d.revenue > 0 ? d.opex/d.revenue*100 : 0;
+    if (opexPct <= 20) out.push({t:'good', text:`Operating expenses of ${fc(d.opex)} (${fp(opexPct)} of revenue) are lean — strong cost discipline.`});
+    else if (opexPct <= 30) out.push({t:'warn', text:`Operating expenses of ${fc(d.opex)} represent ${fp(opexPct)} of revenue. Review discretionary items for savings.`});
+    else out.push({t:'bad', text:`Operating expenses of ${fc(d.opex)} are ${fp(opexPct)} of revenue. This is compressing margins significantly — a line-by-line audit is overdue.`});
+  }
+
+  if (d.revenue > 0) out.push({t: d.netMargin>=5?'good':'warn', text:`Revenue for the period is ${fc(d.revenue)} — use this as your baseline for month-over-month trend tracking.`});
+
+  return out;
+}
+
+function buildActionsPL(d) {
+  const acts = [];
+  if (d.grossMargin < 35) acts.push({
+    title: 'Audit your direct costs (COGS)',
+    desc: `COGS of ${fc(d.cogs)} is consuming ${fp(pctOf(d.cogs,d.revenue))} of revenue. Get competitive quotes on your top 3 cost inputs and review pricing on low-margin service lines.`,
+    impact: `Closing half the gap to 38% margin would add ${fc(d.revenue * (0.38 - d.grossMargin/100) * 0.5)} in gross profit.`
+  });
+  if (d.payroll > 0 && d.payrollPct > 35) acts.push({
+    title: 'Review payroll efficiency',
+    desc: `Payroll is ${fp(d.payrollPct)} of revenue (${fc(d.payroll)}). Map revenue generated per role and identify whether headcount is aligned with current revenue levels.`,
+    impact: undefined
+  });
+  acts.push({
+    title: 'Build a rolling 90-day cash projection',
+    desc: `A P&L shows what happened — a cash forecast shows what's coming. Map out the next 13 weeks of inflows and outflows so you can spot shortfalls before they hit.`,
+    impact: 'Catches problems 4–6 weeks early — enough time to act.'
+  });
+  if (d.netMargin < 8) acts.push({
+    title: 'Identify your highest-margin service lines',
+    desc: `Net margin of ${fp(d.netMargin)} leaves limited buffer. Run a margin analysis by service type to find which lines drive profit and which are dragging it down.`,
+    impact: undefined
+  });
+  acts.push({
+    title: 'Review discretionary operating expenses',
+    desc: `Go line-by-line through operating expenses and flag anything that could be renegotiated, reduced, or eliminated. Start with subscriptions and professional service fees.`,
+    impact: undefined
+  });
+  if (d.interestExpense > 0) acts.push({
+    title: 'Evaluate interest-bearing debt',
+    desc: `Interest expense of ${fc(d.interestExpense)} is reducing net income. Review whether debt can be refinanced at better rates or paid down with excess cash.`,
+    impact: `Eliminating this expense adds ${fc(d.interestExpense)} directly to net income.`
+  });
+  return acts;
+}
+
+function buildSummary(d) {
+  const h = calcHealthPL(d);
+  const good = d.netIncome > 0;
+  return `${d.company || 'Your business'} ${good ? 'generated' : 'recorded'} ${good ? 'net income of ' + fc(d.netIncome) : 'a net loss of ' + fc(Math.abs(d.netIncome))} on revenue of ${fc(d.revenue)} for ${d.period || 'the reported period'}. ` +
+    `Gross margin of ${fp(d.grossMargin)} is ${d.grossMargin >= 38 ? 'at or above benchmark' : 'below the typical 38% benchmark'} — ` +
+    `${d.grossMargin < 35 ? 'direct cost management should be a priority focus.' : 'direct cost control is solid.'} ` +
+    `${d.payroll > 0 ? 'Payroll represents ' + fp(d.payrollPct) + ' of revenue, which is the largest single cost driver to monitor. ' : ''}` +
+    `The most important next step is building a forward-looking cash flow forecast — a P&L tells you what happened, but a 13-week forecast tells you what's coming.`;
+}
+
+function showAnalysisStatus(msg) {
+  document.getElementById('analysis-status').style.display = 'flex';
+  document.getElementById('analysis-status-text').textContent = msg;
+}
+function hideAnalysisStatus() {
+  document.getElementById('analysis-status').style.display = 'none';
+}
+
+function resetAnalysis() {
+  document.getElementById('analysis-report').style.display = 'none';
+  document.getElementById('analysis-upload-view').style.display = 'block';
+  document.getElementById('analysis-file').value = '';
+  analysisCharts.forEach(c => c.destroy());
+  analysisCharts = [];
+  currentData = null;
+}
+
+function renderReport(d) {
+  hideAnalysisStatus();
+  document.getElementById('analysis-upload-view').style.display = 'none';
+  document.getElementById('analysis-report').style.display = 'block';
+
+  const h = calcHealthPL(d);
+  document.getElementById('rpt-title').textContent = (d.company || 'CFO') + ' — Analysis Report';
+  document.getElementById('rpt-sub').textContent = (d.period || '') + ' · Generated ' + new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+  const hp = document.getElementById('rpt-health-pill');
+  hp.textContent = (h>=70?'● Healthy — ':h>=50?'● Moderate — ':'● Needs Attention — ') + h + '/100';
+  hp.className = 'health-pill ' + (h>=70?'health-good':h>=50?'health-warn':'health-bad');
+
+  // Metrics — fully inline styles so hidden-div CSS issue can't break them
+  function flagColor(f) {
+    if (f==='flag-good') return '#0a7c4e';
+    if (f==='flag-warn') return '#b45309';
+    if (f==='flag-bad')  return '#b91c1c';
+    return '#1a3caa';
+  }
+  function flagBorder(f) {
+    if (f==='flag-good') return '#0a7c4e';
+    if (f==='flag-warn') return '#c9922a';
+    if (f==='flag-bad')  return '#b91c1c';
+    return '#e4e3df';
+  }
+  const metrics = [
+    {l:'Revenue',v:fc(d.revenue),n:'Total for period',f:''},
+    {l:'Gross Profit',v:fc(d.grossProfit),n:'After direct costs',f:d.grossMargin>=38?'flag-good':d.grossMargin>=25?'flag-warn':'flag-bad'},
+    {l:'Gross Margin',v:fp(d.grossMargin),n:'Benchmark ~38%',f:d.grossMargin>=38?'flag-good':d.grossMargin>=25?'flag-warn':'flag-bad'},
+    {l:'Net Income',v:fc(d.netIncome),n:'Bottom line profit',f:d.netIncome>0?'flag-good':'flag-bad'},
+    {l:'Net Margin',v:fp(d.netMargin),n:'Revenue kept as profit',f:d.netMargin>=8?'flag-good':d.netMargin>=2?'flag-warn':'flag-bad'},
+    {l:'Operating Income',v:fc(d.opIncome||0),n:'Before interest & other',f:(d.opIncome||0)>0?'flag-good':'flag-bad'},
+    {l:'Total OpEx',v:fc(d.opex||0),n:'Operating expenses',f:''},
+    {l:'Health Score',v:h+'/100',n:'Overall financial health',f:h>=70?'flag-good':h>=50?'flag-warn':'flag-bad'}
+  ];
+
+  document.getElementById('rpt-metrics').innerHTML = metrics.map(m=>`
+    <div style="background:#fff;border:1px solid ${flagBorder(m.f)};border-radius:12px;padding:14px">
+      <div style="font-size:11px;color:#717171;margin-bottom:6px">${m.l}</div>
+      <div style="font-size:24px;font-weight:800;color:${flagColor(m.f)}">${m.v}</div>
+      <div style="font-size:12px;color:#717171;margin-top:4px">${m.n}</div>
+    </div>
+  `).join('');
+
+  // Destroy old charts
+// Destroy old charts
+  analysisCharts.forEach(c => c.destroy());
+  analysisCharts = [];
+
+  // ── Chart 1: Revenue by service line (horizontal bar) ──
+  const svcRevenue = (d.serviceRevenue && d.serviceRevenue.length) ? d.serviceRevenue : [{ name: 'Revenue', val: d.revenue }];
+  const svcLabels  = svcRevenue.map(s => s.name);
+  const svcVals    = svcRevenue.map(s => s.val);
+  const barColors  = ['#1a3caa','#c9922a','#0a7c4e','#6d28d9','#0d9488','#b91c1c','#b45309','#0369a1'];
+
+  analysisCharts.push(new Chart(document.getElementById('rpt-chart-revenue'), {
+    type: 'bar',
+    data: {
+      labels: svcLabels,
+      datasets: [{
+        label: 'Revenue',
+        data: svcVals,
+        backgroundColor: svcLabels.map((_,i) => barColors[i % barColors.length]),
+        borderRadius: 4,
+        borderSkipped: false,
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'K' }, grid: { color: 'rgba(0,0,0,0.04)' } },
+        y: { ticks: { font: { size: 11 } } }
+      }
+    }
+  }));
+
+  // ── Chart 2: Revenue vs COGS by service (grouped bar) ──
+  const svcCogs   = d.serviceCogs || [];
+  const sharedSvcs = svcRevenue.filter(s => svcCogs.find(c => c.name === s.name));
+  const mLabels   = sharedSvcs.length > 0
+    ? sharedSvcs.map(s => s.name)
+    : svcLabels.slice(0, 5);
+  const mRevVals  = sharedSvcs.length > 0
+    ? sharedSvcs.map(s => s.val)
+    : svcVals.slice(0, 5);
+  const mCogsVals = sharedSvcs.length > 0
+    ? sharedSvcs.map(s => { const c = svcCogs.find(x => x.name === s.name); return c ? c.val : 0; })
+    : mRevVals.map(v => v * (d.cogs / d.revenue));
+
+  analysisCharts.push(new Chart(document.getElementById('rpt-chart-margin'), {
+    type: 'bar',
+    data: {
+      labels: mLabels,
+      datasets: [
+        { label: 'Revenue', data: mRevVals,  backgroundColor: 'rgba(26,60,170,0.8)',  borderRadius: 4 },
+        { label: 'Direct Cost', data: mCogsVals, backgroundColor: 'rgba(185,28,28,0.7)', borderRadius: 4 }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10, boxWidth: 10 } } },
+      scales: {
+        x: { ticks: { font: { size: 10 } } },
+        y: { ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'K' }, grid: { color: 'rgba(0,0,0,0.04)' } }
+      }
+    }
+  }));
+
+  // ── Chart 3: OpEx breakdown donut ──
+  const opexItems = (d.expenseItems && d.expenseItems.length) ? d.expenseItems : [{ name: 'Operating expenses', val: d.opex || 0 }];
+  const topOpex   = opexItems.slice(0, 7);
+  const opexColors = ['#c9922a','#1a3caa','#6d28d9','#0d9488','#b45309','#0369a1','#7c3aed'];
+
+  analysisCharts.push(new Chart(document.getElementById('rpt-chart-opex'), {
+    type: 'doughnut',
+    data: {
+      labels: topOpex.map(e => e.name),
+      datasets: [{
+        data: topOpex.map(e => e.val),
+        backgroundColor: opexColors,
+        borderWidth: 0,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'right', labels: { font: { size: 10 }, padding: 8, boxWidth: 10 } },
+        tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.toLocaleString('en-US', {maximumFractionDigits:0}) } }
+      },
+      cutout: '60%'
+    }
+  }));
+
+  // ── Chart 4: Health radar ──
+  const gmScore  = Math.min(d.grossMargin / 50 * 100, 100);
+  const nmScore  = Math.min(d.netMargin  / 15 * 100, 100);
+  const omScore  = Math.min((d.opMargin || 0) / 15 * 100, 100);
+  const prScore  = Math.max(0, 100 - (d.payrollPct || 0));
+  const profScore= d.netIncome > 0 ? 75 : 20;
+
+  analysisCharts.push(new Chart(document.getElementById('rpt-chart-radar'), {
+    type: 'radar',
+    data: {
+      labels: ['Gross Margin', 'Net Margin', 'Op. Margin', 'Payroll Efficiency', 'Profitability'],
+      datasets: [
+        { label: 'Your Business', data: [gmScore,nmScore,omScore,prScore,profScore], backgroundColor: 'rgba(26,60,170,0.12)', borderColor: '#1a3caa', pointBackgroundColor: '#1a3caa', borderWidth: 2, pointRadius: 4 },
+        { label: 'Benchmark',    data: [76,60,65,70,75], backgroundColor: 'rgba(201,146,42,0.1)', borderColor: '#c9922a', pointBackgroundColor: '#c9922a', borderWidth: 1.5, borderDash: [5,5], pointRadius: 3 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: 'rgba(0,0,0,0.05)' } } },
+      plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } } }
+    }
+  }));
+
+  // Findings
+  document.getElementById('rpt-findings').innerHTML = buildFindingsPL(d).map(f=>`
+    <div class="finding-card">
+      <span class="finding-tag tag-${f.t==='good'?'good':f.t==='warn'?'warn':'bad'}">
+        <span class="tag-dot"></span>${f.t==='good'?'Strength':f.t==='warn'?'Watch closely':'Critical'}
+      </span>
+      <div class="finding-text">${f.text}</div>
+    </div>`).join('');
+
+  // Actions
+  document.getElementById('rpt-actions').innerHTML = buildActionsPL(d).map((a,i)=>`
+    <div class="action-card">
+      <div class="action-number">${i+1}</div>
+      <div class="action-body">
+        <div class="action-title">${a.title}</div>
+        <div class="action-desc">${a.desc}</div>
+        ${a.impact?`<span class="action-impact">${a.impact}</span>`:''}
+      </div>
+    </div>`).join('');
+
+  // Summary
+  document.getElementById('rpt-summary').textContent = buildSummary(d);
+
+  // Also sync Clara with this data
+  syncClaraWithData(d);
+
+  // Build slide deck from same data
+  buildDeck(d);
+
+  document.getElementById('analysis-report').scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function syncClaraWithData(d) {
+  const h = calcHealthPL(d);
+  window.claraContext = `You are Clara, a warm and direct CFO advisor. You have analyzed the following real financial data for ${d.company||'this business'} (${d.period||'current period'}):
+Revenue: ${fc(d.revenue)} | COGS: ${fc(d.cogs||0)} | Gross Profit: ${fc(d.grossProfit)} (${fp(d.grossMargin)} margin) | Operating Expenses: ${fc(d.opex||0)} | Operating Income: ${fc(d.opIncome||0)} | Net Income: ${fc(d.netIncome)} (${fp(d.netMargin)} margin) | Payroll: ${fc(d.payroll)} (${fp(d.payrollPct)} of revenue) | Health Score: ${h}/100
+Speak like a trusted advisor, not a report. Use their exact numbers. Keep responses to 3–5 sentences unless more detail is asked for. Be encouraging but direct about problems.`;
+}
+
+
+// ── SLIDE DECK ENGINE ─────────────────────────────────────────────────
+let deckSlides = [];
+let deckCurrent = 0;
+let deckCharts = [];
+
+function buildDeck(d) {
+  if (!d) return;
+  const h = calcHealthPL(d);
+  const safeCompany = escapeHtml(d.company || 'Financial Performance');
+  const safePeriod = escapeHtml(d.period || '');
+  const findings = buildFindingsPL(d);
+  const actions  = buildActionsPL(d);
+  const hColor   = h >= 70 ? '#0a7c4e' : h >= 50 ? '#b45309' : '#b91c1c';
+
+  // Helper
+  const mColor = (val, good, warn) => val >= good ? '#0a7c4e' : val >= warn ? '#b45309' : '#b91c1c';
+
+  deckSlides = [
+
+    // ── SLIDE 1: COVER ──
+    `<div style="width:100%;height:100%;background:#0f2570;display:flex;flex-direction:column;justify-content:flex-end;padding:7% 9%;position:relative;box-sizing:border-box">
+      <div style="position:absolute;top:7%;right:7%;font-size:1.1vw;font-weight:700;color:rgba(255,255,255,0.25);letter-spacing:1px">MyCFOPro.AI</div>
+      <div style="position:absolute;top:0;right:0;width:40%;height:100%;background:linear-gradient(135deg,transparent,rgba(26,60,170,0.4))"></div>
+      <div style="font-size:0.85vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:1.5vh">Confidential · For Executive Review</div>
+      <div style="width:52px;height:4px;background:#c9922a;border-radius:2px;margin-bottom:2.5vh"></div>
+      <div style="font-size:3.4vw;font-weight:900;color:#fff;line-height:1.1;letter-spacing:-0.05em;margin-bottom:1.5vh">${safeCompany}<br><span style="color:#e8b84b">Overview & Analysis</span></div>
+      <div style="font-size:1.05vw;color:rgba(255,255,255,0.5);margin-bottom:3vh">${safePeriod} · Prepared by MyCFOPro.AI</div>
+      <div style="font-size:0.8vw;color:rgba(255,255,255,0.3)">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
+    </div>`,
+
+    // ── SLIDE 2: SCORECARD ──
+    `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;padding:6% 8%;box-sizing:border-box">
+      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1a3caa;margin-bottom:1vh">Executive Summary</div>
+      <div style="font-size:2.2vw;font-weight:900;color:#0e0e0e;letter-spacing:-0.04em;margin-bottom:3vh;line-height:1.15">Financial Scorecard · ${safePeriod}</div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.5%;flex:1">
+        ${[
+          {l:'Health Score', v:h+'/100',              c:hColor},
+          {l:'Revenue',      v:fc(d.revenue),          c:'#0e0e0e'},
+          {l:'Gross Margin', v:fp(d.grossMargin),      c:mColor(d.grossMargin,38,25)},
+          {l:'Net Margin',   v:fp(d.netMargin),         c:mColor(d.netMargin,8,3)},
+          {l:'Gross Profit', v:fc(d.grossProfit),       c:'#0e0e0e'},
+          {l:'Net Income',   v:fc(d.netIncome),         c:d.netIncome>0?'#0a7c4e':'#b91c1c'},
+          {l:'Operating Income', v:fc(d.opIncome||0),  c:(d.opIncome||0)>0?'#0a7c4e':'#b91c1c'},
+          {l:'Total OpEx',   v:fc(d.opex||0),           c:'#b45309'},
+        ].map(m => '<div style="background:#f8f8f6;border-radius:8px;padding:4% 5%;display:flex;flex-direction:column;justify-content:center">' +
+          '<div style="font-size:0.65vw;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#aaa;margin-bottom:0.8vh">' + m.l + '</div>' +
+          '<div style="font-size:1.9vw;font-weight:900;letter-spacing:-0.05em;color:' + m.c + ';line-height:1">' + m.v + '</div>' +
+        '</div>').join('')}
+      </div>
+    </div>`,
+
+    // ── SLIDE 3: REVENUE BY SERVICE ──
+    `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;padding:6% 8%;box-sizing:border-box">
+      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1a3caa;margin-bottom:1vh">Revenue Analysis</div>
+      <div style="font-size:2.2vw;font-weight:900;color:#0e0e0e;letter-spacing:-0.04em;margin-bottom:3vh;line-height:1.15">Revenue by Service Line</div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:1.2vh">
+        ${(d.serviceRevenue && d.serviceRevenue.length > 0 ? d.serviceRevenue : [{name:'Revenue',val:d.revenue}]).slice(0,7).map((s,i) => {
+          const pct = d.revenue > 0 ? (s.val / d.revenue * 100) : 0;
+          const colors = ['#1a3caa','#c9922a','#0a7c4e','#6d28d9','#0d9488','#b45309','#0369a1'];
+          const c = colors[i % colors.length];
+          return '<div style="display:flex;align-items:center;gap:2%;flex:1">' +
+            '<div style="font-size:0.75vw;color:#444;min-width:22%;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(s.name) + '</div>' +
+            '<div style="flex:1;background:#f0f0ee;border-radius:3px;overflow:hidden;height:60%">' +
+              '<div style="width:' + Math.max(pct,2).toFixed(1) + '%;height:100%;background:' + c + ';border-radius:3px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px">' +
+              '</div>' +
+            '</div>' +
+            '<div style="font-size:0.8vw;font-weight:700;color:#0e0e0e;min-width:12%;text-align:right">' + fc(s.val) + '</div>' +
+            '<div style="font-size:0.7vw;color:#aaa;min-width:7%;text-align:right">' + pct.toFixed(1) + '%</div>' +
+          '</div>';
+        }).join('')}
+        <div style="font-size:0.75vw;font-weight:700;color:#0e0e0e;border-top:1px solid #e4e3df;padding-top:1.2vh;display:flex;justify-content:space-between;margin-top:0.5vh">
+          <span>Total Revenue</span><span>${fc(d.revenue)}</span>
+        </div>
+      </div>
+    </div>`,
+
+    // ── SLIDE 4: KEY FINDINGS ──
+    `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;padding:6% 8%;box-sizing:border-box">
+      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1a3caa;margin-bottom:1vh">Analysis</div>
+      <div style="font-size:2.2vw;font-weight:900;color:#0e0e0e;letter-spacing:-0.04em;margin-bottom:2.5vh;line-height:1.15">Key Findings</div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:1.2vh">
+        ${findings.slice(0,5).map(f => {
+          const bg  = f.t==='good'?'#edfaf4':f.t==='warn'?'#fef9ec':'#fef2f2';
+          const dot = f.t==='good'?'#22c55e':f.t==='warn'?'#f59e0b':'#ef4444';
+          return '<div style="display:flex;gap:1.5%;align-items:flex-start;background:' + bg + ';border-radius:6px;padding:2% 2.5%;flex:1">' +
+            '<div style="width:8px;height:8px;border-radius:50%;background:' + dot + ';flex-shrink:0;margin-top:0.5vh"></div>' +
+            '<div style="font-size:0.85vw;color:#333;line-height:1.55">' + f.text + '</div>' +
+          '</div>';
+        }).join('')}
+      </div>
+    </div>`,
+
+    // ── SLIDE 5: ACTION PLAN ──
+    `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;padding:6% 8%;box-sizing:border-box">
+      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1a3caa;margin-bottom:1vh">Recommendations</div>
+      <div style="font-size:2.2vw;font-weight:900;color:#0e0e0e;letter-spacing:-0.04em;margin-bottom:2.5vh;line-height:1.15">Priority Action Plan</div>
+      <div style="flex:1;display:flex;flex-direction:column;gap:1.1vh">
+        ${actions.slice(0,4).map((a,i) =>
+          '<div style="display:flex;gap:2%;align-items:flex-start;background:#f8f8f6;border-radius:6px;padding:2% 2.5%;flex:1">' +
+            '<div style="width:1.8vw;height:1.8vw;border-radius:50%;background:#1a3caa;color:#fff;font-size:0.7vw;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + (i+1) + '</div>' +
+            '<div>' +
+              '<div style="font-size:0.85vw;font-weight:700;color:#0e0e0e;margin-bottom:0.3vh">' + a.title + '</div>' +
+              '<div style="font-size:0.75vw;color:#555;line-height:1.5">' + a.desc.substring(0,140) + (a.desc.length>140?'…':'') + '</div>' +
+              (a.impact ? '<div style="font-size:0.65vw;font-weight:700;color:#0a7c4e;margin-top:0.4vh">' + a.impact + '</div>' : '') +
+            '</div>' +
+          '</div>'
+        ).join('')}
+      </div>
+    </div>`,
+
+    // ── SLIDE 6: CLOSING ──
+    `<div style="width:100%;height:100%;background:#1a3caa;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8%;box-sizing:border-box">
+      <div style="font-size:0.85vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:2vh">Bottom Line</div>
+      <div style="width:44px;height:3px;background:#c9922a;border-radius:2px;margin-bottom:2.5vh"></div>
+      <div style="font-size:2.6vw;font-weight:900;color:#fff;letter-spacing:-0.04em;line-height:1.15;margin-bottom:2vh">
+        ${d.netIncome > 0 ? 'Profitable. <span style="color:#e8b84b">Room to grow.</span>' : '<span style="color:#f87171">Action needed now.</span>'}
+      </div>
+      <div style="font-size:0.95vw;color:rgba(255,255,255,0.55);max-width:55%;line-height:1.75;margin-bottom:4vh">${buildSummary(d).substring(0,200)}…</div>
+      <div style="display:flex;gap:4rem;justify-content:center">
+        ${[
+          {l:'Revenue',    v:fc(d.revenue),    c:'#e8b84b'},
+          {l:'Net Income', v:fc(d.netIncome),  c:d.netIncome>0?'#a3e635':'#f87171'},
+          {l:'Health',     v:h+'/100',          c:hColor==='#0a7c4e'?'#a3e635':hColor==='#b45309'?'#fbbf24':'#f87171'},
+        ].map(s =>
+          '<div style="text-align:center">' +
+            '<div style="font-size:2.8vw;font-weight:900;color:' + s.c + ';letter-spacing:-0.05em;line-height:1">' + s.v + '</div>' +
+            '<div style="font-size:0.75vw;color:rgba(255,255,255,0.35);margin-top:0.6vh">' + s.l + '</div>' +
+          '</div>'
+        ).join('')}
+      </div>
+    </div>`,
+  ];
+
+  // Render viewer
+  deckCurrent = 0;
+  renderDeckSlide();
+
+  // Thumbnails
+  const thumbStrip = document.getElementById('deck-thumbs');
+  thumbStrip.innerHTML = deckSlides.map((s,i) =>
+    '<div onclick="jumpDeckSlide(' + i + ')" id="deck-thumb-' + i + '" style="flex-shrink:0;width:160px;cursor:pointer;border-radius:8px;overflow:hidden;border:2px solid ' + (i===0?'#1a3caa':'#e4e3df') + ';transition:border-color 0.13s">' +
+      '<div style="aspect-ratio:16/9;background:#1c1c2a;overflow:hidden;transform:scale(1);pointer-events:none">' +
+        '<div style="width:800px;height:450px;transform:scale(0.2);transform-origin:0 0;pointer-events:none">' + s + '</div>' +
+      '</div>' +
+      '<div style="font-size:10px;font-weight:600;color:#7a7a7a;text-align:center;padding:5px;background:#f8f8f6">Slide ' + (i+1) + '</div>' +
+    '</div>'
+  ).join('');
+
+  // Update header
+  document.getElementById('deck-title').textContent = (d.company || 'CEO Presentation') + ' — Financial Overview';
+  document.getElementById('deck-sub').textContent = (d.period || '') + ' · ' + deckSlides.length + ' slides · Built from your data';
+  document.getElementById('deck-counter').textContent = 'Slide 1 of ' + deckSlides.length;
+
+  // Show deck
+  document.getElementById('deck-nodata').style.display = 'none';
+  document.getElementById('deck-ready').style.display  = 'block';
+}
+
+function renderDeckSlide() {
+  const viewer = document.getElementById('deck-viewer');
+  if (!viewer || !deckSlides[deckCurrent]) return;
+  viewer.innerHTML = '<div style="width:100%;height:100%">' + deckSlides[deckCurrent] + '</div>';
+  document.getElementById('deck-counter').textContent = 'Slide ' + (deckCurrent+1) + ' of ' + deckSlides.length;
+  // Update thumb borders
+  deckSlides.forEach((_,i) => {
+    const t = document.getElementById('deck-thumb-'+i);
+    if (t) t.style.borderColor = i===deckCurrent?'#1a3caa':'#e4e3df';
+  });
+}
+
+function deckNext() { if(deckCurrent < deckSlides.length-1){ deckCurrent++; renderDeckSlide(); } }
+function deckPrev() { if(deckCurrent > 0){ deckCurrent--; renderDeckSlide(); } }
+function jumpDeckSlide(i) { deckCurrent = i; renderDeckSlide(); }
+
+</script>
+</body>
+</html>
