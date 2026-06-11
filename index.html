@@ -579,6 +579,42 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   padding:2rem;text-align:center;color:var(--ink-3);font-size:13px;margin-bottom:1.5rem
 }
 
+/* Connected CFO flow */
+.welcome-back-banner{
+  display:none;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+  padding:14px 16px;border-radius:var(--r);margin-bottom:1.25rem;
+  background:linear-gradient(135deg,var(--blue-bg) 0%,var(--green-bg) 100%);
+  border:1px solid #c7d2ef
+}
+.wb-text{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--ink-2)}
+.wb-text strong{font-size:14px;color:var(--ink)}
+.wb-actions{display:flex;gap:8px;flex-wrap:wrap}
+.connected-flow-panel{
+  display:none;background:var(--white);border:1px solid var(--border);border-radius:var(--r);
+  padding:1.25rem 1.5rem;margin:0 0 1.5rem;
+  box-shadow:0 8px 24px rgba(10,22,40,0.04)
+}
+.cf-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1rem;flex-wrap:wrap}
+.cf-eyebrow{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.8px;color:var(--green);margin-bottom:4px}
+.cf-title{font-size:17px;font-weight:800;color:var(--ink);letter-spacing:-0.03em}
+.cf-sub{font-size:13px;color:var(--ink-3);line-height:1.55;margin-top:6px;max-width:720px}
+.cf-sync-badge{font-size:11px;font-weight:700;color:var(--green);background:var(--green-bg);padding:6px 10px;border-radius:999px;border:1px solid #cceedd;white-space:nowrap}
+.cf-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1rem}
+.cf-card{background:var(--off);border:1px solid var(--border);border-radius:12px;padding:12px 14px}
+.cf-card-muted{opacity:0.72}
+.cf-card-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--ink-3);margin-bottom:6px}
+.cf-card-value{font-size:20px;font-weight:900;color:var(--ink);letter-spacing:-0.04em;line-height:1.1}
+.cf-card-delta{font-size:11px;font-weight:700;margin-top:4px;display:inline-block}
+.cf-card-delta.up{color:var(--green)}
+.cf-card-delta.down{color:var(--red)}
+.cf-card-note{font-size:11px;color:var(--ink-3);margin-top:6px;line-height:1.4}
+.cf-actions{display:flex;gap:8px;flex-wrap:wrap}
+.nav-company-badge{
+  display:none;align-items:center;max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  font-size:11px;font-weight:700;color:var(--blue);background:var(--blue-bg);padding:5px 10px;border-radius:999px;
+  border:1px solid #c7d2ef;margin-right:6px
+}
+
 /* Bot page */
 .bot-layout{display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:stretch}
 .clara-avatar-panel{
@@ -747,7 +783,8 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   .clara-caption,.clara-voice-toggle-row{display:none}
   .bot-split{grid-template-columns:1fr;height:auto;min-height:520px}
   .rpt-charts-grid{grid-template-columns:1fr}
-  .stmt-type-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cf-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .nav-company-badge{display:none!important}
 }
 
 @media (max-width: 560px) {
@@ -789,6 +826,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
     <button class="nav-link" onclick="goPage('bot',this)">CFO Advisor</button>
     <button class="nav-link" onclick="goPage('health',this)">Company Health</button>
   </div>
+  <span class="nav-company-badge" id="nav-company-badge"></span>
   <button class="nav-cta" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Get Started Free</button>
 </nav>
 
@@ -808,7 +846,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
         <button class="btn-ghost" onclick="goPage('kpi',document.querySelectorAll('.nav-link')[3])">Explore the KPI library</button>
       </div>
       <div class="hero-trust">
-        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Your data is never stored</div>
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Saved privately in your browser</div>
         <div class="trust-sep"></div>
         <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Results in under 60 seconds</div>
         <div class="trust-sep"></div>
@@ -1019,6 +1057,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
         </div>
         <input type="hidden" id="statement-type" value="income_statement">
         <div class="analysis-hint" id="statement-hint">Profit &amp; loss showing revenue, expenses, and net income for the period.</div>
+        <div class="welcome-back-banner" id="welcome-back-banner"></div>
         <label class="upload-zone-big" for="analysis-file" id="analysis-dropzone">
           <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
           <div class="uz-title" id="uz-title">Drop your Income Statement (P&amp;L) here</div>
@@ -1047,6 +1086,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       </div>
 
       <div class="ai-status pending" id="ai-status">Instant local preview ready. AI CFO analysis will appear here when the backend is connected.</div>
+      <div class="connected-flow-panel" id="connected-flow-panel"></div>
       <div class="health-save-banner" id="health-save-banner"></div>
 
       <div class="metrics-grid" id="rpt-metrics"></div>
@@ -1361,6 +1401,7 @@ function goPage(id, btn) {
   window.scrollTo(0, 0);
   if (id === 'health' && typeof renderHealthPage === 'function') renderHealthPage();
   if (id === 'bot' && typeof ensureBotInit === 'function') ensureBotInit();
+  if (id === 'analysis' && typeof renderWelcomeBackBanner === 'function') renderWelcomeBackBanner();
 }
 
 // ── HERO CHARTS ──────────────────────────────────────
@@ -1382,6 +1423,7 @@ window.addEventListener('load', () => {
   initUploadDropzone();
   updateStatementUploadCopy();
   if (typeof initHealthPage === 'function') initHealthPage();
+  if (typeof hydrateAppFromStore === 'function') hydrateAppFromStore();
 });
 
 // ── KPI LIBRARY ──────────────────────────────────────
@@ -2373,7 +2415,11 @@ function applyAIReport(report, provider, model) {
   }
 
   setAIStatus(`AI CFO analysis generated${provider ? ' with ' + provider : ''}${model ? ' (' + model + ')' : ''}.`, 'success');
-  if (typeof composeAndRenderDeck === 'function' && deckSourceData) composeAndRenderDeck();
+  if (typeof updateCompanyAIReport === 'function') {
+    updateCompanyAIReport(report);
+  } else if (typeof composeAndRenderDeck === 'function' && deckSourceData) {
+    composeAndRenderDeck();
+  }
 }
 
 async function extractPDFText(arrayBuffer, filename) {
@@ -2725,7 +2771,9 @@ function renderReport(d) {
   document.getElementById('rpt-summary').textContent = buildReportSummary(d);
 
   syncClaraWithData(d);
-  if (type === 'income_statement') {
+  if (typeof recordCompanyUpload === 'function') {
+    recordCompanyUpload(d, window.latestAIReport);
+  } else if (type === 'income_statement') {
     buildDeck(d);
     if (typeof saveAnalysisToHealthFromReport === 'function') saveAnalysisToHealthFromReport(d);
   }
@@ -2757,6 +2805,7 @@ Speak like a trusted advisor, not a report. Use their exact numbers. Keep respon
 
 
 </script>
+<script src="company-store.js"></script>
 <script src="deck-engine.js"></script>
 <script src="health-engine.js"></script>
 <script src="clara-avatar.js"></script>

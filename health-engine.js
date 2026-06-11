@@ -24,6 +24,12 @@ let healthPeriodMonths = 6;
 let healthSelectedChartMetrics = ['grossMargin', 'netMargin', 'netIncome'];
 
 function loadHealthStore() {
+  if (typeof loadCompanyStore === 'function') {
+    healthStore = loadCompanyStore().health;
+    if (!healthStore.goals) healthStore.goals = defaultHealthGoals();
+    if (!Array.isArray(healthStore.entries)) healthStore.entries = [];
+    return healthStore;
+  }
   try {
     const raw = localStorage.getItem(HEALTH_STORAGE_KEY);
     healthStore = raw ? JSON.parse(raw) : createEmptyHealthStore();
@@ -51,6 +57,10 @@ function defaultHealthGoals() {
 }
 
 function saveHealthStore() {
+  if (typeof persistHealthSlice === 'function') {
+    persistHealthSlice(healthStore);
+    return;
+  }
   localStorage.setItem(HEALTH_STORAGE_KEY, JSON.stringify(healthStore));
 }
 
@@ -569,6 +579,10 @@ function renderHealthHistory() {
 
 function clearHealthData() {
   if (!confirm('Remove all stored Company Health data? This cannot be undone.')) return;
+  if (typeof clearCompanyMemory === 'function') {
+    clearCompanyMemory();
+    return;
+  }
   healthStore = createEmptyHealthStore();
   saveHealthStore();
   renderHealthPage();

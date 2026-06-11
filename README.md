@@ -40,6 +40,17 @@ Use the Node server when you want AI-generated CFO reports and Clara chat. API k
 
 When the backend is configured, uploaded financials first show an instant local preview, then the AI CFO engine replaces the report summary, findings, and action plan with generated analysis.
 
+## Connected CFO workspace
+
+Uploads are remembered across the app in your browser:
+
+- **Financial Analysis** — latest report and AI findings
+- **Company Health** — monthly history and goals
+- **Slide Deck** — auto-built from your latest income statement
+- **Clara (CFO Advisor)** — knows your numbers and month-over-month changes
+
+Return anytime and use **View saved report** on the Financial Analysis page to pick up where you left off.
+
 On the Financial Analysis page, choose the statement type before uploading:
 
 - Income Statement (P&L)
