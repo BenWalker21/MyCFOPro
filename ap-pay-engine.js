@@ -125,7 +125,7 @@ function renderApCashPlanner(d) {
   const panel = document.getElementById('ap-cash-planner');
   if (!panel) return;
 
-  if ((d.statementType || '') !== 'ap_balance') {
+  if ((d.statementType || '') !== 'unpaid_bills') {
     panel.style.display = 'none';
     return;
   }
@@ -139,9 +139,9 @@ function renderApCashPlanner(d) {
   panel.innerHTML = `
     <div class="ap-planner-head">
       <div>
-        <div class="ap-planner-eyebrow">AP Cash Planner</div>
-        <div class="ap-planner-title">Who to pay with the cash you have</div>
-        <div class="ap-planner-sub">Prioritizes oldest vendor balances first — 90+ and 61–90 day bills before current invoices. Protects supply chain when cash is tight.</div>
+        <div class="ap-planner-eyebrow">Unpaid Bills Planner</div>
+        <div class="ap-planner-title">Which bills to pay with the cash you have</div>
+        <div class="ap-planner-sub">Prioritizes oldest vendor balances first — 90+ and 61–90 day bills before current invoices.</div>
       </div>
       <div class="ap-planner-stats">
         <div class="ap-planner-stat"><span>Total AP</span><strong>${fc(totalAp)}</strong></div>
@@ -174,7 +174,7 @@ function parseApCashInput() {
 }
 
 function updateApPaymentPlan() {
-  if (!currentData || currentData.statementType !== 'ap_balance') return;
+  if (!currentData || currentData.statementType !== 'unpaid_bills') return;
 
   const vendors = currentData.counterparties?.length ? currentData.counterparties : currentData.topCounterparties || [];
   const lines = buildApPayableLines(vendors);

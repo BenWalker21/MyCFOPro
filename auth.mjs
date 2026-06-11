@@ -201,7 +201,9 @@ function normalizeCloudStore(store) {
       trackedKpiIds: [],
       kpiSnapshots: {}
     },
-    deck: store.deck && typeof store.deck === 'object' ? store.deck : { optionsState: {} }
+    deck: store.deck && typeof store.deck === 'object' ? store.deck : { optionsState: {} },
+    reportsByType: store.reportsByType && typeof store.reportsByType === 'object' ? store.reportsByType : {},
+    dashboardPref: typeof store.dashboardPref === 'string' ? store.dashboardPref : 'owner'
   };
 }
 

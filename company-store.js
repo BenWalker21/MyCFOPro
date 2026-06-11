@@ -10,6 +10,8 @@ function createEmptyCompanyStore() {
     company: '',
     lastUpdated: null,
     latest: null,
+    reportsByType: {},
+    dashboardPref: 'owner',
     history: [],
     health: {
       company: '',
@@ -54,6 +56,39 @@ function normalizeCompanyStore() {
   if (!companyStore.health.kpiSnapshots) companyStore.health.kpiSnapshots = {};
   if (!Array.isArray(companyStore.history)) companyStore.history = [];
   if (!companyStore.deck) companyStore.deck = { optionsState: {} };
+  if (!companyStore.reportsByType) companyStore.reportsByType = {};
+  if (companyStore.latest?.financials) {
+    const legacyType = companyStore.latest.statementType || companyStore.latest.financials.statementType || 'income_statement';
+    if (!companyStore.reportsByType[legacyType]) {
+      companyStore.reportsByType[legacyType] = { ...companyStore.latest };
+    }
+  }
+}
+
+function getSavedReportForType(statementType) {
+  loadCompanyStore();
+  const type = statementType || 'income_statement';
+  return companyStore.reportsByType?.[type] || null;
+}
+
+function saveReportForType(financials, aiReport) {
+  loadCompanyStore();
+  const d = trimFinancialsForStore(financials);
+  if (!d) return null;
+  const type = d.statementType || 'income_statement';
+  const monthKey = parsePeriodToMonthKey(d.period) || defaultMonthKey();
+  const entry = {
+    financials: d,
+    aiReport: aiReport ? trimAIReportForStore(aiReport) : (companyStore.reportsByType?.[type]?.aiReport || null),
+    statementType: type,
+    monthKey,
+    monthLabel: monthKeyToLabel(monthKey),
+    filename: d.filename || '',
+    uploadedAt: new Date().toISOString()
+  };
+  companyStore.reportsByType[type] = entry;
+  companyStore.latest = entry;
+  return entry;
 }
 
 function migrateLegacyHealthIntoStore() {
@@ -143,44 +178,40 @@ function recordCompanyUpload(financials, aiReport) {
   const monthKey = parsePeriodToMonthKey(d.period) || defaultMonthKey();
   if (d.company) companyStore.company = d.company;
 
-  companyStore.latest = {
-    financials: d,
-    aiReport: aiReport ? trimAIReportForStore(aiReport) : (companyStore.latest?.aiReport || null),
-    statementType: d.statementType || 'income_statement',
-    monthKey,
-    monthLabel: monthKeyToLabel(monthKey),
-    filename: d.filename || '',
-    uploadedAt: new Date().toISOString()
-  };
+  saveReportForType(financials, aiReport);
 
   const snap = buildHistorySnapshot(d);
-  companyStore.history = companyStore.history.filter(h => h.monthKey !== snap.monthKey);
+  companyStore.history = companyStore.history.filter(h => !(h.monthKey === snap.monthKey && h.statementType === snap.statementType));
   companyStore.history.push(snap);
   companyStore.history.sort((a, b) => a.monthKey.localeCompare(b.monthKey));
-  if (companyStore.history.length > 36) companyStore.history = companyStore.history.slice(-36);
+  if (companyStore.history.length > 48) companyStore.history = companyStore.history.slice(-48);
 
   saveCompanyStore();
   syncGlobalsFromStore();
-  runConnectedPipeline(d, companyStore.latest.aiReport);
+  runConnectedPipeline(d, companyStore.reportsByType[d.statementType || 'income_statement']?.aiReport || null);
 }
 
 function updateCompanyAIReport(report) {
   loadCompanyStore();
-  if (!companyStore.latest) return;
-  companyStore.latest.aiReport = trimAIReportForStore(report);
+  const type = companyStore.latest?.statementType || companyStore.latest?.financials?.statementType || 'income_statement';
+  if (!companyStore.reportsByType?.[type]) return;
+  companyStore.reportsByType[type].aiReport = trimAIReportForStore(report);
+  companyStore.latest = companyStore.reportsByType[type];
   companyStore.lastUpdated = new Date().toISOString();
   saveCompanyStore();
   syncGlobalsFromStore();
-  if (companyStore.latest.financials) {
-    runConnectedPipeline(companyStore.latest.financials, companyStore.latest.aiReport);
+  if (companyStore.reportsByType[type].financials) {
+    runConnectedPipeline(companyStore.reportsByType[type].financials, companyStore.reportsByType[type].aiReport);
   }
 }
 
 function syncGlobalsFromStore() {
   loadCompanyStore();
-  if (companyStore.latest?.financials) {
-    currentData = { ...companyStore.latest.financials };
-    window.latestAIReport = companyStore.latest.aiReport || null;
+  const activeType = typeof getStatementType === 'function' ? getStatementType() : 'income_statement';
+  const saved = getSavedReportForType(activeType) || companyStore.latest;
+  if (saved?.financials) {
+    currentData = { ...saved.financials };
+    window.latestAIReport = saved.aiReport || null;
   }
 }
 
@@ -344,34 +375,41 @@ function renderWelcomeBackBanner() {
   if (!banner) return;
 
   loadCompanyStore();
-  if (!companyStore.latest?.financials) {
+  const activeType = typeof getStatementType === 'function' ? getStatementType() : 'income_statement';
+  const saved = getSavedReportForType(activeType);
+  if (!saved?.financials) {
     banner.style.display = 'none';
     return;
   }
 
-  const s = getConnectedFlowSummary();
+  const cfg = typeof STATEMENT_TYPES !== 'undefined' ? (STATEMENT_TYPES[activeType] || STATEMENT_TYPES.income_statement) : { label: 'Analysis' };
+  const h = typeof calcHealthScore === 'function' ? calcHealthScore(saved.financials) : 0;
   banner.style.display = 'flex';
   banner.innerHTML = `
     <div class="wb-text">
-      <strong>Welcome back — ${escapeHtml(s.company)}</strong>
-      <span>Your ${escapeHtml(s.monthLabel)} analysis is saved. Health ${s.healthScore}/100 · ${s.monthsTracked} month${s.monthsTracked === 1 ? '' : 's'} on file.</span>
+      <strong>Saved ${escapeHtml(cfg.label)}</strong>
+      <span>${escapeHtml(saved.monthLabel || 'On file')} · Health ${h}/100 · ${escapeHtml(saved.filename || 'Uploaded report')}</span>
     </div>
     <div class="wb-actions">
-      <button class="btn-blue" style="font-size:12px;padding:8px 14px" onclick="restoreLastAnalysis()">View saved report</button>
-      <button class="btn-outline" style="font-size:12px;padding:8px 14px" onclick="document.getElementById('analysis-file').click()">Upload new month</button>
+      <button class="btn-blue" style="font-size:12px;padding:8px 14px" onclick="restoreReportForType('${activeType}')">View saved report</button>
+      <button class="btn-outline" style="font-size:12px;padding:8px 14px" onclick="document.getElementById('analysis-file').click()">Upload new file</button>
     </div>`;
 }
 
-function restoreLastAnalysis() {
+function restoreReportForType(statementType) {
   loadCompanyStore();
-  if (!companyStore.latest?.financials) return;
-  syncGlobalsFromStore();
-  renderReport(companyStore.latest.financials);
-  if (companyStore.latest.aiReport) {
-    applyAIReportFromStore(companyStore.latest.aiReport);
-  }
+  const saved = getSavedReportForType(statementType);
+  if (!saved?.financials) return;
+  currentData = { ...saved.financials };
+  window.latestAIReport = saved.aiReport || null;
+  renderReport(saved.financials);
+  if (saved.aiReport) applyAIReportFromStore(saved.aiReport);
   renderConnectedFlowPanel();
-  document.getElementById('analysis-report').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function restoreLastAnalysis() {
+  const activeType = typeof getStatementType === 'function' ? getStatementType() : 'income_statement';
+  restoreReportForType(activeType);
 }
 
 function applyAIReportFromStore(report) {

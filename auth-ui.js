@@ -40,6 +40,7 @@ function setAuthSession(user, token) {
   else localStorage.removeItem(AUTH_USER_KEY);
   updateAuthNav();
   renderCloudSyncBanner();
+  if (typeof renderUsageGateBanner === 'function') renderUsageGateBanner();
 }
 
 function loadAuthSessionFromStorage() {
@@ -159,7 +160,7 @@ async function submitSignUp(event) {
     await pushCompanyToCloud(true);
     if (typeof hydrateAppFromStore === 'function') hydrateAppFromStore();
     if (typeof showToast === 'function') {
-      showToast('Account created — you are signed in. No email confirmation needed.');
+      showToast('Account created — you are signed in with full access to MyCFOPro.');
     }
   } catch (error) {
     errEl.textContent = error.message;

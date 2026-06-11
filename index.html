@@ -738,6 +738,25 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 .cloud-sync-banner.prompt{background:var(--blue-bg);border:1px solid #c7d2ef;color:var(--ink-2)}
 .cloud-sync-banner.synced{background:var(--green-bg);border:1px solid #cceedd;color:var(--ink-2)}
 .cloud-sync-banner.error{background:var(--amber-bg);border:1px solid #f4dfad;color:var(--ink-2)}
+.usage-gate-banner{display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 14px;border-radius:var(--rs);margin:12px 0 0;font-size:13px}
+.usage-gate-banner.trial{background:var(--blue-bg);border:1px solid #c7d2ef;color:var(--ink-2)}
+.usage-gate-banner.locked{background:var(--amber-bg);border:1px solid #f4dfad;color:var(--ink-2)}
+.dash-pref-panel{margin:16px 0 0;padding:14px;border:1px solid var(--border);border-radius:var(--rs);background:#fff}
+.dash-pref-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.dash-pref-title{font-size:13px;font-weight:700;color:var(--ink)}
+.dash-pref-sub{font-size:12px;color:var(--ink-3)}
+.dash-pref-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
+.dash-pref-card{padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;text-align:left;transition:border-color .15s,background .15s}
+.dash-pref-card.active{border-color:var(--blue);background:var(--blue-bg)}
+.dash-pref-card-name{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:3px}
+.dash-pref-card-desc{font-size:11px;color:var(--ink-3);line-height:1.4}
+.ar-collections-panel{margin:16px 0;padding:16px;border:1px solid var(--border);border-radius:var(--rs);background:#fff}
+.ar-collections-head{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:8px}
+.ar-collections-sub{font-size:12px;color:var(--ink-3);margin-bottom:12px}
+.ar-past-due-list{display:grid;gap:8px;margin-bottom:14px}
+.ar-past-due-item{display:flex;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:10px;background:var(--amber-bg);border:1px solid #f4dfad;font-size:12px}
+.ar-email-box{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;font-size:12px;line-height:1.6;white-space:pre-wrap;color:var(--ink-2)}
+.ar-email-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
 .auth-modal-overlay{
   display:none;position:fixed;inset:0;background:rgba(10,22,40,0.55);z-index:1000;
   align-items:center;justify-content:center;padding:1rem
@@ -988,7 +1007,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   <div class="auth-nav">
     <div class="auth-nav-signed-out" id="auth-nav-signed-out">
       <button class="auth-nav-btn" onclick="openAuthModal('signin')">Sign in</button>
-      <button class="auth-nav-btn primary" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Get Started Free</button>
+      <button class="auth-nav-btn primary" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Get Started</button>
     </div>
     <div class="auth-nav-signed-in" id="auth-nav-signed-in">
       <span class="auth-nav-email" id="auth-nav-email"></span>
@@ -1024,7 +1043,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
           <div class="auth-field"><label>Name</label><input type="text" id="auth-signup-name" autocomplete="name" placeholder="Your name"></div>
           <div class="auth-field"><label>Email</label><input type="email" id="auth-signup-email" required autocomplete="email"></div>
           <div class="auth-field"><label>Password</label><input type="password" id="auth-signup-password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></div>
-          <p class="auth-note">Your account is ready immediately — no email confirmation link during beta.</p>
+          <p class="auth-note">Your account includes unlimited analyses, cloud sync, Clara, health tracking, and slide decks.</p>
           <button type="submit" class="auth-submit">Create account</button>
         </form>
       </div>
@@ -1044,11 +1063,11 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       <h1 class="hero-h1">Your numbers,<br><em>finally working for you.</em></h1>
       <p class="hero-sub">Upload your financials and get a complete CFO experience — instant analysis, CEO-ready slide decks, KPI tracking, and a CFO advisor you can actually talk to.</p>
       <div class="hero-actions">
-        <button class="btn-gold" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Analyze my financials free</button>
+        <button class="btn-gold" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Analyze my financials</button>
         <button class="btn-ghost" onclick="goPage('kpi',document.querySelectorAll('.nav-link')[3])">Explore the KPI library</button>
       </div>
       <div class="hero-trust">
-        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Free account syncs across devices</div>
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Secure cloud sync across devices</div>
         <div class="trust-sep"></div>
         <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Results in under 60 seconds</div>
         <div class="trust-sep"></div>
@@ -1123,7 +1142,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       <div class="stat-item"><div class="stat-num">$180K</div><div class="stat-label">Average CFO salary MyCFOPro replaces</div></div>
       <div class="stat-item"><div class="stat-num">&lt;60s</div><div class="stat-label">From upload to full CFO report</div></div>
       <div class="stat-item"><div class="stat-num">17+</div><div class="stat-label">Essential KPI calculators with benchmarks</div></div>
-      <div class="stat-item"><div class="stat-num">Free</div><div class="stat-label">Full access while we polish locally</div></div>
+      <div class="stat-item"><div class="stat-num">$49</div><div class="stat-label">Pro plan — full CFO workspace</div></div>
     </div>
     <div class="use-case-grid">
       <div class="use-case-card">
@@ -1146,37 +1165,34 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   <section class="pricing-section">
     <div class="pricing-inner">
       <div class="section-eyebrow">Pricing</div>
-      <h2 class="section-h2">Simple, honest pricing.</h2>
-      <p class="section-sub">No contracts. Cancel anytime.</p>
+      <h2 class="section-h2">Simple, transparent pricing.</h2>
+      <p class="section-sub">No contracts. Cancel anytime. Start with one free analysis.</p>
       <div class="plans">
         <div class="plan">
-          <div class="plan-name">Starter</div>
-          <div class="plan-price"><sup>$</sup>0<sub>/mo</sub></div>
-          <p class="plan-desc">See what MyCFOPro can do. No credit card required.</p>
+          <div class="plan-name">Preview</div>
+          <div class="plan-price"><sup>$</sup>0</div>
+          <p class="plan-desc">One full analysis to see MyCFOPro in action. No credit card.</p>
           <ul class="plan-features">
-            <li>Financial analysis &amp; CFO report</li>
-            <li>17 KPI calculators</li>
-            <li>Company health tracking</li>
-            <li>CEO slide deck builder</li>
-            <li>CFO Advisor (Clara)</li>
-            <li>Cloud sync with free account</li>
+            <li>1 financial analysis &amp; CFO report</li>
+            <li>All statement types (P&amp;L, BS, AR, AP)</li>
+            <li>Instant charts &amp; action items</li>
           </ul>
-          <button class="plan-btn" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Start for free</button>
+          <button class="plan-btn" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Try one analysis</button>
         </div>
         <div class="plan featured">
-          <div class="plan-badge">Planned</div>
+          <div class="plan-badge">Most popular</div>
           <div class="plan-name">Pro</div>
           <div class="plan-price"><sup>$</sup>49<sub>/mo</sub></div>
-          <p class="plan-desc">Everything unlimited, plus monthly email delivery when billing launches.</p>
+          <p class="plan-desc">Unlimited analyses, Clara advisor, health tracking, and slide decks.</p>
           <ul class="plan-features">
-            <li>Unlimited analyses</li>
+            <li>Unlimited financial analyses</li>
             <li>CEO slide deck builder</li>
             <li>CFO Advisor (Clara)</li>
             <li>Company health tracking</li>
-            <li>PDF &amp; PowerPoint export</li>
-            <li>Monthly email delivery</li>
+            <li>17+ KPI calculators</li>
+            <li>Cloud sync across devices</li>
           </ul>
-          <button class="plan-btn primary disabled-plan" onclick="showPricingComingSoon('Pro')">Pro checkout coming soon</button>
+          <button class="plan-btn primary" onclick="openAuthModal('signup')">Create account — get Pro access</button>
         </div>
         <div class="plan">
           <div class="plan-name">Business</div>
@@ -1190,10 +1206,9 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
             <li>White-label reports</li>
             <li>Priority support</li>
           </ul>
-          <button class="plan-btn disabled-plan" onclick="showPricingComingSoon('Business')">Business checkout coming soon</button>
+          <button class="plan-btn" onclick="showPricingComingSoon('Business')">Contact for Business</button>
         </div>
       </div>
-      <p class="plan-pricing-note">All features are currently free while we perfect the product locally. Paid plans and checkout are coming soon — no surprise charges.</p>
     </div>
   </section>
 
@@ -1201,9 +1216,9 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   <section class="cta-banner">
     <div class="cta-inner">
       <h2 class="cta-h2">Know your numbers.<br>Run your business.</h2>
-      <p class="cta-sub">Your first analysis is free. No credit card. No setup. Just answers.</p>
+      <p class="cta-sub">Try one analysis free. Create an account for unlimited access, Clara, health tracking, and slide decks.</p>
       <div class="cta-actions">
-        <button class="btn-gold" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Analyze my financials free</button>
+        <button class="btn-gold" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Analyze my financials</button>
         <button class="btn-ghost" onclick="goPage('bot',document.querySelectorAll('.nav-link')[4])">Talk to Clara first</button>
       </div>
     </div>
@@ -1254,11 +1269,31 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
           <button type="button" class="stmt-type-card" data-value="ap_balance" onclick="selectStatementType('ap_balance', this)">
             <span class="stmt-type-icon">AP</span>
             <span class="stmt-type-name">AP Balance</span>
-            <span class="stmt-type-desc">Vendor aging buckets</span>
+            <span class="stmt-type-desc">Vendor aging &amp; payables exposure</span>
+          </button>
+          <button type="button" class="stmt-type-card" data-value="unpaid_bills" onclick="selectStatementType('unpaid_bills', this)">
+            <span class="stmt-type-icon">$</span>
+            <span class="stmt-type-name">Unpaid Bills</span>
+            <span class="stmt-type-desc">Which bills to pay with available cash</span>
           </button>
         </div>
         <input type="hidden" id="statement-type" value="income_statement">
+        <div class="dash-pref-panel">
+          <div class="dash-pref-head">
+            <div>
+              <div class="dash-pref-title">Dashboard style</div>
+              <div class="dash-pref-sub">Tell us what you want to see — we build the report around it. Selected: <strong id="dash-pref-label">Owner overview</strong></div>
+            </div>
+          </div>
+          <div class="dash-pref-grid">
+            <button type="button" class="dash-pref-card active" data-pref="owner" onclick="setDashboardPref('owner')"><div class="dash-pref-card-name">Owner overview</div><div class="dash-pref-card-desc">Profit, cash, and priorities</div></button>
+            <button type="button" class="dash-pref-card" data-pref="cash" onclick="setDashboardPref('cash')"><div class="dash-pref-card-name">Cash focus</div><div class="dash-pref-card-desc">Runway, liquidity, collections</div></button>
+            <button type="button" class="dash-pref-card" data-pref="profit" onclick="setDashboardPref('profit')"><div class="dash-pref-card-name">Profitability</div><div class="dash-pref-card-desc">Margins and cost drivers</div></button>
+            <button type="button" class="dash-pref-card" data-pref="board" onclick="setDashboardPref('board')"><div class="dash-pref-card-name">Board ready</div><div class="dash-pref-card-desc">Clean KPIs for lenders &amp; boards</div></button>
+          </div>
+        </div>
         <div class="analysis-hint" id="statement-hint">Profit &amp; loss showing revenue, expenses, and net income for the period.</div>
+        <div class="usage-gate-banner" id="usage-gate-banner"></div>
         <div class="welcome-back-banner" id="welcome-back-banner"></div>
         <div class="cloud-sync-banner" id="cloud-sync-banner"></div>
         <label class="upload-zone-big" for="analysis-file" id="analysis-dropzone">
@@ -1295,6 +1330,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       <div class="metrics-grid" id="rpt-metrics"></div>
 
       <div class="ap-cash-planner" id="ap-cash-planner" style="display:none"></div>
+      <div class="ar-collections-panel" id="ar-collections-panel" style="display:none"></div>
 
       <div class="rpt-charts-grid">
         <div class="health-chart-area" style="margin:0">
@@ -1615,6 +1651,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 <script>
 // ── NAV ──────────────────────────────────────────────
 function goPage(id, btn) {
+  if (typeof requireAccountForPage === 'function' && !requireAccountForPage(id, btn)) return;
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-link').forEach(n => n.classList.remove('active'));
   document.getElementById('page-'+id).classList.add('active');
@@ -1623,7 +1660,10 @@ function goPage(id, btn) {
   if (id === 'health' && typeof renderHealthPage === 'function') renderHealthPage();
   if (id === 'kpi' && typeof initKpiPage === 'function') initKpiPage();
   if (id === 'bot' && typeof ensureBotInit === 'function') ensureBotInit();
-  if (id === 'analysis' && typeof renderWelcomeBackBanner === 'function') renderWelcomeBackBanner();
+  if (id === 'analysis') {
+    if (typeof renderWelcomeBackBanner === 'function') renderWelcomeBackBanner();
+    if (typeof renderUsageGateBanner === 'function') renderUsageGateBanner();
+  }
 }
 
 // ── HERO CHARTS ──────────────────────────────────────
@@ -1712,7 +1752,7 @@ function showToast(message, durationMs) {
 }
 
 function showPricingComingSoon(tier) {
-  showToast(`${tier} checkout is coming soon. Everything is free while we polish the product locally.`);
+  showToast(`${tier} plan — contact hello@mycfopro.ai or create a Pro account to get started today.`);
 }
 
 window.addEventListener('load', () => {
@@ -1726,10 +1766,13 @@ window.addEventListener('load', () => {
   if (typeof initAuth === 'function') {
     initAuth().then(() => {
       if (typeof hydrateAppFromStore === 'function') hydrateAppFromStore();
+      if (typeof renderUsageGateBanner === 'function') renderUsageGateBanner();
     });
   } else if (typeof hydrateAppFromStore === 'function') {
     hydrateAppFromStore();
   }
+  if (typeof initDashboardPrefPicker === 'function') initDashboardPrefPicker();
+  if (typeof renderUsageGateBanner === 'function') renderUsageGateBanner();
 });
 
 // ── CFO BOT ──────────────────────────────────────────
@@ -1913,9 +1956,16 @@ const STATEMENT_TYPES = {
   ap_balance: {
     label: 'AP Balance (Aging)',
     reportLabel: 'Accounts Payable Analysis',
-    hint: 'What you owe vendors and how those balances are aging.',
+    hint: 'What you owe vendors — aging exposure, concentration, and payment risk.',
     uploadTitle: 'Drop your AP Balance / Aging report here',
-    uploadSub: 'Vendor balances by aging bucket (Current, 1–30, 31–60, 61–90, 90+). Includes AP Cash Planner recommendations.'
+    uploadSub: 'Vendor balances by aging bucket (Current, 1–30, 31–60, 61–90, 90+).'
+  },
+  unpaid_bills: {
+    label: 'Unpaid Bills',
+    reportLabel: 'Bill Payment Planner',
+    hint: 'Upload vendor aging to get a prioritized payment plan based on available cash.',
+    uploadTitle: 'Drop your unpaid bills / AP aging report here',
+    uploadSub: 'Include vendor names and aging columns for the best payment recommendations.'
   }
 };
 
@@ -1930,6 +1980,12 @@ function selectStatementType(type, button) {
     card.classList.toggle('active', card === button);
   });
   updateStatementUploadCopy();
+  if (typeof renderWelcomeBackBanner === 'function') renderWelcomeBackBanner();
+  if (typeof renderUsageGateBanner === 'function') renderUsageGateBanner();
+  const reportEl = document.getElementById('analysis-report');
+  if (reportEl && reportEl.style.display !== 'none' && currentData && (currentData.statementType || 'income_statement') !== type) {
+    resetAnalysis();
+  }
 }
 
 function updateStatementUploadCopy() {
@@ -1998,8 +2054,35 @@ function parseFinancialRows(rows, filename, statementType) {
     case 'cash_flow': return parseCashFlowRows(rows, filename);
     case 'ar_summary': return parseAgingRows(rows, filename, 'ar_summary');
     case 'ap_balance': return parseAgingRows(rows, filename, 'ap_balance');
+    case 'unpaid_bills': return parseAgingRows(rows, filename, 'unpaid_bills');
     default: return parseQBORows(rows, filename);
   }
+}
+
+function detectAgingColumnMap(rows) {
+  for (let ri = 0; ri < Math.min(rows.length, 12); ri++) {
+    const cells = (rows[ri] || []).map(c => String(c || '').trim().toLowerCase());
+    const map = {};
+    cells.forEach((cell, ci) => {
+      if (!cell) return;
+      if (/^current|not due/.test(cell)) map.current = ci;
+      else if (/^1.?[- ]?30|^0.?[- ]?30/.test(cell)) map.d30 = ci;
+      else if (/^31.?[- ]?60/.test(cell)) map.d60 = ci;
+      else if (/^61.?[- ]?90/.test(cell)) map.d90 = ci;
+      else if (/^90\+|^91\+|over 90|> ?90/.test(cell)) map.d90plus = ci;
+      else if (/^total\b|amount due|balance/.test(cell) && ci > 0) map.total = ci;
+    });
+    if (map.current !== undefined && (map.d30 !== undefined || map.d90plus !== undefined)) {
+      return { headerIndex: ri, colMap: map };
+    }
+  }
+  return null;
+}
+
+function readAgingCell(row, colIndex) {
+  if (colIndex === undefined || colIndex === null) return 0;
+  const val = cleanNum(row[colIndex]);
+  return val === null ? 0 : val;
 }
 
 function parseBalanceSheetRows(rows, filename) {
@@ -2105,23 +2188,49 @@ function parseAgingRows(rows, filename, statementType) {
     counterparties: []
   };
 
-  rows.forEach(row => {
+  const headerInfo = detectAgingColumnMap(rows);
+  const colMap = headerInfo?.colMap || null;
+  const startRow = headerInfo ? headerInfo.headerIndex + 1 : 0;
+
+  for (let ri = startRow; ri < rows.length; ri++) {
+    const row = rows[ri] || [];
     const label = String(row[0] || '').trim();
-    if (!label) return;
+    if (!label) continue;
     const ll = label.toLowerCase();
+    if (/^total\b|grand total|^report total/.test(ll)) {
+      const totalVal = colMap?.total !== undefined ? readAgingCell(row, colMap.total) : sumNumericColumns(row, 1);
+      if (totalVal) data.totalBalance = totalVal;
+      continue;
+    }
+    if (/customer|client|vendor|name|date due|aging|report|company|period|as of|^$/.test(ll) && ll.length < 4) continue;
+
+    if (colMap) {
+      const entry = {
+        name: label,
+        current: readAgingCell(row, colMap.current),
+        d30: readAgingCell(row, colMap.d30),
+        d60: readAgingCell(row, colMap.d60),
+        d90: readAgingCell(row, colMap.d90),
+        d90plus: readAgingCell(row, colMap.d90plus)
+      };
+      entry.val = colMap.total !== undefined ? readAgingCell(row, colMap.total) :
+        entry.current + entry.d30 + entry.d60 + entry.d90 + entry.d90plus;
+      if (entry.val > 0) data.counterparties.push(entry);
+      continue;
+    }
+
     const nums = row.slice(1).map(cleanNum);
     const numeric = nums.filter(v => v !== null);
-    if (!numeric.length) return;
+    if (!numeric.length) continue;
 
     if (/^current\b|not due/.test(ll)) data.agingBuckets.current = numeric[numeric.length - 1];
     else if (/1.?30|0.?30|1-30/.test(ll)) data.agingBuckets.d30 = numeric[numeric.length - 1];
     else if (/31.?60|31-60/.test(ll)) data.agingBuckets.d60 = numeric[numeric.length - 1];
     else if (/61.?90|61-90/.test(ll)) data.agingBuckets.d90 = numeric[numeric.length - 1];
     else if (/90\+|91\+|over 90|>90/.test(ll)) data.agingBuckets.d90plus = numeric[numeric.length - 1];
-    else if (/^total\b|grand total/.test(ll)) data.totalBalance = numeric[numeric.length - 1];
     else if (!/customer|client|vendor|name|date due|aging|report|company|period|as of/.test(ll)) {
       if (numeric.length >= 4) {
-        const entry = {
+        data.counterparties.push({
           name: label,
           current: numeric[0] || 0,
           d30: numeric[1] || 0,
@@ -2129,27 +2238,51 @@ function parseAgingRows(rows, filename, statementType) {
           d90: numeric[3] || 0,
           d90plus: numeric[4] || 0,
           val: numeric.reduce((sum, v) => sum + (v || 0), 0)
-        };
-        data.counterparties.push(entry);
-      } else {
+        });
+      } else if (numeric.length >= 1) {
         data.counterparties.push({ name: label, val: numeric[numeric.length - 1] });
       }
     }
-  });
+  }
+
+  finalizeAgingData(data);
+  return data;
+}
+
+function finalizeAgingData(data) {
+  const bucketSum = Object.values(data.agingBuckets).reduce((sum, v) => sum + (v || 0), 0);
+  if (data.counterparties.length && bucketSum === 0) {
+    data.counterparties.forEach(c => {
+      if ((c.d30 || c.d60 || c.d90 || c.d90plus || c.current)) {
+        data.agingBuckets.current += c.current || 0;
+        data.agingBuckets.d30 += c.d30 || 0;
+        data.agingBuckets.d60 += c.d60 || 0;
+        data.agingBuckets.d90 += c.d90 || 0;
+        data.agingBuckets.d90plus += c.d90plus || 0;
+      }
+    });
+  }
 
   if (!data.totalBalance) {
-    const bucketTotal = Object.values(data.agingBuckets).reduce((sum, v) => sum + (v || 0), 0);
+    const newBucketSum = Object.values(data.agingBuckets).reduce((sum, v) => sum + (v || 0), 0);
     const counterpartyTotal = data.counterparties.reduce((sum, item) => sum + (item.val || 0), 0);
-    data.totalBalance = bucketTotal || counterpartyTotal;
+    data.totalBalance = newBucketSum || counterpartyTotal;
   }
 
   data.overdueBalance = (data.agingBuckets.d30 || 0) + (data.agingBuckets.d60 || 0) +
     (data.agingBuckets.d90 || 0) + (data.agingBuckets.d90plus || 0);
   data.overduePct = data.totalBalance > 0 ? data.overdueBalance / data.totalBalance * 100 : 0;
+  data.pastDueAccounts = data.counterparties
+    .map(c => ({
+      name: c.name,
+      pastDue: (c.d30 || 0) + (c.d60 || 0) + (c.d90 || 0) + (c.d90plus || 0),
+      d90plus: c.d90plus || 0,
+      total: c.val || 0
+    }))
+    .filter(c => c.pastDue > 0)
+    .sort((a, b) => b.pastDue - a.pastDue);
   data.topCounterparties = [...data.counterparties].sort((a, b) => (b.val || 0) - (a.val || 0)).slice(0, 8);
   data.lineItems = data.topCounterparties.map(item => ({ label: item.name, val: item.val }));
-
-  return data;
 }
 
 function calcHealthScore(d) {
@@ -2170,7 +2303,7 @@ function calcHealthScore(d) {
     if ((d.financingCashFlow || 0) < 0 && (d.operatingCashFlow || 0) > 0) s += 6;
     return Math.max(0, Math.min(100, Math.round(s)));
   }
-  if (type === 'ar_summary' || type === 'ap_balance') {
+  if (type === 'ar_summary' || type === 'ap_balance' || type === 'unpaid_bills') {
     let s = 70;
     if (d.overduePct <= 15) s += 12; else if (d.overduePct <= 30) s += 4; else s -= 12;
     if (d.overduePct >= 45) s -= 10;
@@ -2210,16 +2343,17 @@ function buildReportMetrics(d) {
     ];
   }
 
-  if (type === 'ar_summary' || type === 'ap_balance') {
+  if (type === 'ar_summary' || type === 'ap_balance' || type === 'unpaid_bills') {
     const noun = type === 'ar_summary' ? 'receivable' : 'payable';
+    const label = type === 'unpaid_bills' ? 'Unpaid bills' : (type === 'ar_summary' ? 'AR' : 'AP');
     return [
-      { l: `Total ${type === 'ar_summary' ? 'AR' : 'AP'}`, v: fc(d.totalBalance || 0), n: `Total outstanding ${noun} balance`, f: '' },
+      { l: `Total ${label}`, v: fc(d.totalBalance || 0), n: `Total outstanding ${noun} balance`, f: '' },
       { l: 'Current', v: fc(d.agingBuckets.current || 0), n: 'Not yet overdue', f: 'flag-good' },
       { l: 'Overdue', v: fc(d.overdueBalance || 0), n: 'Past due balances', f: d.overduePct <= 20 ? 'flag-warn' : 'flag-bad' },
       { l: 'Overdue %', v: fp(d.overduePct || 0), n: 'Share of total balance', f: d.overduePct <= 15 ? 'flag-good' : d.overduePct <= 30 ? 'flag-warn' : 'flag-bad' },
       { l: '90+ Days', v: fc(d.agingBuckets.d90plus || 0), n: 'Most overdue bucket', f: (d.agingBuckets.d90plus || 0) === 0 ? 'flag-good' : 'flag-bad' },
-      { l: 'Top Balance', v: fc(d.topCounterparties[0]?.val || 0), n: d.topCounterparties[0]?.name || 'Largest account', f: '' },
-      { l: 'Health Score', v: h + '/100', n: type === 'ar_summary' ? 'Collections health' : 'Payables management', f: h >= 70 ? 'flag-good' : h >= 50 ? 'flag-warn' : 'flag-bad' }
+      { l: type === 'ar_summary' ? 'Past-due accounts' : 'Top vendor', v: type === 'ar_summary' ? String(d.pastDueAccounts?.length || 0) : fc(d.topCounterparties[0]?.val || 0), n: type === 'ar_summary' ? 'Customers with overdue balances' : (d.topCounterparties[0]?.name || 'Largest balance'), f: '' },
+      { l: 'Health Score', v: h + '/100', n: type === 'ar_summary' ? 'Collections health' : type === 'unpaid_bills' ? 'Payment urgency' : 'Payables exposure', f: h >= 70 ? 'flag-good' : h >= 50 ? 'flag-warn' : 'flag-bad' }
     ];
   }
 
@@ -2241,6 +2375,7 @@ function buildReportFindings(d) {
   if (type === 'cash_flow') return buildFindingsCF(d);
   if (type === 'ar_summary') return buildFindingsAR(d);
   if (type === 'ap_balance') return buildFindingsAP(d);
+  if (type === 'unpaid_bills') return buildFindingsUnpaidBills(d);
   return buildFindingsPL(d);
 }
 
@@ -2250,6 +2385,7 @@ function buildReportActions(d) {
   if (type === 'cash_flow') return buildActionsCF(d);
   if (type === 'ar_summary') return buildActionsAR(d);
   if (type === 'ap_balance') return buildActionsAP(d);
+  if (type === 'unpaid_bills') return buildActionsUnpaidBills(d);
   return buildActionsPL(d);
 }
 
@@ -2259,6 +2395,7 @@ function buildReportSummary(d) {
   if (type === 'cash_flow') return buildSummaryCF(d);
   if (type === 'ar_summary') return buildSummaryAR(d);
   if (type === 'ap_balance') return buildSummaryAP(d);
+  if (type === 'unpaid_bills') return buildSummaryUnpaidBills(d);
   return buildSummary(d);
 }
 
@@ -2300,8 +2437,14 @@ function buildFindingsAR(d) {
   else if (d.overduePct <= 30) out.push({ t: 'warn', text: `${fp(d.overduePct || 0)} of AR is overdue (${fc(d.overdueBalance)}). Follow-up should be a weekly habit.` });
   else out.push({ t: 'bad', text: `${fp(d.overduePct || 0)} of AR is overdue (${fc(d.overdueBalance)}). Cash is likely stuck in slow-paying customers.` });
 
-  if ((d.agingBuckets.d90plus || 0) > 0) out.push({ t: 'bad', text: `${fc(d.agingBuckets.d90plus)} is over 90 days old — prioritize collection calls or write-off review.` });
-  if (d.topCounterparties[0]) out.push({ t: 'warn', text: `Largest customer balance: ${d.topCounterparties[0].name} at ${fc(d.topCounterparties[0].val)}.` });
+  (d.pastDueAccounts || []).slice(0, 3).forEach(acct => {
+    const severity = acct.d90plus > 0 ? 'bad' : 'warn';
+    out.push({ t: severity, text: `${acct.name}: ${fc(acct.pastDue)} past due${acct.d90plus > 0 ? ' (' + fc(acct.d90plus) + ' over 90 days)' : ''} — prioritize for collection.` });
+  });
+
+  if ((d.agingBuckets.d90plus || 0) > 0 && !(d.pastDueAccounts || []).length) {
+    out.push({ t: 'bad', text: `${fc(d.agingBuckets.d90plus)} is over 90 days old — prioritize collection calls or write-off review.` });
+  }
   return out;
 }
 
@@ -2313,8 +2456,14 @@ function buildFindingsAP(d) {
   else out.push({ t: 'bad', text: `${fp(d.overduePct || 0)} of AP is past due (${fc(d.overdueBalance)}). This can damage vendor trust and credit.` });
 
   if ((d.agingBuckets.d90plus || 0) > 0) out.push({ t: 'bad', text: `${fc(d.agingBuckets.d90plus)} is over 90 days overdue — resolve these balances immediately.` });
-  if (d.topCounterparties[0]) out.push({ t: 'warn', text: `Largest vendor balance: ${d.topCounterparties[0].name} at ${fc(d.topCounterparties[0].val)}.` });
-  out.push({ t: 'good', text: 'Use the AP Cash Planner below — enter available cash to get a prioritized vendor payment list by aging.' });
+  if (d.topCounterparties[0]) out.push({ t: 'warn', text: `Largest vendor exposure: ${d.topCounterparties[0].name} at ${fc(d.topCounterparties[0].val)} (${fp((d.topCounterparties[0].val / Math.max(d.totalBalance, 1)) * 100)} of total AP).` });
+  out.push({ t: 'warn', text: 'Use the Unpaid Bills tab to build a cash-based payment plan when you are ready to pay vendors.' });
+  return out;
+}
+
+function buildFindingsUnpaidBills(d) {
+  const out = buildFindingsAP(d).filter(f => !/Unpaid Bills tab/.test(f.text));
+  out.push({ t: 'good', text: 'Enter available cash below to generate a prioritized bill payment list — oldest balances first.' });
   return out;
 }
 
@@ -2335,17 +2484,26 @@ function buildActionsCF(d) {
 }
 
 function buildActionsAR(d) {
+  const topPastDue = (d.pastDueAccounts || [])[0];
   return [
-    { title: 'Call overdue customers this week', desc: `Start with balances over 60 days, especially ${d.topCounterparties[0]?.name || 'your largest accounts'}.`, impact: `Recovering even 25% of overdue AR adds ${fc((d.overdueBalance || 0) * 0.25)} in cash.` },
-    { title: 'Tighten invoicing and follow-up', desc: 'Invoice same day, send reminders at 7/14/30 days, and require deposits on slow-pay accounts.', impact: undefined },
-    { title: 'Review credit terms', desc: 'Customers consistently in the 90+ bucket may need shorter terms, deposits, or credit holds.', impact: undefined }
+    { title: 'Call past-due customers this week', desc: topPastDue ? `Start with ${topPastDue.name} (${fc(topPastDue.pastDue)} past due)${topPastDue.d90plus > 0 ? ', including ' + fc(topPastDue.d90plus) + ' over 90 days' : ''}.` : 'Start with accounts over 60 days.', impact: `Recovering even 25% of overdue AR adds ${fc((d.overdueBalance || 0) * 0.25)} in cash.` },
+    { title: 'Send a collections email', desc: 'Use the email template below for professional follow-up — customize and send from your own email.', impact: undefined },
+    { title: 'Tighten credit terms', desc: 'Customers consistently in the 90+ bucket may need shorter terms, deposits, or credit holds.', impact: undefined }
   ];
 }
 
 function buildActionsAP(d) {
   return [
-    { title: 'Run the AP Cash Planner', desc: 'Enter how much cash you can spend and pay oldest vendor balances first — 90+ and 61–90 day bills before current invoices.', impact: 'Protects critical suppliers when cash is limited.' },
-    { title: 'Prioritize overdue vendor payments', desc: `Address ${fc(d.overdueBalance || 0)} in past-due AP, starting with ${d.topCounterparties[0]?.name || 'critical vendors'}.`, impact: 'Protects supply chain and credit terms.' },
+    { title: 'Review vendor concentration', desc: `Top vendor ${d.topCounterparties[0]?.name || ''} represents ${fp((d.topCounterparties[0]?.val || 0) / Math.max(d.totalBalance || 1, 1) * 100)} of AP — diversify or negotiate terms if possible.`, impact: undefined },
+    { title: 'Track aging weekly', desc: `${fc(d.overdueBalance || 0)} is past due across your vendor balances. Review aging every Monday.`, impact: 'Prevents surprise cash crunches.' },
+    { title: 'Switch to Unpaid Bills for payment planning', desc: 'When you know how much cash is available, use the Unpaid Bills tab to get a prioritized pay list.', impact: undefined }
+  ];
+}
+
+function buildActionsUnpaidBills(d) {
+  return [
+    { title: 'Enter available cash', desc: 'Use the payment planner below to allocate cash to the most urgent vendor balances first.', impact: 'Protects critical suppliers when cash is limited.' },
+    { title: 'Pay 90+ day balances first', desc: `Address ${fc(d.agingBuckets.d90plus || 0)} in the oldest bucket before current invoices.`, impact: 'Protects supply chain and credit terms.' },
     { title: 'Call vendors you cannot pay in full', desc: 'Proactive calls on unpaid 90+ and 61–90 day balances often buy payment plans or extended terms.', impact: undefined }
   ];
 }
@@ -2363,7 +2521,11 @@ function buildSummaryAR(d) {
 }
 
 function buildSummaryAP(d) {
-  return `${d.company || 'Your business'} owes ${fc(d.totalBalance || 0)} across outstanding payables for ${d.period || 'the reported period'}. ${fp(d.overduePct || 0)} (${fc(d.overdueBalance || 0)}) is past due. Prioritize critical vendors and align payment timing with cash inflows.`;
+  return `${d.company || 'Your business'} owes ${fc(d.totalBalance || 0)} across outstanding payables for ${d.period || 'the reported period'}. ${fp(d.overduePct || 0)} (${fc(d.overdueBalance || 0)}) is past due. Focus on vendor concentration, aging trends, and timing payments against cash inflows. Use Unpaid Bills when you are ready to build a payment plan.`;
+}
+
+function buildSummaryUnpaidBills(d) {
+  return `${d.company || 'Your business'} has ${fc(d.totalBalance || 0)} in unpaid bills for ${d.period || 'the reported period'}. ${fp(d.overduePct || 0)} (${fc(d.overdueBalance || 0)}) is past due. Enter available cash below to see which vendors to pay first.`;
 }
 
 function setChartTitles(titles) {
@@ -2384,7 +2546,7 @@ function renderReportCharts(d) {
       ['Asset composition', 'Major asset categories'],
       ['Liability composition', 'Major liability categories'],
       ['Liquidity snapshot', 'Cash, AR, AP, and inventory'],
-      ['Balance sheet health radar', 'Liquidity and leverage signals']
+      ['Liquidity scorecard', 'Key balance sheet ratios at a glance']
     ]);
     const assets = (d.assetItems && d.assetItems.length) ? d.assetItems : [{ name: 'Total assets', val: d.totalAssets || 0 }];
     const liabilities = (d.liabilityItems && d.liabilityItems.length) ? d.liabilityItems : [{ name: 'Total liabilities', val: d.totalLiabilities || 0 }];
@@ -2407,15 +2569,23 @@ function renderReportCharts(d) {
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } }, cutout: '60%' }
     }));
     analysisCharts.push(new Chart(document.getElementById('rpt-chart-radar'), {
-      type: 'radar',
+      type: 'bar',
       data: {
-        labels: ['Current Ratio', 'Working Capital', 'Equity Strength', 'Debt Load', 'Cash Buffer'],
-        datasets: [
-          { label: 'Your Business', data: [Math.min((d.currentRatio || 0) / 2 * 100, 100), d.workingCapital > 0 ? 75 : 25, (d.totalEquity || 0) > 0 ? 80 : 20, Math.max(0, 100 - (d.debtToEquity || 0) * 25), Math.min(((d.cash || 0) / Math.max(d.totalAssets || 1, 1)) * 400, 100)], backgroundColor: 'rgba(15,37,112,0.12)', borderColor: '#0f2570', borderWidth: 2 },
-          { label: 'Benchmark', data: [75, 70, 75, 70, 60], backgroundColor: 'rgba(34,197,94,0.1)', borderColor: '#22c55e', borderWidth: 1.5, borderDash: [5, 5] }
-        ]
+        labels: ['Current ratio (target 1.5)', 'Debt-to-equity (lower better)', 'Equity positive', 'Working capital +', 'Cash buffer'],
+        datasets: [{
+          label: 'Score',
+          data: [
+            Math.min((d.currentRatio || 0) / 1.5 * 100, 100),
+            Math.max(0, 100 - (d.debtToEquity || 0) * 30),
+            (d.totalEquity || 0) > 0 ? 100 : 0,
+            (d.workingCapital || 0) > 0 ? 100 : 20,
+            Math.min(((d.cash || 0) / Math.max(d.totalAssets || 1, 1)) * 500, 100)
+          ],
+          backgroundColor: ['#0f2570', '#1a4480', '#22c55e', '#4ade80', '#16a34a'],
+          borderRadius: 4
+        }]
       },
-      options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { display: false } } }, plugins: { legend: { position: 'bottom' } } }
+      options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { max: 100, ticks: { callback: v => v + '%' } } } }
     }));
     return;
   }
@@ -2463,13 +2633,14 @@ function renderReportCharts(d) {
     return;
   }
 
-  if (type === 'ar_summary' || type === 'ap_balance') {
+  if (type === 'ar_summary' || type === 'ap_balance' || type === 'unpaid_bills') {
     const noun = type === 'ar_summary' ? 'customer' : 'vendor';
+    const isAr = type === 'ar_summary';
     setChartTitles([
       ['Aging buckets', 'Current vs overdue balances'],
       [`Top ${noun} balances`, 'Largest outstanding accounts'],
-      ['Overdue mix', 'Share of total balance'],
-      ['Collections health radar', type === 'ar_summary' ? 'AR quality signals' : 'AP management signals']
+      [isAr ? 'Past-due by bucket' : 'Overdue vs current', isAr ? 'Where overdue dollars sit' : 'Share of total balance'],
+      [isAr ? 'Past-due accounts' : 'Vendor exposure', isAr ? 'Who to collect from first' : 'Largest vendor balances']
     ]);
     const buckets = d.agingBuckets || {};
     analysisCharts.push(new Chart(document.getElementById('rpt-chart-revenue'), {
@@ -2486,33 +2657,50 @@ function renderReportCharts(d) {
       data: { labels: top.map(item => item.name), datasets: [{ data: top.map(item => item.val), backgroundColor: top.map((_, i) => barColors[i % barColors.length]), borderRadius: 4 }] },
       options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     }));
-    analysisCharts.push(new Chart(document.getElementById('rpt-chart-opex'), {
-      type: 'doughnut',
-      data: {
-        labels: ['Current', 'Overdue'],
-        datasets: [{ data: [buckets.current || 0, d.overdueBalance || 0], backgroundColor: ['#22c55e', '#dc2626'], borderWidth: 0 }]
-      },
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } }, cutout: '60%' }
-    }));
-    analysisCharts.push(new Chart(document.getElementById('rpt-chart-radar'), {
-      type: 'radar',
-      data: {
-        labels: ['Current %', 'Low Overdue', '90+ Control', 'Concentration', 'Total Balance Health'],
-        datasets: [
-          { label: 'Your Business', data: [Math.max(0, 100 - (d.overduePct || 0)), d.overduePct <= 20 ? 80 : 35, (buckets.d90plus || 0) === 0 ? 85 : 25, d.topCounterparties[0] && d.totalBalance ? Math.max(0, 100 - (d.topCounterparties[0].val / d.totalBalance * 100)) : 70, calcHealthScore(d)], backgroundColor: 'rgba(15,37,112,0.12)', borderColor: '#0f2570', borderWidth: 2 },
-          { label: 'Benchmark', data: [80, 75, 80, 70, 75], backgroundColor: 'rgba(34,197,94,0.1)', borderColor: '#22c55e', borderWidth: 1.5, borderDash: [5, 5] }
-        ]
-      },
-      options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { display: false } } }, plugins: { legend: { position: 'bottom' } } }
-    }));
+    if (isAr) {
+      analysisCharts.push(new Chart(document.getElementById('rpt-chart-opex'), {
+        type: 'bar',
+        data: {
+          labels: ['1-30 overdue', '31-60 overdue', '61-90 overdue', '90+ overdue'],
+          datasets: [{ data: [buckets.d30 || 0, buckets.d60 || 0, buckets.d90 || 0, buckets.d90plus || 0], backgroundColor: ['#f59e0b', '#ea580c', '#dc2626', '#991b1b'], borderRadius: 4 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' } } } }
+      }));
+      const pastDue = (d.pastDueAccounts || []).slice(0, 6);
+      analysisCharts.push(new Chart(document.getElementById('rpt-chart-radar'), {
+        type: 'bar',
+        data: {
+          labels: pastDue.length ? pastDue.map(p => p.name) : ['No past-due detail'],
+          datasets: [{ label: 'Past due', data: pastDue.length ? pastDue.map(p => p.pastDue) : [0], backgroundColor: '#dc2626', borderRadius: 4 }]
+        },
+        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      }));
+    } else {
+      analysisCharts.push(new Chart(document.getElementById('rpt-chart-opex'), {
+        type: 'doughnut',
+        data: {
+          labels: ['Current', 'Overdue'],
+          datasets: [{ data: [buckets.current || 0, d.overdueBalance || 0], backgroundColor: ['#22c55e', '#dc2626'], borderWidth: 0 }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } }, cutout: '60%' }
+      }));
+      analysisCharts.push(new Chart(document.getElementById('rpt-chart-radar'), {
+        type: 'bar',
+        data: {
+          labels: top.slice(0, 5).map(t => t.name),
+          datasets: [{ label: 'Balance', data: top.slice(0, 5).map(t => t.val), backgroundColor: barColors.slice(0, 5), borderRadius: 4 }]
+        },
+        options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      }));
+    }
     return;
   }
 
   setChartTitles([
     ['Revenue by service line', 'Where your income comes from'],
-    ['Gross margin by service', 'Revenue vs. direct cost per line'],
+    ['Profit waterfall', 'From revenue to net income'],
     ['Expense breakdown', 'Operating cost distribution'],
-    ['Financial health radar', 'Your ratios vs. industry benchmark']
+    ['Margin vs benchmark', 'How your margins compare']
   ]);
 
   const svcRevenue = (d.serviceRevenue && d.serviceRevenue.length) ? d.serviceRevenue : [{ name: 'Revenue', val: d.revenue }];
@@ -2524,15 +2712,21 @@ function renderReportCharts(d) {
     options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' }, grid: { color: 'rgba(0,0,0,0.04)' } }, y: { ticks: { font: { size: 11 } } } } }
   }));
 
-  const svcCogs = d.serviceCogs || [];
-  const sharedSvcs = svcRevenue.filter(s => svcCogs.find(c => c.name === s.name));
-  const mLabels = sharedSvcs.length > 0 ? sharedSvcs.map(s => s.name) : svcLabels.slice(0, 5);
-  const mRevVals = sharedSvcs.length > 0 ? sharedSvcs.map(s => s.val) : svcVals.slice(0, 5);
-  const mCogsVals = sharedSvcs.length > 0 ? sharedSvcs.map(s => { const c = svcCogs.find(x => x.name === s.name); return c ? c.val : 0; }) : mRevVals.map(v => v * (d.cogs / d.revenue));
+  const cogsVal = d.cogs || 0;
+  const gpVal = d.grossProfit || (d.revenue - cogsVal);
+  const opexVal = d.opex || 0;
+  const netVal = d.netIncome || 0;
   analysisCharts.push(new Chart(document.getElementById('rpt-chart-margin'), {
     type: 'bar',
-    data: { labels: mLabels, datasets: [{ label: 'Revenue', data: mRevVals, backgroundColor: 'rgba(15,37,112,0.8)', borderRadius: 4 }, { label: 'Direct Cost', data: mCogsVals, backgroundColor: 'rgba(185,28,28,0.7)', borderRadius: 4 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10, boxWidth: 10 } } }, scales: { x: { ticks: { font: { size: 10 } } }, y: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' }, grid: { color: 'rgba(0,0,0,0.04)' } } } }
+    data: {
+      labels: ['Revenue', 'COGS', 'Gross profit', 'OpEx', 'Net income'],
+      datasets: [{
+        data: [d.revenue || 0, -Math.abs(cogsVal), gpVal, -Math.abs(opexVal), netVal],
+        backgroundColor: ['#0f2570', '#dc2626', '#22c55e', '#b45309', netVal >= 0 ? '#16a34a' : '#991b1b'],
+        borderRadius: 4
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' } } } }
   }));
 
   const opexItems = (d.expenseItems && d.expenseItems.length) ? d.expenseItems : [{ name: 'Operating expenses', val: d.opex || 0 }];
@@ -2543,27 +2737,32 @@ function renderReportCharts(d) {
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 10 }, padding: 8, boxWidth: 10 } }, tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.toLocaleString('en-US', { maximumFractionDigits: 0 }) } } }, cutout: '60%' }
   }));
 
-  const gmScore = Math.min(d.grossMargin / 50 * 100, 100);
-  const nmScore = Math.min(d.netMargin / 15 * 100, 100);
-  const omScore = Math.min((d.opMargin || 0) / 15 * 100, 100);
-  const prScore = Math.max(0, 100 - (d.payrollPct || 0));
-  const profScore = d.netIncome > 0 ? 75 : 20;
+  const marginRows = [
+    { label: 'Gross margin', actual: d.grossMargin || 0, bench: 38 },
+    { label: 'Operating margin', actual: d.opMargin || 0, bench: 12 },
+    { label: 'Net margin', actual: d.netMargin || 0, bench: 8 }
+  ];
   analysisCharts.push(new Chart(document.getElementById('rpt-chart-radar'), {
-    type: 'radar',
+    type: 'bar',
     data: {
-      labels: ['Gross Margin', 'Net Margin', 'Op. Margin', 'Payroll Efficiency', 'Profitability'],
+      labels: marginRows.map(r => r.label),
       datasets: [
-        { label: 'Your Business', data: [gmScore, nmScore, omScore, prScore, profScore], backgroundColor: 'rgba(15,37,112,0.12)', borderColor: '#0f2570', pointBackgroundColor: '#0f2570', borderWidth: 2, pointRadius: 4 },
-        { label: 'Benchmark', data: [76, 60, 65, 70, 75], backgroundColor: 'rgba(34,197,94,0.1)', borderColor: '#22c55e', pointBackgroundColor: '#22c55e', borderWidth: 1.5, borderDash: [5, 5], pointRadius: 3 }
+        { label: 'Your business', data: marginRows.map(r => r.actual), backgroundColor: '#0f2570', borderRadius: 4 },
+        { label: 'Benchmark', data: marginRows.map(r => r.bench), backgroundColor: '#22c55e', borderRadius: 4 }
       ]
     },
-    options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: 'rgba(0,0,0,0.05)' } } }, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } } } }
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { ticks: { callback: v => v + '%' } } } }
   }));
 }
 
 function handleAnalysisFile(e) {
   const file = e.target.files[0];
   if (!file) return;
+  if (typeof canUploadAnalysis === 'function' && !canUploadAnalysis()) {
+    e.target.value = '';
+    hideAnalysisStatus();
+    return;
+  }
   const name = file.name.toLowerCase();
   showAnalysisStatus('Reading ' + file.name + '...');
 
@@ -2640,6 +2839,10 @@ function processRows(rows, filename) {
 }
 
 async function requestAIReport(data) {
+  if (typeof hasFullAccess === 'function' && typeof hasUsedFreeAnalysis === 'function' && hasUsedFreeAnalysis() && !hasFullAccess()) {
+    setAIStatus('Create an account to unlock AI-generated CFO analysis.', 'warn');
+    return;
+  }
   setAIStatus('Local preview ready. Generating AI CFO analysis from your numbers...', 'pending');
   try {
     const response = await fetch('/api/analyze', {
@@ -2979,6 +3182,67 @@ function setAIStatus(message, tone) {
   el.className = 'ai-status ' + (tone || 'pending');
 }
 
+function buildCollectionsEmailTemplate(d, account) {
+  const acct = account || (d.pastDueAccounts || [])[0];
+  const company = d.company || 'Our company';
+  const amount = acct ? fc(acct.pastDue) : fc(d.overdueBalance || 0);
+  const customer = acct?.name || '[Customer name]';
+  return `Subject: Past-due balance reminder — ${company}
+
+Hi ${customer},
+
+I hope you are doing well. Our records show an outstanding balance of ${amount} on your account that is now past due.
+
+Could you please let us know when we can expect payment, or reply if there is an issue with the invoice we should address?
+
+We value our relationship and want to resolve this quickly. You can reply to this email or call us at [your phone number].
+
+Thank you,
+[Your name]
+${company}`;
+}
+
+function renderArCollectionsPanel(d) {
+  const panel = document.getElementById('ar-collections-panel');
+  if (!panel) return;
+  if ((d.statementType || '') !== 'ar_summary') {
+    panel.style.display = 'none';
+    return;
+  }
+  const pastDue = d.pastDueAccounts || [];
+  const top = pastDue[0];
+  const email = buildCollectionsEmailTemplate(d, top);
+  panel.style.display = 'block';
+  panel.innerHTML = `
+    <div class="ar-collections-head">Collections recommendations</div>
+    <div class="ar-collections-sub">Focus on past-due accounts first. ${pastDue.length ? pastDue.length + ' customer(s) have overdue balances totaling ' + fc(d.overdueBalance || 0) + '.' : 'Upload vendor-level aging rows for account-level recommendations.'}</div>
+    <div class="ar-past-due-list">
+      ${pastDue.slice(0, 5).map((acct, i) => `
+        <div class="ar-past-due-item">
+          <span><strong>${escapeHtml(acct.name)}</strong> — ${fc(acct.pastDue)} past due${acct.d90plus > 0 ? ' (' + fc(acct.d90plus) + ' over 90 days)' : ''}</span>
+          <button class="btn-outline" style="font-size:11px;padding:5px 10px" onclick="copyCollectionsEmailFor(${i})">Copy email</button>
+        </div>`).join('') || '<div class="ar-past-due-item">No account-level past-due rows detected — check that your file lists customers with aging columns.</div>'}
+    </div>
+    <div class="ar-collections-head" style="margin-top:8px">Collections email template</div>
+    <div class="ar-email-box" id="ar-email-template">${escapeHtml(email)}</div>
+    <div class="ar-email-actions">
+      <button class="btn-blue" style="font-size:12px;padding:7px 12px" onclick="copyCollectionsEmail()">Copy template</button>
+    </div>`;
+  window.arCollectionsEmailTemplate = email;
+  window.arCollectionsData = d;
+}
+
+function copyCollectionsEmail() {
+  const text = document.getElementById('ar-email-template')?.textContent || window.arCollectionsEmailTemplate || '';
+  navigator.clipboard.writeText(text).then(() => showToast('Collections email copied — paste into your email app.')).catch(() => showToast('Could not copy — select the text manually.'));
+}
+
+function copyCollectionsEmailFor(index) {
+  const acct = (window.arCollectionsData?.pastDueAccounts || [])[index];
+  const text = buildCollectionsEmailTemplate(window.arCollectionsData || {}, acct);
+  navigator.clipboard.writeText(text).then(() => showToast('Email for ' + (acct?.name || 'customer') + ' copied.')).catch(() => showToast('Could not copy — select the text manually.'));
+}
+
 function resetAnalysis() {
   document.getElementById('analysis-report').style.display = 'none';
   document.getElementById('analysis-upload-view').style.display = 'block';
@@ -3054,6 +3318,7 @@ function renderReport(d) {
     const apPanel = document.getElementById('ap-cash-planner');
     if (apPanel) apPanel.style.display = 'none';
   }
+  if (typeof renderArCollectionsPanel === 'function') renderArCollectionsPanel(d);
 
   syncClaraWithData(d);
   if (typeof recordCompanyUpload === 'function') {
@@ -3062,6 +3327,11 @@ function renderReport(d) {
     buildDeck(d);
     if (typeof saveAnalysisToHealthFromReport === 'function') saveAnalysisToHealthFromReport(d);
   }
+
+  if (typeof hasFullAccess === 'function' && !hasFullAccess() && typeof markFreeAnalysisUsed === 'function') {
+    markFreeAnalysisUsed();
+  }
+  if (typeof renderUsageGateBanner === 'function') renderUsageGateBanner();
 
   document.getElementById('analysis-report').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -3078,8 +3348,10 @@ function syncClaraWithData(d) {
   } else if (type === 'ar_summary') {
     facts = `Statement type: AR Aging Summary. Total AR: ${fc(d.totalBalance || 0)} | Overdue AR: ${fc(d.overdueBalance || 0)} (${fp(d.overduePct || 0)}) | 90+ Days: ${fc(d.agingBuckets?.d90plus || 0)} | Health Score: ${h}/100`;
   } else if (type === 'ap_balance') {
+    facts = `Statement type: AP Aging Summary. Total AP: ${fc(d.totalBalance || 0)} | Overdue AP: ${fc(d.overdueBalance || 0)} (${fp(d.overduePct || 0)}) | 90+ Days: ${fc(d.agingBuckets?.d90plus || 0)} | Vendors: ${(d.counterparties || d.topCounterparties || []).length}.`;
+  } else if (type === 'unpaid_bills') {
     const planNote = typeof getApPaymentPlanForClara === 'function' ? getApPaymentPlanForClara() : '';
-    facts = `Statement type: AP Aging Summary. Total AP: ${fc(d.totalBalance || 0)} | Overdue AP: ${fc(d.overdueBalance || 0)} (${fp(d.overduePct || 0)}) | 90+ Days: ${fc(d.agingBuckets?.d90plus || 0)} | Health Score: ${h}/100 | Vendors: ${(d.counterparties || d.topCounterparties || []).length}.${planNote}`;
+    facts = `Statement type: Unpaid Bills. Total unpaid: ${fc(d.totalBalance || 0)} | Overdue: ${fc(d.overdueBalance || 0)} (${fp(d.overduePct || 0)}) | 90+ Days: ${fc(d.agingBuckets?.d90plus || 0)} | Vendors: ${(d.counterparties || d.topCounterparties || []).length}.${planNote}`;
   } else {
     facts = `Statement type: Income Statement. Revenue: ${fc(d.revenue)} | COGS: ${fc(d.cogs || 0)} | Gross Profit: ${fc(d.grossProfit)} (${fp(d.grossMargin)} margin) | Operating Expenses: ${fc(d.opex || 0)} | Operating Income: ${fc(d.opIncome || 0)} | Net Income: ${fc(d.netIncome)} (${fp(d.netMargin)} margin) | Payroll: ${fc(d.payroll)} (${fp(d.payrollPct)} of revenue) | Health Score: ${h}/100`;
   }
@@ -3092,6 +3364,8 @@ Speak like a trusted advisor, not a report. Use their exact numbers. Keep respon
 
 </script>
 <script src="company-store.js"></script>
+<script src="usage-gate.js"></script>
+<script src="dashboard-prefs.js"></script>
 <script src="auth-ui.js"></script>
 <script src="kpi-engine.js"></script>
 <script src="ap-pay-engine.js"></script>
