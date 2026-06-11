@@ -9,6 +9,7 @@
 <meta property="og:description" content="Turn QuickBooks, Xero, Wave, Excel, CSV, or PDF exports into plain-English business insights.">
 <meta property="og:type" content="website">
 <meta name="theme-color" content="#0a1628">
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
@@ -405,6 +406,48 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 }
 .rpt-summary-text{font-size:14px;color:rgba(255,255,255,0.84);line-height:1.85}
 .rpt-disclaimer{margin-top:1rem;font-size:11px;color:var(--ink-4);text-align:center}
+
+.deck-toolbar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin-bottom:1rem;flex-wrap:wrap;
+}
+.deck-toolbar-title{font-size:20px;font-weight:800;color:var(--ink);letter-spacing:-0.4px}
+.deck-toolbar-sub{font-size:13px;color:var(--ink-3);margin-top:3px}
+.deck-nav{display:flex;gap:8px;align-items:center}
+.deck-viewer-wrap{
+  background:linear-gradient(180deg,#0a1628 0%,#111827 100%);
+  border-radius:18px;border:1px solid #1e293b;padding:14px;
+  box-shadow:0 18px 40px rgba(10,22,40,0.22);margin-bottom:1rem;
+}
+#deck-viewer{
+  background:#0a1628;border-radius:12px;border:1px solid rgba(255,255,255,0.06);
+  aspect-ratio:16/9;position:relative;overflow:hidden;
+}
+.deck-customize{
+  background:var(--white);border:1px solid var(--border);border-radius:16px;
+  padding:1.1rem 1.25rem;margin-bottom:1rem;
+}
+.deck-customize-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  margin-bottom:12px;flex-wrap:wrap;
+}
+.deck-customize-title{font-size:14px;font-weight:800;color:var(--ink)}
+.deck-customize-sub{font-size:12px;color:var(--ink-3);margin-top:3px}
+.deck-option-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;
+}
+.deck-option{
+  display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
+  border:1.5px solid var(--border);border-radius:12px;background:var(--off);cursor:pointer;
+  transition:all 0.13s;
+}
+.deck-option:hover{border-color:#c7d2ef;background:var(--blue-bg)}
+.deck-option.selected{border-color:var(--blue);background:linear-gradient(180deg,#f4fbf7 0%,var(--gold-bg) 100%)}
+.deck-option input{margin-top:2px;accent-color:var(--green)}
+.deck-option-name{font-size:13px;font-weight:700;color:var(--ink);display:block}
+.deck-option-desc{font-size:11px;color:var(--ink-3);line-height:1.45;margin-top:2px;display:block}
+.deck-export-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.deck-export-status{font-size:12px;color:var(--ink-3)}
 
 /* KPI grid */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
@@ -877,28 +920,40 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 
     <!-- DECK STATE -->
     <div id="deck-ready" style="display:none">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;flex-wrap:wrap;gap:10px">
+      <div class="deck-toolbar">
         <div>
-          <div style="font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-0.4px" id="deck-title">CEO Presentation</div>
-          <div style="font-size:13px;color:var(--ink-3)" id="deck-sub"></div>
+          <div class="deck-toolbar-title" id="deck-title">CEO Presentation</div>
+          <div class="deck-toolbar-sub" id="deck-sub"></div>
         </div>
-        <div style="display:flex;gap:8px;align-items:center">
+        <div class="deck-nav">
           <button class="btn-outline" onclick="deckPrev()" style="padding:8px 14px;font-size:13px">← Prev</button>
-          <span style="font-size:12px;color:var(--ink-3);min-width:70px;text-align:center" id="deck-counter">Slide 1 of 6</span>
+          <span style="font-size:12px;color:var(--ink-3);min-width:80px;text-align:center" id="deck-counter">Slide 1 of 6</span>
           <button class="btn-outline" onclick="deckNext()" style="padding:8px 14px;font-size:13px">Next →</button>
         </div>
       </div>
 
-      <!-- SLIDE VIEWER -->
-      <div id="deck-viewer" style="background:#1c1c2a;border-radius:var(--r);border:1px solid var(--border);aspect-ratio:16/9;position:relative;overflow:hidden;margin-bottom:1.25rem"></div>
+      <div class="deck-viewer-wrap">
+        <div id="deck-viewer"></div>
+      </div>
 
-      <!-- THUMBNAIL STRIP -->
-      <div id="deck-thumbs" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-bottom:1.5rem"></div>
+      <div id="deck-thumbs" style="display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;margin-bottom:1rem"></div>
 
-      <div style="display:flex;gap:10px;flex-wrap:wrap">
-        <button class="btn-blue" onclick="alert('PDF export coming in Pro plan!')">Export PDF</button>
-        <button class="btn-outline" onclick="alert('PowerPoint export coming in Pro plan!')">Export PowerPoint</button>
+      <div class="deck-customize" id="deck-customize">
+        <div class="deck-customize-head">
+          <div>
+            <div class="deck-customize-title">Customize your deck</div>
+            <div class="deck-customize-sub">Pick the slides to include, then update the preview or download PowerPoint.</div>
+          </div>
+          <button class="btn-outline" onclick="applyDeckOptions()" style="font-size:12px;padding:8px 14px">Update deck</button>
+        </div>
+        <div class="deck-option-grid" id="deck-option-grid"></div>
+      </div>
+
+      <div class="deck-export-row">
+        <button class="btn-blue" onclick="exportDeckPowerPoint()">Download PowerPoint</button>
+        <button class="btn-outline" onclick="exportDeckPDF()">Print / Save PDF</button>
         <button class="btn-outline" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">← Back to analysis</button>
+        <span class="deck-export-status" id="deck-export-status"></span>
       </div>
     </div>
 
@@ -2035,6 +2090,7 @@ function applyAIReport(report, provider, model) {
   }
 
   setAIStatus(`AI CFO analysis generated${provider ? ' with ' + provider : ''}${model ? ' (' + model + ')' : ''}.`, 'success');
+  if (typeof composeAndRenderDeck === 'function' && deckSourceData) composeAndRenderDeck();
 }
 
 async function extractPDFText(arrayBuffer, filename) {
@@ -2412,180 +2468,7 @@ Speak like a trusted advisor, not a report. Use their exact numbers. Keep respon
 }
 
 
-// ── SLIDE DECK ENGINE ─────────────────────────────────────────────────
-let deckSlides = [];
-let deckCurrent = 0;
-let deckCharts = [];
-
-function buildDeck(d) {
-  if (!d) return;
-  const h = calcHealthPL(d);
-  const safeCompany = escapeHtml(d.company || 'Financial Performance');
-  const safePeriod = escapeHtml(d.period || '');
-  const findings = buildFindingsPL(d);
-  const actions  = buildActionsPL(d);
-  const hColor   = h >= 70 ? '#22c55e' : h >= 50 ? '#b45309' : '#dc2626';
-
-  // Helper
-  const mColor = (val, good, warn) => val >= good ? '#22c55e' : val >= warn ? '#b45309' : '#dc2626';
-
-  deckSlides = [
-
-    // ── SLIDE 1: COVER ──
-    `<div style="width:100%;height:100%;background:#0f2570;display:flex;flex-direction:column;justify-content:flex-end;padding:7% 9%;position:relative;box-sizing:border-box">
-      <div style="position:absolute;top:7%;right:7%;font-size:1.1vw;font-weight:700;color:rgba(255,255,255,0.25);letter-spacing:1px">MyCFOPro.AI</div>
-      <div style="position:absolute;top:0;right:0;width:40%;height:100%;background:linear-gradient(135deg,transparent,rgba(15,37,112,0.4))"></div>
-      <div style="font-size:0.85vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:1.5vh">Confidential · For Executive Review</div>
-      <div style="width:52px;height:4px;background:#22c55e;border-radius:2px;margin-bottom:2.5vh"></div>
-      <div style="font-size:3.4vw;font-weight:900;color:#fff;line-height:1.1;letter-spacing:-0.05em;margin-bottom:1.5vh">${safeCompany}<br><span style="color:#4ade80">Overview & Analysis</span></div>
-      <div style="font-size:1.05vw;color:rgba(255,255,255,0.5);margin-bottom:3vh">${safePeriod} · Prepared by MyCFOPro.AI</div>
-      <div style="font-size:0.8vw;color:rgba(255,255,255,0.3)">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
-    </div>`,
-
-    // ── SLIDE 2: SCORECARD ──
-    `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;padding:6% 8%;box-sizing:border-box">
-      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0f2570;margin-bottom:1vh">Executive Summary</div>
-      <div style="font-size:2.2vw;font-weight:900;color:#0e0e0e;letter-spacing:-0.04em;margin-bottom:3vh;line-height:1.15">Financial Scorecard · ${safePeriod}</div>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.5%;flex:1">
-        ${[
-          {l:'Health Score', v:h+'/100',              c:hColor},
-          {l:'Revenue',      v:fc(d.revenue),          c:'#0e0e0e'},
-          {l:'Gross Margin', v:fp(d.grossMargin),      c:mColor(d.grossMargin,38,25)},
-          {l:'Net Margin',   v:fp(d.netMargin),         c:mColor(d.netMargin,8,3)},
-          {l:'Gross Profit', v:fc(d.grossProfit),       c:'#0e0e0e'},
-          {l:'Net Income',   v:fc(d.netIncome),         c:d.netIncome>0?'#22c55e':'#dc2626'},
-          {l:'Operating Income', v:fc(d.opIncome||0),  c:(d.opIncome||0)>0?'#22c55e':'#dc2626'},
-          {l:'Total OpEx',   v:fc(d.opex||0),           c:'#b45309'},
-        ].map(m => '<div style="background:#f8f8f6;border-radius:8px;padding:4% 5%;display:flex;flex-direction:column;justify-content:center">' +
-          '<div style="font-size:0.65vw;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#aaa;margin-bottom:0.8vh">' + m.l + '</div>' +
-          '<div style="font-size:1.9vw;font-weight:900;letter-spacing:-0.05em;color:' + m.c + ';line-height:1">' + m.v + '</div>' +
-        '</div>').join('')}
-      </div>
-    </div>`,
-
-    // ── SLIDE 3: REVENUE BY SERVICE ──
-    `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;padding:6% 8%;box-sizing:border-box">
-      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0f2570;margin-bottom:1vh">Revenue Analysis</div>
-      <div style="font-size:2.2vw;font-weight:900;color:#0e0e0e;letter-spacing:-0.04em;margin-bottom:3vh;line-height:1.15">Revenue by Service Line</div>
-      <div style="flex:1;display:flex;flex-direction:column;gap:1.2vh">
-        ${(d.serviceRevenue && d.serviceRevenue.length > 0 ? d.serviceRevenue : [{name:'Revenue',val:d.revenue}]).slice(0,7).map((s,i) => {
-          const pct = d.revenue > 0 ? (s.val / d.revenue * 100) : 0;
-          const colors = ['#0f2570','#22c55e','#4ade80','#1a4480','#16a34a','#b45309','#0a1628'];
-          const c = colors[i % colors.length];
-          return '<div style="display:flex;align-items:center;gap:2%;flex:1">' +
-            '<div style="font-size:0.75vw;color:#444;min-width:22%;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(s.name) + '</div>' +
-            '<div style="flex:1;background:#f0f0ee;border-radius:3px;overflow:hidden;height:60%">' +
-              '<div style="width:' + Math.max(pct,2).toFixed(1) + '%;height:100%;background:' + c + ';border-radius:3px;display:flex;align-items:center;justify-content:flex-end;padding-right:6px">' +
-              '</div>' +
-            '</div>' +
-            '<div style="font-size:0.8vw;font-weight:700;color:#0e0e0e;min-width:12%;text-align:right">' + fc(s.val) + '</div>' +
-            '<div style="font-size:0.7vw;color:#aaa;min-width:7%;text-align:right">' + pct.toFixed(1) + '%</div>' +
-          '</div>';
-        }).join('')}
-        <div style="font-size:0.75vw;font-weight:700;color:#0e0e0e;border-top:1px solid #e4e3df;padding-top:1.2vh;display:flex;justify-content:space-between;margin-top:0.5vh">
-          <span>Total Revenue</span><span>${fc(d.revenue)}</span>
-        </div>
-      </div>
-    </div>`,
-
-    // ── SLIDE 4: KEY FINDINGS ──
-    `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;padding:6% 8%;box-sizing:border-box">
-      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0f2570;margin-bottom:1vh">Analysis</div>
-      <div style="font-size:2.2vw;font-weight:900;color:#0e0e0e;letter-spacing:-0.04em;margin-bottom:2.5vh;line-height:1.15">Key Findings</div>
-      <div style="flex:1;display:flex;flex-direction:column;gap:1.2vh">
-        ${findings.slice(0,5).map(f => {
-          const bg  = f.t==='good'?'#dcfce7':f.t==='warn'?'#fef9ec':'#fef2f2';
-          const dot = f.t==='good'?'#22c55e':f.t==='warn'?'#f59e0b':'#ef4444';
-          return '<div style="display:flex;gap:1.5%;align-items:flex-start;background:' + bg + ';border-radius:6px;padding:2% 2.5%;flex:1">' +
-            '<div style="width:8px;height:8px;border-radius:50%;background:' + dot + ';flex-shrink:0;margin-top:0.5vh"></div>' +
-            '<div style="font-size:0.85vw;color:#333;line-height:1.55">' + f.text + '</div>' +
-          '</div>';
-        }).join('')}
-      </div>
-    </div>`,
-
-    // ── SLIDE 5: ACTION PLAN ──
-    `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;padding:6% 8%;box-sizing:border-box">
-      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0f2570;margin-bottom:1vh">Recommendations</div>
-      <div style="font-size:2.2vw;font-weight:900;color:#0e0e0e;letter-spacing:-0.04em;margin-bottom:2.5vh;line-height:1.15">Priority Action Plan</div>
-      <div style="flex:1;display:flex;flex-direction:column;gap:1.1vh">
-        ${actions.slice(0,4).map((a,i) =>
-          '<div style="display:flex;gap:2%;align-items:flex-start;background:#f8f8f6;border-radius:6px;padding:2% 2.5%;flex:1">' +
-            '<div style="width:1.8vw;height:1.8vw;border-radius:50%;background:#0f2570;color:#fff;font-size:0.7vw;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + (i+1) + '</div>' +
-            '<div>' +
-              '<div style="font-size:0.85vw;font-weight:700;color:#0e0e0e;margin-bottom:0.3vh">' + a.title + '</div>' +
-              '<div style="font-size:0.75vw;color:#555;line-height:1.5">' + a.desc.substring(0,140) + (a.desc.length>140?'…':'') + '</div>' +
-              (a.impact ? '<div style="font-size:0.65vw;font-weight:700;color:#22c55e;margin-top:0.4vh">' + a.impact + '</div>' : '') +
-            '</div>' +
-          '</div>'
-        ).join('')}
-      </div>
-    </div>`,
-
-    // ── SLIDE 6: CLOSING ──
-    `<div style="width:100%;height:100%;background:#0f2570;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8%;box-sizing:border-box">
-      <div style="font-size:0.85vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:2vh">Bottom Line</div>
-      <div style="width:44px;height:3px;background:#22c55e;border-radius:2px;margin-bottom:2.5vh"></div>
-      <div style="font-size:2.6vw;font-weight:900;color:#fff;letter-spacing:-0.04em;line-height:1.15;margin-bottom:2vh">
-        ${d.netIncome > 0 ? 'Profitable. <span style="color:#4ade80">Room to grow.</span>' : '<span style="color:#f87171">Action needed now.</span>'}
-      </div>
-      <div style="font-size:0.95vw;color:rgba(255,255,255,0.55);max-width:55%;line-height:1.75;margin-bottom:4vh">${buildSummary(d).substring(0,200)}…</div>
-      <div style="display:flex;gap:4rem;justify-content:center">
-        ${[
-          {l:'Revenue',    v:fc(d.revenue),    c:'#4ade80'},
-          {l:'Net Income', v:fc(d.netIncome),  c:d.netIncome>0?'#a3e635':'#f87171'},
-          {l:'Health',     v:h+'/100',          c:hColor==='#22c55e'?'#4ade80':hColor==='#b45309'?'#fbbf24':'#f87171'},
-        ].map(s =>
-          '<div style="text-align:center">' +
-            '<div style="font-size:2.8vw;font-weight:900;color:' + s.c + ';letter-spacing:-0.05em;line-height:1">' + s.v + '</div>' +
-            '<div style="font-size:0.75vw;color:rgba(255,255,255,0.35);margin-top:0.6vh">' + s.l + '</div>' +
-          '</div>'
-        ).join('')}
-      </div>
-    </div>`,
-  ];
-
-  // Render viewer
-  deckCurrent = 0;
-  renderDeckSlide();
-
-  // Thumbnails
-  const thumbStrip = document.getElementById('deck-thumbs');
-  thumbStrip.innerHTML = deckSlides.map((s,i) =>
-    '<div onclick="jumpDeckSlide(' + i + ')" id="deck-thumb-' + i + '" style="flex-shrink:0;width:160px;cursor:pointer;border-radius:8px;overflow:hidden;border:2px solid ' + (i===0?'#0f2570':'#e4e3df') + ';transition:border-color 0.13s">' +
-      '<div style="aspect-ratio:16/9;background:#1c1c2a;overflow:hidden;transform:scale(1);pointer-events:none">' +
-        '<div style="width:800px;height:450px;transform:scale(0.2);transform-origin:0 0;pointer-events:none">' + s + '</div>' +
-      '</div>' +
-      '<div style="font-size:10px;font-weight:600;color:#7a7a7a;text-align:center;padding:5px;background:#f8f8f6">Slide ' + (i+1) + '</div>' +
-    '</div>'
-  ).join('');
-
-  // Update header
-  document.getElementById('deck-title').textContent = (d.company || 'CEO Presentation') + ' — Financial Overview';
-  document.getElementById('deck-sub').textContent = (d.period || '') + ' · ' + deckSlides.length + ' slides · Built from your data';
-  document.getElementById('deck-counter').textContent = 'Slide 1 of ' + deckSlides.length;
-
-  // Show deck
-  document.getElementById('deck-nodata').style.display = 'none';
-  document.getElementById('deck-ready').style.display  = 'block';
-}
-
-function renderDeckSlide() {
-  const viewer = document.getElementById('deck-viewer');
-  if (!viewer || !deckSlides[deckCurrent]) return;
-  viewer.innerHTML = '<div style="width:100%;height:100%">' + deckSlides[deckCurrent] + '</div>';
-  document.getElementById('deck-counter').textContent = 'Slide ' + (deckCurrent+1) + ' of ' + deckSlides.length;
-  // Update thumb borders
-  deckSlides.forEach((_,i) => {
-    const t = document.getElementById('deck-thumb-'+i);
-    if (t) t.style.borderColor = i===deckCurrent?'#0f2570':'#e4e3df';
-  });
-}
-
-function deckNext() { if(deckCurrent < deckSlides.length-1){ deckCurrent++; renderDeckSlide(); } }
-function deckPrev() { if(deckCurrent > 0){ deckCurrent--; renderDeckSlide(); } }
-function jumpDeckSlide(i) { deckCurrent = i; renderDeckSlide(); }
-
 </script>
+<script src="deck-engine.js"></script>
 </body>
 </html>
