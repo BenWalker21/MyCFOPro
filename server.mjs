@@ -1,0 +1,352 @@
+import { createReadStream, existsSync, statSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
+import { createServer } from 'node:http';
+import { extname, join, normalize, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const root = resolve(__dirname);
+await loadEnvFile();
+const port = Number(process.env.PORT || 3000);
+
+const contentTypes = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'text/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.json': 'application/json; charset=utf-8',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.jpg': 'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.ico': 'image/x-icon'
+};
+
+const server = createServer(async (req, res) => {
+  try {
+    const url = new URL(req.url || '/', `http://${req.headers.host || 'localhost'}`);
+
+    if (req.method === 'POST' && url.pathname === '/api/analyze') {
+      await handleAnalyze(req, res);
+      return;
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/chat') {
+      await handleChat(req, res);
+      return;
+    }
+
+    if (req.method === 'GET' || req.method === 'HEAD') {
+      await serveStatic(url.pathname, req, res);
+      return;
+    }
+
+    sendJson(res, 405, { error: 'Method not allowed' });
+  } catch (error) {
+    console.error(error);
+    sendJson(res, error.statusCode || 500, { error: error.message || 'Unexpected server error' });
+  }
+});
+
+server.listen(port, () => {
+  console.log(`MyCFOPro running at http://localhost:${port}`);
+});
+
+async function handleAnalyze(req, res) {
+  const body = await readJsonBody(req);
+  const financials = body?.financials;
+
+  if (!financials || typeof financials !== 'object') {
+    sendJson(res, 400, { error: 'Missing financials payload' });
+    return;
+  }
+
+  const prompt = `You are a senior CFO advisor for small businesses.
+
+Analyze this normalized financial statement data and return ONLY valid JSON with this exact shape:
+{
+  "summary": "3-5 sentence executive CFO summary in plain English",
+  "findings": [
+    {"type":"good|warn|bad","text":"specific finding using the numbers"}
+  ],
+  "actions": [
+    {"title":"short action title","description":"specific next step","impact":"optional financial or operational impact"}
+  ],
+  "questions": ["follow-up question the owner should answer"]
+}
+
+Rules:
+- Be direct, practical, and owner-friendly.
+- Use the provided numbers. Do not invent missing cash, AR, AP, debt, or tax details.
+- Mention when P&L-only data limits cash-flow conclusions.
+- Keep findings and actions specific to this business.
+- Include the reminder that this is informational and not a substitute for a CPA when relevant.
+
+Financial data:
+${JSON.stringify(trimFinancials(financials), null, 2)}`;
+
+  const ai = await callAiModel({
+    system: 'You produce concise, valid JSON CFO analysis for small businesses.',
+    messages: [{ role: 'user', content: prompt }],
+    maxTokens: 1400
+  });
+
+  const parsed = parseJsonObject(ai.text);
+  sendJson(res, 200, {
+    provider: ai.provider,
+    model: ai.model,
+    report: normalizeReport(parsed)
+  });
+}
+
+async function handleChat(req, res) {
+  const body = await readJsonBody(req);
+  const message = String(body?.message || '').trim();
+  const financials = body?.financials && typeof body.financials === 'object' ? body.financials : null;
+  const history = Array.isArray(body?.history) ? body.history.slice(-8) : [];
+
+  if (!message) {
+    sendJson(res, 400, { error: 'Missing chat message' });
+    return;
+  }
+
+  const context = financials
+    ? `Use this business financial data when answering:\n${JSON.stringify(trimFinancials(financials), null, 2)}`
+    : 'No financial file has been uploaded yet. Answer generally and ask the owner to upload financials for specific guidance.';
+
+  const ai = await callAiModel({
+    system: `You are Clara, MyCFOPro's CFO Advisor for small businesses.
+Be warm, direct, and practical. Explain financial concepts in plain English.
+Use exact provided numbers when available. Do not invent missing data.
+Keep answers to 3-5 sentences unless the user asks for detail.
+This is informational and not a substitute for a CPA or licensed advisor.`,
+    messages: [
+      { role: 'user', content: context },
+      ...history.map(item => ({
+        role: item.role === 'assistant' ? 'assistant' : 'user',
+        content: String(item.content || '').slice(0, 2000)
+      })),
+      { role: 'user', content: message }
+    ],
+    maxTokens: 700
+  });
+
+  sendJson(res, 200, {
+    provider: ai.provider,
+    model: ai.model,
+    reply: ai.text.trim()
+  });
+}
+
+async function callAiModel({ system, messages, maxTokens }) {
+  if (process.env.ANTHROPIC_API_KEY) {
+    const model = process.env.ANTHROPIC_MODEL || 'claude-3-5-sonnet-latest';
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'anthropic-version': '2023-06-01',
+        'content-type': 'application/json',
+        'x-api-key': process.env.ANTHROPIC_API_KEY
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens: maxTokens,
+        system,
+        messages: messages.map(message => ({
+          role: message.role === 'assistant' ? 'assistant' : 'user',
+          content: message.content
+        }))
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Anthropic request failed: ${response.status} ${await response.text()}`);
+    }
+
+    const json = await response.json();
+    return {
+      provider: 'anthropic',
+      model,
+      text: json.content?.map(part => part.text || '').join('\n').trim() || ''
+    };
+  }
+
+  if (process.env.OPENAI_API_KEY) {
+    const model = process.env.OPENAI_MODEL || 'gpt-4o-mini';
+    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        'content-type': 'application/json'
+      },
+      body: JSON.stringify({
+        model,
+        temperature: 0.2,
+        max_tokens: maxTokens,
+        messages: [
+          { role: 'system', content: system },
+          ...messages.map(message => ({
+            role: message.role === 'assistant' ? 'assistant' : 'user',
+            content: message.content
+          }))
+        ]
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`OpenAI request failed: ${response.status} ${await response.text()}`);
+    }
+
+    const json = await response.json();
+    return {
+      provider: 'openai',
+      model,
+      text: json.choices?.[0]?.message?.content?.trim() || ''
+    };
+  }
+
+  const error = new Error('AI provider is not configured');
+  error.statusCode = 503;
+  throw error;
+}
+
+function parseJsonObject(text) {
+  try {
+    return JSON.parse(text);
+  } catch {
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) throw new Error('AI response did not include JSON');
+    return JSON.parse(match[0]);
+  }
+}
+
+function normalizeReport(value) {
+  const report = value && typeof value === 'object' ? value : {};
+  return {
+    summary: String(report.summary || '').slice(0, 2500),
+    findings: normalizeList(report.findings).slice(0, 6).map(item => ({
+      type: ['good', 'warn', 'bad'].includes(item.type) ? item.type : 'warn',
+      text: String(item.text || '').slice(0, 800)
+    })),
+    actions: normalizeList(report.actions).slice(0, 6).map(item => ({
+      title: String(item.title || 'Recommended action').slice(0, 160),
+      description: String(item.description || item.desc || '').slice(0, 900),
+      impact: item.impact ? String(item.impact).slice(0, 300) : ''
+    })),
+    questions: normalizeList(report.questions).slice(0, 5).map(item => String(item).slice(0, 240))
+  };
+}
+
+function normalizeList(value) {
+  return Array.isArray(value) ? value.filter(Boolean) : [];
+}
+
+function trimFinancials(financials) {
+  const pick = [
+    'filename', 'company', 'period', 'revenue', 'cogs', 'grossProfit',
+    'opex', 'opIncome', 'netIncome', 'grossMargin', 'netMargin',
+    'opMargin', 'payroll', 'payrollPct', 'rent', 'marketing',
+    'interestExpense', 'hasBalanceSheet'
+  ];
+
+  const out = {};
+  for (const key of pick) {
+    if (financials[key] !== undefined) out[key] = financials[key];
+  }
+
+  out.serviceRevenue = trimItems(financials.serviceRevenue);
+  out.serviceCogs = trimItems(financials.serviceCogs);
+  out.expenseItems = trimItems(financials.expenseItems);
+  return out;
+}
+
+function trimItems(items) {
+  return Array.isArray(items)
+    ? items.slice(0, 20).map(item => ({
+        name: String(item.name || item.label || '').slice(0, 120),
+        val: Number(item.val || 0)
+      }))
+    : [];
+}
+
+async function serveStatic(pathname, req, res) {
+  const safePath = normalize(decodeURIComponent(pathname)).replace(/^(\.\.[/\\])+/, '');
+  const relativePath = safePath === '/' || safePath === '.' ? 'index.html' : safePath.replace(/^[/\\]/, '');
+  const filePath = resolve(root, relativePath);
+
+  if (!filePath.startsWith(root)) {
+    sendJson(res, 403, { error: 'Forbidden' });
+    return;
+  }
+
+  const pathToServe = existsSync(filePath) && statSync(filePath).isDirectory()
+    ? join(filePath, 'index.html')
+    : filePath;
+
+  if (!existsSync(pathToServe) || !statSync(pathToServe).isFile()) {
+    sendJson(res, 404, { error: 'Not found' });
+    return;
+  }
+
+  res.writeHead(200, {
+    'content-type': contentTypes[extname(pathToServe)] || 'application/octet-stream'
+  });
+
+  if (req.method === 'HEAD') {
+    res.end();
+    return;
+  }
+
+  createReadStream(pathToServe).pipe(res);
+}
+
+async function readJsonBody(req) {
+  const chunks = [];
+  let size = 0;
+
+  for await (const chunk of req) {
+    size += chunk.length;
+    if (size > 1_000_000) {
+      const error = new Error('Request body too large');
+      error.statusCode = 413;
+      throw error;
+    }
+    chunks.push(chunk);
+  }
+
+  if (!chunks.length) return null;
+  return JSON.parse(Buffer.concat(chunks).toString('utf8'));
+}
+
+function sendJson(res, statusCode, payload) {
+  res.writeHead(statusCode, { 'content-type': 'application/json; charset=utf-8' });
+  res.end(JSON.stringify(payload));
+}
+
+process.on('uncaughtException', error => {
+  console.error(error);
+});
+
+process.on('unhandledRejection', error => {
+  console.error(error);
+});
+
+async function loadEnvFile() {
+  const envPath = join(root, '.env');
+  if (!existsSync(envPath)) return;
+
+  const contents = await readFile(envPath, 'utf8');
+  for (const line of contents.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+
+    const equalsIndex = trimmed.indexOf('=');
+    if (equalsIndex === -1) continue;
+
+    const key = trimmed.slice(0, equalsIndex).trim();
+    let value = trimmed.slice(equalsIndex + 1).trim();
+    if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      value = value.slice(1, -1);
+    }
+    if (key && process.env[key] === undefined) process.env[key] = value;
+  }
+}
