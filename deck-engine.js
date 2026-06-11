@@ -100,10 +100,10 @@ function composeAndRenderDeck() {
     .filter(item => item.required || deckOptionsState[item.id] !== false)
     .map(item => item.id);
 
-  deckSlideItems = selectedIds.map(id => ({
+  deckSlideItems = selectedIds.map((id, i) => ({
     id,
     title: DECK_SLIDE_CATALOG.find(item => item.id === id)?.name || id,
-    html: renderDeckSlideHtml(id, d, ctx)
+    html: renderDeckSlideHtml(id, d, ctx, i + 1, selectedIds.length)
   }));
 
   deckSlides = deckSlideItems.map(item => item.html);
@@ -120,6 +120,7 @@ function getDeckContext(d) {
   return {
     h,
     hColor: h >= 70 ? '#22c55e' : h >= 50 ? '#b45309' : '#dc2626',
+    hLabel: h >= 70 ? 'Strong' : h >= 50 ? 'Moderate' : 'Needs attention',
     safeCompany: escapeHtml(d.company || 'Financial Performance'),
     safePeriod: escapeHtml(d.period || ''),
     findings: window.latestAIReport?.findings?.length ? window.latestAIReport.findings.map(f => ({
@@ -136,223 +137,314 @@ function getDeckContext(d) {
   };
 }
 
-function deckSlideShell(type, inner, dark) {
-  const bg = dark ? '#0a1628' : '#ffffff';
-  const accent = dark
-    ? `<div style="position:absolute;inset:0;background:radial-gradient(circle at 85% 15%, rgba(34,197,94,0.18), transparent 28%), radial-gradient(circle at 10% 90%, rgba(15,37,112,0.55), transparent 35%)"></div>`
-    : `<div style="position:absolute;top:0;left:0;right:0;height:5px;background:linear-gradient(90deg,#0f2570 0%,#22c55e 100%)"></div>`;
-  return `<div style="width:100%;height:100%;background:${bg};display:flex;flex-direction:column;padding:6% 8%;box-sizing:border-box;position:relative;overflow:hidden">${accent}${inner}</div>`;
+const DECK_NAVY = '#0a1628';
+const DECK_BLUE = '#0f2570';
+const DECK_GREEN = '#22c55e';
+const DECK_GREEN_L = '#4ade80';
+
+function deckHealthGauge(score, color, sizeVw) {
+  const r = 42;
+  const c = 2 * Math.PI * r;
+  const dash = Math.max(0.01, (score / 100) * c);
+  return `<svg viewBox="0 0 120 120" width="${sizeVw}" height="${sizeVw}" style="display:block">
+    <defs><linearGradient id="deckGaugeGrad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="${DECK_GREEN}"/><stop offset="100%" stop-color="${DECK_GREEN_L}"/></linearGradient></defs>
+    <circle cx="60" cy="60" r="${r}" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="9"/>
+    <circle cx="60" cy="60" r="${r}" fill="none" stroke="url(#deckGaugeGrad)" stroke-width="9" stroke-linecap="round"
+      stroke-dasharray="${dash.toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 60 60)"/>
+    <text x="60" y="58" text-anchor="middle" font-size="26" font-weight="900" fill="#fff" font-family="system-ui,sans-serif">${score}</text>
+    <text x="60" y="74" text-anchor="middle" font-size="9" font-weight="700" fill="rgba(255,255,255,0.45)" font-family="system-ui,sans-serif">/100</text>
+  </svg>`;
 }
 
-function renderDeckSlideHtml(id, d, ctx) {
+function deckSlideFooter(d, ctx, slideNo, total) {
+  return `<div style="position:absolute;left:0;right:0;bottom:0;height:6.5%;display:flex;align-items:center;justify-content:space-between;padding:0 7%;box-sizing:border-box;border-top:1px solid rgba(255,255,255,0.06);background:rgba(0,0,0,0.18);z-index:5">
+    <div style="font-size:0.62vw;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:rgba(255,255,255,0.28)">MyCFOPro.AI · Confidential</div>
+    <div style="font-size:0.62vw;color:rgba(255,255,255,0.35)">${ctx.safeCompany}${ctx.safePeriod ? ' · ' + ctx.safePeriod : ''}</div>
+    <div style="font-size:0.62vw;font-weight:700;color:rgba(255,255,255,0.28)">${slideNo} / ${total}</div>
+  </div>`;
+}
+
+function deckSlideFooterLight(d, ctx, slideNo, total) {
+  return `<div style="position:absolute;left:0;right:0;bottom:0;height:6.5%;display:flex;align-items:center;justify-content:space-between;padding:0 7%;box-sizing:border-box;border-top:1px solid #e2e8f0;background:linear-gradient(180deg,#fff 0%,#f8fafc 100%);z-index:5">
+    <div style="font-size:0.62vw;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;color:#94a3b8">MyCFOPro.AI</div>
+    <div style="font-size:0.62vw;color:#64748b">${ctx.safeCompany}</div>
+    <div style="font-size:0.62vw;font-weight:700;color:#94a3b8">${slideNo} / ${total}</div>
+  </div>`;
+}
+
+function deckHeaderBlock(eyebrow, title, light) {
+  const eyebrowColor = light ? DECK_BLUE : 'rgba(255,255,255,0.45)';
+  const titleColor = light ? DECK_NAVY : '#fff';
+  return `<div style="margin-bottom:2.2vh">
+    <div style="display:inline-flex;align-items:center;gap:0.6vw;margin-bottom:0.8vh">
+      <span style="width:1.8vw;height:3px;border-radius:999px;background:linear-gradient(90deg,${DECK_GREEN},${DECK_GREEN_L})"></span>
+      <span style="font-size:0.72vw;font-weight:800;letter-spacing:1.6px;text-transform:uppercase;color:${eyebrowColor}">${eyebrow}</span>
+    </div>
+    <div style="font-size:2.55vw;font-weight:900;color:${titleColor};letter-spacing:-0.045em;line-height:1.05">${title}</div>
+  </div>`;
+}
+
+function deckSlideShell(type, inner, light, footerHtml) {
+  const bg = light
+    ? 'linear-gradient(180deg,#ffffff 0%,#f8fafc 100%)'
+    : DECK_NAVY;
+  const accent = light
+    ? `<div style="position:absolute;top:0;left:0;right:0;height:6px;background:linear-gradient(90deg,${DECK_BLUE} 0%,${DECK_GREEN} 100%)"></div>
+       <div style="position:absolute;top:-15%;right:-8%;width:38%;height:38%;border-radius:50%;background:radial-gradient(circle, rgba(34,197,94,0.08), transparent 70%)"></div>
+       <div style="position:absolute;bottom:-20%;left:-10%;width:42%;height:42%;border-radius:50%;background:radial-gradient(circle, rgba(15,37,112,0.06), transparent 70%)"></div>`
+    : `<div style="position:absolute;inset:0;background:radial-gradient(circle at 88% 12%, rgba(34,197,94,0.14), transparent 30%), radial-gradient(circle at 8% 92%, rgba(15,37,112,0.5), transparent 38%)"></div>`;
+  return `<div style="width:100%;height:100%;background:${bg};display:flex;flex-direction:column;padding:5.5% 7% 8%;box-sizing:border-box;position:relative;overflow:hidden;font-family:system-ui,-apple-system,'Segoe UI',sans-serif">${accent}<div style="position:relative;z-index:2;flex:1;display:flex;flex-direction:column;min-height:0">${inner}</div>${footerHtml || ''}</div>`;
+}
+
+function renderDeckSlideHtml(id, d, ctx, slideNo, total) {
+  slideNo = slideNo || 1;
+  total = total || 9;
   switch (id) {
-    case 'cover': return renderDeckCover(d, ctx);
-    case 'scorecard': return renderDeckScorecard(d, ctx);
-    case 'revenue': return renderDeckRevenue(d, ctx);
-    case 'expenses': return renderDeckExpenses(d, ctx);
-    case 'margins': return renderDeckMargins(d, ctx);
-    case 'findings': return renderDeckFindings(d, ctx);
-    case 'actions': return renderDeckActions(d, ctx);
-    case 'summary': return renderDeckSummary(d, ctx);
-    case 'closing': return renderDeckClosing(d, ctx);
+    case 'cover': return renderDeckCover(d, ctx, slideNo, total);
+    case 'scorecard': return renderDeckScorecard(d, ctx, slideNo, total);
+    case 'revenue': return renderDeckRevenue(d, ctx, slideNo, total);
+    case 'expenses': return renderDeckExpenses(d, ctx, slideNo, total);
+    case 'margins': return renderDeckMargins(d, ctx, slideNo, total);
+    case 'findings': return renderDeckFindings(d, ctx, slideNo, total);
+    case 'actions': return renderDeckActions(d, ctx, slideNo, total);
+    case 'summary': return renderDeckSummary(d, ctx, slideNo, total);
+    case 'closing': return renderDeckClosing(d, ctx, slideNo, total);
     default: return '';
   }
 }
 
-function renderDeckCover(d, ctx) {
-  return `<div style="width:100%;height:100%;background:linear-gradient(135deg,#0a1628 0%,#0f2570 58%,#12356c 100%);display:flex;flex-direction:column;justify-content:flex-end;padding:7% 9%;position:relative;box-sizing:border-box;overflow:hidden">
-    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);background-size:48px 48px;opacity:0.35"></div>
-    <div style="position:absolute;top:-8%;right:-6%;width:42%;height:42%;border-radius:50%;background:rgba(34,197,94,0.12);filter:blur(10px)"></div>
-    <div style="position:absolute;top:7%;right:7%;font-size:1.1vw;font-weight:700;color:rgba(255,255,255,0.25);letter-spacing:1px">MyCFOPro.AI</div>
-    <div style="font-size:0.85vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.42);margin-bottom:1.5vh">Confidential · Executive Review</div>
-    <div style="width:64px;height:5px;background:linear-gradient(90deg,#22c55e,#4ade80);border-radius:999px;margin-bottom:2.5vh"></div>
-    <div style="font-size:3.6vw;font-weight:900;color:#fff;line-height:1.08;letter-spacing:-0.05em;margin-bottom:1.5vh">${ctx.safeCompany}<br><span style="color:#4ade80">Financial Overview</span></div>
-    <div style="font-size:1.05vw;color:rgba(255,255,255,0.58);margin-bottom:3vh">${ctx.safePeriod} · Prepared by MyCFOPro.AI</div>
-    <div style="font-size:0.8vw;color:rgba(255,255,255,0.32)">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
+function renderDeckCover(d, ctx, slideNo, total) {
+  return `<div style="width:100%;height:100%;background:linear-gradient(135deg,#050b14 0%,#0a1628 42%,#0f2570 100%);display:flex;flex-direction:column;justify-content:space-between;padding:7% 8% 8%;position:relative;box-sizing:border-box;overflow:hidden;font-family:system-ui,sans-serif">
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);background-size:56px 56px;opacity:0.45"></div>
+    <div style="position:absolute;top:-12%;right:-8%;width:48%;height:48%;border-radius:50%;background:radial-gradient(circle, rgba(34,197,94,0.22), transparent 68%)"></div>
+    <div style="position:relative;z-index:2;display:flex;justify-content:space-between;align-items:flex-start">
+      <div style="font-size:0.72vw;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,0.35)">Board-ready briefing</div>
+      <div style="font-size:0.85vw;font-weight:800;color:rgba(255,255,255,0.22)">MyCFOPro.AI</div>
+    </div>
+    <div style="position:relative;z-index:2;flex:1;display:flex;flex-direction:column;justify-content:center;padding:2vh 0">
+      <div style="display:inline-flex;align-items:center;gap:0.5vw;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:0.5vh 1vw;width:fit-content;margin-bottom:2vh">
+        <span style="width:0.45vw;height:0.45vw;border-radius:50%;background:${DECK_GREEN};box-shadow:0 0 8px ${DECK_GREEN}"></span>
+        <span style="font-size:0.68vw;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.55)">Confidential · Executive review</span>
+      </div>
+      <div style="width:5vw;height:0.45vh;background:linear-gradient(90deg,${DECK_GREEN},${DECK_GREEN_L});border-radius:999px;margin-bottom:2.5vh"></div>
+      <div style="font-size:4.2vw;font-weight:900;color:#fff;line-height:1.02;letter-spacing:-0.055em;margin-bottom:1.2vh">${ctx.safeCompany}</div>
+      <div style="font-size:2.4vw;font-weight:900;background:linear-gradient(90deg,${DECK_GREEN_L},#86efac);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:-0.04em;margin-bottom:2vh">Financial Overview</div>
+      <div style="font-size:1.05vw;color:rgba(255,255,255,0.55);max-width:55%">${ctx.safePeriod || 'Current period'} · ${new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</div>
+    </div>
+    <div style="position:relative;z-index:2;display:grid;grid-template-columns:repeat(3,1fr);gap:1.2vw">
+      ${[
+        { l: 'Revenue', v: fc(d.revenue), c: DECK_GREEN_L },
+        { l: 'Net income', v: fc(d.netIncome), c: d.netIncome >= 0 ? DECK_GREEN_L : '#f87171' },
+        { l: 'Health score', v: ctx.h + '/100', c: ctx.hColor }
+      ].map(s => `<div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:1.4vh 1.2vw">
+        <div style="font-size:0.62vw;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:rgba(255,255,255,0.38);margin-bottom:0.6vh">${s.l}</div>
+        <div style="font-size:1.55vw;font-weight:900;color:${s.c};letter-spacing:-0.04em">${s.v}</div>
+      </div>`).join('')}
+    </div>
+    ${deckSlideFooter(d, ctx, slideNo, total)}
   </div>`;
 }
 
-function renderDeckScorecard(d, ctx) {
+function renderDeckScorecard(d, ctx, slideNo, total) {
   const metrics = [
-    { l: 'Health Score', v: ctx.h + '/100', c: ctx.hColor, big: true },
-    { l: 'Revenue', v: fc(d.revenue), c: '#0a1628' },
-    { l: 'Gross Margin', v: fp(d.grossMargin), c: ctx.mColor(d.grossMargin, 38, 25) },
-    { l: 'Net Margin', v: fp(d.netMargin), c: ctx.mColor(d.netMargin, 8, 3) },
-    { l: 'Gross Profit', v: fc(d.grossProfit), c: '#0a1628' },
-    { l: 'Net Income', v: fc(d.netIncome), c: d.netIncome > 0 ? '#22c55e' : '#dc2626' },
-    { l: 'Operating Income', v: fc(d.opIncome || 0), c: (d.opIncome || 0) > 0 ? '#22c55e' : '#dc2626' },
-    { l: 'Total OpEx', v: fc(d.opex || 0), c: '#0f2570' }
+    { l: 'Revenue', v: fc(d.revenue), c: DECK_NAVY, sub: 'Top line' },
+    { l: 'Gross margin', v: fp(d.grossMargin), c: ctx.mColor(d.grossMargin, 38, 25), sub: 'Benchmark 38%' },
+    { l: 'Net margin', v: fp(d.netMargin), c: ctx.mColor(d.netMargin, 8, 3), sub: 'Benchmark 8%' },
+    { l: 'Gross profit', v: fc(d.grossProfit), c: DECK_BLUE, sub: 'After direct costs' },
+    { l: 'Net income', v: fc(d.netIncome), c: d.netIncome >= 0 ? DECK_GREEN : '#dc2626', sub: d.netIncome >= 0 ? 'Profitable' : 'Loss period' },
+    { l: 'Operating income', v: fc(d.opIncome || 0), c: (d.opIncome || 0) >= 0 ? DECK_GREEN : '#dc2626', sub: 'Core operations' }
   ];
   return deckSlideShell('scorecard', `
-    <div style="position:relative;z-index:1;display:grid;grid-template-columns:1.1fr 1.9fr;gap:4%;height:100%">
-      <div style="background:linear-gradient(180deg,#0f2570 0%,#0a1628 100%);border-radius:18px;padding:6%;display:flex;flex-direction:column;justify-content:center;color:#fff">
-        <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:1vh">Executive Summary</div>
-        <div style="font-size:1.1vw;color:rgba(255,255,255,0.62);margin-bottom:2vh">${ctx.safePeriod}</div>
-        <div style="font-size:5vw;font-weight:900;line-height:1;color:#4ade80;letter-spacing:-0.06em">${ctx.h}</div>
-        <div style="font-size:1vw;color:rgba(255,255,255,0.55);margin-top:0.8vh">Financial health score</div>
-        <div style="margin-top:2vh;font-size:0.85vw;line-height:1.6;color:rgba(255,255,255,0.68)">${d.netIncome > 0 ? 'Profitable period with measurable operating momentum.' : 'Period ended in a loss — focus on margin and cash next.'}</div>
+    ${deckHeaderBlock('Executive scorecard', 'Performance at a glance', true)}
+    <div style="flex:1;display:grid;grid-template-columns:0.95fr 1.05fr;gap:3.5%;min-height:0">
+      <div style="background:linear-gradient(160deg,${DECK_BLUE} 0%,${DECK_NAVY} 100%);border-radius:20px;padding:6%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;box-shadow:0 16px 40px rgba(10,22,40,0.18);position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 0%, rgba(34,197,94,0.15), transparent 55%)"></div>
+        <div style="position:relative;z-index:1">
+          ${deckHealthGauge(ctx.h, ctx.hColor, '11vw')}
+          <div style="font-size:0.85vw;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-top:1vh">${ctx.hLabel}</div>
+          <div style="font-size:0.78vw;line-height:1.65;color:rgba(255,255,255,0.62);margin-top:1.4vh;max-width:90%">${d.netIncome >= 0 ? 'Solid operating performance with room to optimize costs and cash timing.' : 'Margins and cash need immediate leadership focus this period.'}</div>
+        </div>
       </div>
-      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:2.2%;align-content:start">
-        ${metrics.filter(m => !m.big).map(m => `
-          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:5% 6%">
-            <div style="font-size:0.65vw;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#94a3b8;margin-bottom:0.8vh">${m.l}</div>
-            <div style="font-size:2vw;font-weight:900;color:${m.c};letter-spacing:-0.05em">${m.v}</div>
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:1.4vh 1.2vw;align-content:center">
+        ${metrics.map(m => `
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:4.5% 5.5%;box-shadow:0 8px 24px rgba(15,37,112,0.06);position:relative;overflow:hidden">
+            <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${m.c}"></div>
+            <div style="font-size:0.62vw;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#94a3b8;margin-bottom:0.5vh">${m.l}</div>
+            <div style="font-size:1.85vw;font-weight:900;color:${m.c};letter-spacing:-0.05em;line-height:1">${m.v}</div>
+            <div style="font-size:0.62vw;color:#64748b;margin-top:0.6vh">${m.sub}</div>
           </div>`).join('')}
       </div>
-    </div>`);
+    </div>`, true, deckSlideFooterLight(d, ctx, slideNo, total));
 }
 
-function renderDeckRevenue(d, ctx) {
-  const rows = (d.serviceRevenue && d.serviceRevenue.length ? d.serviceRevenue : [{ name: 'Revenue', val: d.revenue }]).slice(0, 7);
-  const colors = ['#0f2570', '#22c55e', '#4ade80', '#1a4480', '#16a34a', '#64748b', '#0a1628'];
+function renderDeckRevenue(d, ctx, slideNo, total) {
+  const rows = (d.serviceRevenue && d.serviceRevenue.length ? d.serviceRevenue : [{ name: 'Revenue', val: d.revenue }]).slice(0, 6);
+  const colors = [DECK_BLUE, DECK_GREEN, DECK_GREEN_L, '#1a4480', '#16a34a', DECK_NAVY];
   return deckSlideShell('revenue', `
-    <div style="position:relative;z-index:1;height:100%;display:flex;flex-direction:column">
-      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0f2570;margin-bottom:1vh">Revenue Analysis</div>
-      <div style="font-size:2.3vw;font-weight:900;color:#0a1628;letter-spacing:-0.04em;margin-bottom:3vh">Where the money comes from</div>
-      <div style="flex:1;display:flex;flex-direction:column;gap:1.3vh">
+    ${deckHeaderBlock('Revenue analysis', 'Where the money comes from', true)}
+    <div style="flex:1;display:grid;grid-template-columns:1.35fr 0.65fr;gap:4%;min-height:0">
+      <div style="display:flex;flex-direction:column;gap:1.5vh;justify-content:center">
         ${rows.map((s, i) => {
           const pct = d.revenue > 0 ? (s.val / d.revenue * 100) : 0;
-          return `<div style="display:grid;grid-template-columns:24% 1fr 12% 8%;gap:2%;align-items:center">
-            <div style="font-size:0.78vw;color:#334155;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(s.name)}</div>
-            <div style="background:#eef2f7;border-radius:999px;overflow:hidden;height:1.5vh">
-              <div style="width:${Math.max(pct, 3).toFixed(1)}%;height:100%;background:${colors[i % colors.length]};border-radius:999px"></div>
+          return `<div style="display:grid;grid-template-columns:1.4vw 22% 1fr 11%;gap:1.2vw;align-items:center">
+            <div style="font-size:0.72vw;font-weight:900;color:${colors[i % colors.length]};opacity:0.7">${String(i + 1).padStart(2, '0')}</div>
+            <div style="font-size:0.78vw;font-weight:700;color:#334155;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escapeHtml(s.name)}</div>
+            <div style="background:#e8eef6;border-radius:999px;overflow:hidden;height:1.8vh;box-shadow:inset 0 1px 2px rgba(15,37,112,0.06)">
+              <div style="width:${Math.max(pct, 4).toFixed(1)}%;height:100%;background:linear-gradient(90deg,${colors[i % colors.length]},${i % 2 ? DECK_GREEN_L : '#4ade80'});border-radius:999px;box-shadow:0 0 12px rgba(34,197,94,0.25)"></div>
             </div>
-            <div style="font-size:0.82vw;font-weight:800;color:#0a1628;text-align:right">${fc(s.val)}</div>
-            <div style="font-size:0.72vw;color:#94a3b8;text-align:right">${pct.toFixed(1)}%</div>
+            <div style="font-size:0.78vw;font-weight:900;color:${DECK_NAVY};text-align:right">${pct.toFixed(0)}%</div>
           </div>`;
         }).join('')}
-        <div style="margin-top:auto;padding-top:1.4vh;border-top:1px solid #e2e8f0;display:flex;justify-content:space-between;font-size:0.85vw;font-weight:800;color:#0a1628">
-          <span>Total Revenue</span><span style="color:#0f2570">${fc(d.revenue)}</span>
-        </div>
       </div>
-    </div>`);
+      <div style="background:linear-gradient(180deg,${DECK_NAVY} 0%,${DECK_BLUE} 100%);border-radius:20px;padding:8%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;color:#fff;box-shadow:0 16px 36px rgba(10,22,40,0.15)">
+        <div style="font-size:0.68vw;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:1vh">Total revenue</div>
+        <div style="font-size:2.8vw;font-weight:900;color:${DECK_GREEN_L};letter-spacing:-0.05em;line-height:1">${fc(d.revenue)}</div>
+        <div style="font-size:0.75vw;color:rgba(255,255,255,0.55);margin-top:1.4vh;line-height:1.6">${rows.length} revenue line${rows.length === 1 ? '' : 's'} · Top: ${escapeHtml(rows[0]?.name || 'N/A')}</div>
+      </div>
+    </div>`, true, deckSlideFooterLight(d, ctx, slideNo, total));
 }
 
-function renderDeckExpenses(d, ctx) {
+function renderDeckExpenses(d, ctx, slideNo, total) {
   const rows = (d.expenseItems && d.expenseItems.length ? d.expenseItems : [{ name: 'Operating Expenses', val: d.opex || 0 }]).slice(0, 6);
-  const total = rows.reduce((sum, item) => sum + (item.val || 0), 0) || d.opex || 1;
+  const totalExp = rows.reduce((sum, item) => sum + (item.val || 0), 0) || d.opex || 1;
+  const top = rows[0];
+  const topPct = totalExp > 0 && top ? (top.val / totalExp * 100) : 0;
   return deckSlideShell('expenses', `
-    <div style="position:relative;z-index:1;height:100%;display:flex;flex-direction:column">
-      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0f2570;margin-bottom:1vh">Cost Structure</div>
-      <div style="font-size:2.3vw;font-weight:900;color:#0a1628;letter-spacing:-0.04em;margin-bottom:3vh">Operating expense breakdown</div>
-      <div style="flex:1;display:grid;grid-template-columns:1.1fr 1fr;gap:5%">
-        <div style="display:flex;flex-direction:column;gap:1.2vh;justify-content:center">
-          ${rows.map((item, i) => {
-            const pct = total > 0 ? item.val / total * 100 : 0;
-            return `<div>
-              <div style="display:flex;justify-content:space-between;font-size:0.78vw;margin-bottom:0.5vh"><span>${escapeHtml(item.name)}</span><strong>${fc(item.val)}</strong></div>
-              <div style="background:#eef2f7;border-radius:999px;height:1.2vh;overflow:hidden"><div style="width:${Math.max(pct, 4)}%;height:100%;background:${i % 2 ? '#0f2570' : '#22c55e'};border-radius:999px"></div></div>
-            </div>`;
-          }).join('')}
-        </div>
-        <div style="background:linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%);border-radius:18px;padding:8%;display:flex;flex-direction:column;justify-content:center;border:1px solid #e2e8f0">
-          <div style="font-size:0.75vw;color:#64748b;text-transform:uppercase;letter-spacing:0.6px;margin-bottom:1vh">Total OpEx</div>
-          <div style="font-size:3.4vw;font-weight:900;color:#0f2570;letter-spacing:-0.05em">${fc(d.opex || total)}</div>
-          <div style="font-size:0.9vw;color:#64748b;margin-top:1vh;line-height:1.6">${d.revenue > 0 ? fp((d.opex || total) / d.revenue * 100) + ' of revenue' : 'Review each category for savings opportunities.'}</div>
-        </div>
+    ${deckHeaderBlock('Cost structure', 'Operating expense breakdown', true)}
+    <div style="flex:1;display:grid;grid-template-columns:1.15fr 0.85fr;gap:4%;min-height:0">
+      <div style="display:flex;flex-direction:column;gap:1.3vh;justify-content:center">
+        ${rows.map((item, i) => {
+          const pct = totalExp > 0 ? item.val / totalExp * 100 : 0;
+          return `<div style="background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:3% 4%;box-shadow:0 4px 16px rgba(15,37,112,0.04)">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:0.6vh">
+              <span style="font-size:0.78vw;font-weight:700;color:#334155">${escapeHtml(item.name)}</span>
+              <span style="font-size:0.82vw;font-weight:900;color:${DECK_BLUE}">${fc(item.val)}</span>
+            </div>
+            <div style="background:#eef2f7;border-radius:999px;height:1.3vh;overflow:hidden">
+              <div style="width:${Math.max(pct, 5)}%;height:100%;background:linear-gradient(90deg,${i % 2 ? DECK_BLUE : DECK_GREEN},${i % 2 ? '#1a4480' : DECK_GREEN_L});border-radius:999px"></div>
+            </div>
+            <div style="font-size:0.62vw;color:#94a3b8;margin-top:0.4vh">${pct.toFixed(1)}% of OpEx</div>
+          </div>`;
+        }).join('')}
       </div>
-    </div>`);
+      <div style="display:flex;flex-direction:column;gap:1.4vh">
+        <div style="flex:1;background:linear-gradient(160deg,${DECK_BLUE},${DECK_NAVY});border-radius:20px;padding:8%;display:flex;flex-direction:column;justify-content:center;color:#fff">
+          <div style="font-size:0.68vw;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.4)">Total OpEx</div>
+          <div style="font-size:3vw;font-weight:900;color:${DECK_GREEN_L};letter-spacing:-0.05em;margin:1vh 0">${fc(d.opex || totalExp)}</div>
+          <div style="font-size:0.78vw;color:rgba(255,255,255,0.6);line-height:1.6">${d.revenue > 0 ? fp((d.opex || totalExp) / d.revenue * 100) + ' of revenue' : 'Review each category for savings.'}</div>
+        </div>
+        ${top ? `<div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:16px;padding:6% 7%">
+          <div style="font-size:0.62vw;font-weight:800;text-transform:uppercase;color:#94a3b8;margin-bottom:0.5vh">Largest cost driver</div>
+          <div style="font-size:1.1vw;font-weight:800;color:${DECK_NAVY}">${escapeHtml(top.name)}</div>
+          <div style="font-size:1.6vw;font-weight:900;color:${DECK_GREEN};margin-top:0.5vh">${topPct.toFixed(0)}% of OpEx</div>
+        </div>` : ''}
+      </div>
+    </div>`, true, deckSlideFooterLight(d, ctx, slideNo, total));
 }
 
-function renderDeckMargins(d, ctx) {
+function renderDeckMargins(d, ctx, slideNo, total) {
   const items = [
-    { label: 'Gross Margin', value: d.grossMargin, benchmark: 38 },
-    { label: 'Net Margin', value: d.netMargin, benchmark: 8 },
-    { label: 'Operating Margin', value: d.opMargin || 0, benchmark: 10 }
+    { label: 'Gross margin', value: d.grossMargin, benchmark: 38 },
+    { label: 'Net margin', value: d.netMargin, benchmark: 8 },
+    { label: 'Operating margin', value: d.opMargin || 0, benchmark: 10 }
   ];
   return deckSlideShell('margins', `
-    <div style="position:relative;z-index:1;height:100%;display:flex;flex-direction:column">
-      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0f2570;margin-bottom:1vh">Profitability</div>
-      <div style="font-size:2.3vw;font-weight:900;color:#0a1628;letter-spacing:-0.04em;margin-bottom:3vh">Margin performance vs benchmark</div>
-      <div style="flex:1;display:flex;flex-direction:column;gap:2.4vh;justify-content:center">
-        ${items.map(item => {
-          const valWidth = Math.min(item.value / 50 * 100, 100);
-          const benchWidth = Math.min(item.benchmark / 50 * 100, 100);
-          return `<div>
-            <div style="display:flex;justify-content:space-between;align-items:end;margin-bottom:0.8vh">
-              <span style="font-size:0.9vw;font-weight:700;color:#0a1628">${item.label}</span>
-              <span style="font-size:1.4vw;font-weight:900;color:${ctx.mColor(item.value, item.benchmark, item.benchmark * 0.6)}">${fp(item.value)}</span>
-            </div>
-            <div style="position:relative;height:2vh;background:#eef2f7;border-radius:999px;overflow:hidden">
-              <div style="position:absolute;left:0;top:0;height:100%;width:${benchWidth}%;background:rgba(34,197,94,0.18)"></div>
-              <div style="position:absolute;left:0;top:0;height:100%;width:${valWidth}%;background:linear-gradient(90deg,#0f2570,#22c55e);border-radius:999px"></div>
-            </div>
-            <div style="font-size:0.68vw;color:#94a3b8;margin-top:0.5vh">Benchmark ~${item.benchmark}%</div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`);
+    ${deckHeaderBlock('Profitability', 'Margin performance vs benchmark', true)}
+    <div style="flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:2vw;align-content:center">
+      ${items.map(item => {
+        const color = ctx.mColor(item.value, item.benchmark, item.benchmark * 0.6);
+        const delta = item.value - item.benchmark;
+        return `<div style="background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:6% 5%;box-shadow:0 10px 30px rgba(15,37,112,0.07);display:flex;flex-direction:column;align-items:center;text-align:center">
+          <div style="font-size:0.68vw;font-weight:800;text-transform:uppercase;letter-spacing:0.5px;color:#94a3b8;margin-bottom:1vh">${item.label}</div>
+          <div style="font-size:3.2vw;font-weight:900;color:${color};letter-spacing:-0.06em;line-height:1">${fp(item.value)}</div>
+          <div style="margin:1.4vh 0;width:100%;height:1.6vh;background:#eef2f7;border-radius:999px;overflow:hidden;position:relative">
+            <div style="position:absolute;left:0;top:0;height:100%;width:${Math.min(item.benchmark / 50 * 100, 100)}%;background:rgba(34,197,94,0.15)"></div>
+            <div style="position:absolute;left:0;top:0;height:100%;width:${Math.min(Math.max(item.value, 0) / 50 * 100, 100)}%;background:linear-gradient(90deg,${DECK_BLUE},${DECK_GREEN});border-radius:999px"></div>
+          </div>
+          <div style="font-size:0.68vw;color:#64748b">Benchmark ${item.benchmark}%</div>
+          <div style="margin-top:0.8vh;font-size:0.72vw;font-weight:800;color:${delta >= 0 ? DECK_GREEN : '#dc2626'}">${delta >= 0 ? '+' : ''}${delta.toFixed(1)} pts vs benchmark</div>
+        </div>`;
+      }).join('')}
+    </div>`, true, deckSlideFooterLight(d, ctx, slideNo, total));
 }
 
-function renderDeckFindings(d, ctx) {
+function renderDeckFindings(d, ctx, slideNo, total) {
+  const icon = t => t === 'good' ? '✓' : t === 'warn' ? '!' : '⚠';
   return deckSlideShell('findings', `
-    <div style="position:relative;z-index:1;height:100%;display:flex;flex-direction:column">
-      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0f2570;margin-bottom:1vh">Analysis</div>
-      <div style="font-size:2.3vw;font-weight:900;color:#0a1628;letter-spacing:-0.04em;margin-bottom:2.5vh">Key findings</div>
-      <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:1.4vh">
-        ${ctx.findings.slice(0, 6).map(f => {
-          const bg = f.t === 'good' ? '#dcfce7' : f.t === 'warn' ? '#fef9ec' : '#fef2f2';
-          const label = f.t === 'good' ? 'Strength' : f.t === 'warn' ? 'Watch' : 'Critical';
-          const color = f.t === 'good' ? '#22c55e' : f.t === 'warn' ? '#b45309' : '#dc2626';
-          return `<div style="background:${bg};border-left:4px solid ${color};border-radius:12px;padding:4% 5%;display:flex;flex-direction:column;gap:0.8vh">
-            <div style="font-size:0.62vw;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:${color}">${label}</div>
-            <div style="font-size:0.78vw;color:#334155;line-height:1.55">${escapeHtml(f.text)}</div>
-          </div>`;
-        }).join('')}
-      </div>
-    </div>`);
+    ${deckHeaderBlock('Analysis', 'Key findings from your financials', true)}
+    <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:1.4vh;min-height:0">
+      ${ctx.findings.slice(0, 6).map(f => {
+        const bg = f.t === 'good' ? 'linear-gradient(135deg,#ecfdf5,#dcfce7)' : f.t === 'warn' ? 'linear-gradient(135deg,#fffbeb,#fef9ec)' : 'linear-gradient(135deg,#fef2f2,#fee2e2)';
+        const label = f.t === 'good' ? 'Strength' : f.t === 'warn' ? 'Watch' : 'Critical';
+        const color = f.t === 'good' ? DECK_GREEN : f.t === 'warn' ? '#b45309' : '#dc2626';
+        return `<div style="background:${bg};border:1px solid ${color}22;border-left:5px solid ${color};border-radius:16px;padding:4% 5%;display:flex;gap:3%;box-shadow:0 6px 20px rgba(15,37,112,0.05)">
+          <div style="width:2vw;height:2vw;border-radius:10px;background:${color};color:#fff;font-size:0.9vw;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0">${icon(f.t)}</div>
+          <div>
+            <div style="font-size:0.62vw;font-weight:800;letter-spacing:0.6px;text-transform:uppercase;color:${color};margin-bottom:0.5vh">${label}</div>
+            <div style="font-size:0.76vw;color:#334155;line-height:1.55">${escapeHtml(f.text)}</div>
+          </div>
+        </div>`;
+      }).join('')}
+    </div>`, true, deckSlideFooterLight(d, ctx, slideNo, total));
 }
 
-function renderDeckActions(d, ctx) {
+function renderDeckActions(d, ctx, slideNo, total) {
   return deckSlideShell('actions', `
-    <div style="position:relative;z-index:1;height:100%;display:flex;flex-direction:column">
-      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0f2570;margin-bottom:1vh">Recommendations</div>
-      <div style="font-size:2.3vw;font-weight:900;color:#0a1628;letter-spacing:-0.04em;margin-bottom:2.5vh">Priority action plan</div>
-      <div style="flex:1;display:grid;grid-template-columns:1fr 1fr;gap:1.4vh">
-        ${ctx.actions.slice(0, 4).map((a, i) => `
-          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;padding:4% 5%;display:flex;gap:3%">
-            <div style="width:2vw;height:2vw;border-radius:10px;background:#0f2570;color:#fff;font-size:0.75vw;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i + 1}</div>
-            <div>
-              <div style="font-size:0.82vw;font-weight:800;color:#0a1628;margin-bottom:0.5vh">${escapeHtml(a.title)}</div>
-              <div style="font-size:0.72vw;color:#475569;line-height:1.55">${escapeHtml((a.desc || '').substring(0, 160))}${(a.desc || '').length > 160 ? '…' : ''}</div>
-              ${a.impact ? `<div style="font-size:0.65vw;font-weight:700;color:#22c55e;margin-top:0.6vh">${escapeHtml(a.impact)}</div>` : ''}
-            </div>
-          </div>`).join('')}
-      </div>
-    </div>`);
+    ${deckHeaderBlock('Recommendations', 'Priority action plan', true)}
+    <div style="flex:1;display:flex;flex-direction:column;gap:1.4vh;justify-content:center;position:relative">
+      <div style="position:absolute;left:1.1vw;top:8%;bottom:8%;width:3px;background:linear-gradient(180deg,${DECK_BLUE},${DECK_GREEN});border-radius:999px;opacity:0.25"></div>
+      ${ctx.actions.slice(0, 4).map((a, i) => `
+        <div style="display:grid;grid-template-columns:3vw 1fr;gap:1.2vw;align-items:start;margin-left:0.5vw">
+          <div style="width:2.4vw;height:2.4vw;border-radius:12px;background:linear-gradient(135deg,${DECK_BLUE},${DECK_NAVY});color:#fff;font-size:0.85vw;font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(15,37,112,0.2)">${i + 1}</div>
+          <div style="background:#fff;border:1px solid #e2e8f0;border-radius:16px;padding:3.5% 4.5%;box-shadow:0 8px 24px rgba(15,37,112,0.05)">
+            <div style="font-size:0.88vw;font-weight:800;color:${DECK_NAVY};margin-bottom:0.5vh">${escapeHtml(a.title)}</div>
+            <div style="font-size:0.74vw;color:#475569;line-height:1.6">${escapeHtml((a.desc || '').substring(0, 200))}${(a.desc || '').length > 200 ? '…' : ''}</div>
+            ${a.impact ? `<div style="display:inline-block;margin-top:0.8vh;font-size:0.65vw;font-weight:800;color:${DECK_GREEN};background:#ecfdf5;border:1px solid #cceedd;border-radius:999px;padding:0.4vh 0.8vw">${escapeHtml(a.impact)}</div>` : ''}
+          </div>
+        </div>`).join('')}
+    </div>`, true, deckSlideFooterLight(d, ctx, slideNo, total));
 }
 
-function renderDeckSummary(d, ctx) {
+function renderDeckSummary(d, ctx, slideNo, total) {
   return deckSlideShell('summary', `
-    <div style="position:relative;z-index:1;height:100%;display:grid;grid-template-columns:0.95fr 1.05fr;gap:4%">
-      <div style="background:linear-gradient(180deg,#0f2570 0%,#0a1628 100%);border-radius:18px;padding:7%;color:#fff;display:flex;flex-direction:column;justify-content:center">
-        <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:1vh">CFO Summary</div>
-        <div style="font-size:2vw;font-weight:900;line-height:1.15;margin-bottom:1.5vh">What the numbers are saying</div>
-        <div style="font-size:0.85vw;line-height:1.7;color:rgba(255,255,255,0.68)">A concise executive readout based on your uploaded financials.</div>
+    <div style="flex:1;display:grid;grid-template-columns:0.42fr 0.58fr;gap:4%;min-height:0">
+      <div style="background:linear-gradient(165deg,${DECK_BLUE} 0%,${DECK_NAVY} 100%);border-radius:22px;padding:7%;color:#fff;display:flex;flex-direction:column;justify-content:center;box-shadow:0 18px 40px rgba(10,22,40,0.16);position:relative;overflow:hidden">
+        <div style="position:absolute;inset:0;background:radial-gradient(circle at 100% 0%, rgba(34,197,94,0.12), transparent 45%)"></div>
+        <div style="position:relative;z-index:1">
+          <div style="font-size:0.72vw;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:rgba(255,255,255,0.42);margin-bottom:1vh">CFO summary</div>
+          <div style="font-size:2.1vw;font-weight:900;line-height:1.12;margin-bottom:1.5vh">What the numbers are saying</div>
+          <div style="width:3vw;height:0.35vh;background:${DECK_GREEN};border-radius:999px;margin-bottom:1.5vh"></div>
+          <div style="font-size:0.82vw;line-height:1.7;color:rgba(255,255,255,0.65)">Executive readout based on your uploaded financials — ready for leadership review.</div>
+        </div>
       </div>
-      <div style="display:flex;align-items:center">
-        <div style="font-size:0.95vw;line-height:1.85;color:#334155">${escapeHtml(ctx.summary)}</div>
+      <div style="display:flex;align-items:center;padding-right:2%">
+        <div style="font-size:0.95vw;line-height:1.9;color:#334155;border-left:4px solid ${DECK_GREEN};padding-left:1.2vw">${escapeHtml(ctx.summary)}</div>
       </div>
-    </div>`);
+    </div>`, true, deckSlideFooterLight(d, ctx, slideNo, total));
 }
 
-function renderDeckClosing(d, ctx) {
-  return `<div style="width:100%;height:100%;background:linear-gradient(135deg,#0a1628 0%,#0f2570 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8%;box-sizing:border-box;position:relative;overflow:hidden">
-    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 0%, rgba(34,197,94,0.16), transparent 35%)"></div>
-    <div style="position:relative;z-index:1">
-      <div style="font-size:0.85vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:2vh">Bottom Line</div>
-      <div style="width:52px;height:4px;background:#22c55e;border-radius:999px;margin:0 auto 2.5vh"></div>
-      <div style="font-size:2.8vw;font-weight:900;color:#fff;letter-spacing:-0.04em;line-height:1.15;margin-bottom:2vh">
-        ${d.netIncome > 0 ? 'Profitable. <span style="color:#4ade80">Room to grow.</span>' : '<span style="color:#f87171">Action needed now.</span>'}
+function renderDeckClosing(d, ctx, slideNo, total) {
+  return `<div style="width:100%;height:100%;background:linear-gradient(135deg,#050b14 0%,#0a1628 50%,#0f2570 100%);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8%;box-sizing:border-box;position:relative;overflow:hidden;font-family:system-ui,sans-serif">
+    <div style="position:absolute;inset:0;background:radial-gradient(circle at 50% 20%, rgba(34,197,94,0.18), transparent 40%)"></div>
+    <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);background-size:48px 48px"></div>
+    <div style="position:relative;z-index:1;max-width:85%">
+      <div style="font-size:0.78vw;font-weight:800;letter-spacing:1.8px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:2vh">Bottom line</div>
+      <div style="width:4vw;height:0.4vh;background:linear-gradient(90deg,${DECK_GREEN},${DECK_GREEN_L});border-radius:999px;margin:0 auto 2.5vh"></div>
+      <div style="font-size:3.2vw;font-weight:900;color:#fff;letter-spacing:-0.045em;line-height:1.12;margin-bottom:3vh">
+        ${d.netIncome >= 0 ? 'Profitable. <span style="background:linear-gradient(90deg,#4ade80,#86efac);-webkit-background-clip:text;-webkit-text-fill-color:transparent">Room to grow.</span>' : '<span style="color:#f87171">Action needed now.</span>'}
       </div>
-      <div style="display:flex;gap:4rem;justify-content:center;margin-top:1vh">
+      <div style="display:flex;gap:3vw;justify-content:center;flex-wrap:wrap">
         ${[
-          { l: 'Revenue', v: fc(d.revenue), c: '#4ade80' },
-          { l: 'Net Income', v: fc(d.netIncome), c: d.netIncome > 0 ? '#4ade80' : '#f87171' },
-          { l: 'Health', v: ctx.h + '/100', c: ctx.hColor === '#22c55e' ? '#4ade80' : ctx.hColor === '#b45309' ? '#fbbf24' : '#f87171' }
-        ].map(s => `<div><div style="font-size:2.8vw;font-weight:900;color:${s.c};letter-spacing:-0.05em">${s.v}</div><div style="font-size:0.75vw;color:rgba(255,255,255,0.35);margin-top:0.6vh">${s.l}</div></div>`).join('')}
+          { l: 'Revenue', v: fc(d.revenue), c: DECK_GREEN_L },
+          { l: 'Net income', v: fc(d.netIncome), c: d.netIncome >= 0 ? DECK_GREEN_L : '#f87171' },
+          { l: 'Health score', v: ctx.h + '/100', c: ctx.hColor }
+        ].map(s => `<div style="background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:18px;padding:2vh 2vw;min-width:10vw">
+          <div style="font-size:2.4vw;font-weight:900;color:${s.c};letter-spacing:-0.05em">${s.v}</div>
+          <div style="font-size:0.72vw;color:rgba(255,255,255,0.38);margin-top:0.6vh;text-transform:uppercase;letter-spacing:0.5px">${s.l}</div>
+        </div>`).join('')}
       </div>
     </div>
+    ${deckSlideFooter(d, ctx, slideNo, total)}
   </div>`;
 }
 
@@ -360,11 +452,11 @@ function renderDeckThumbs() {
   const thumbStrip = document.getElementById('deck-thumbs');
   if (!thumbStrip) return;
   thumbStrip.innerHTML = deckSlideItems.map((item, i) =>
-    `<div onclick="jumpDeckSlide(${i})" id="deck-thumb-${i}" style="flex-shrink:0;width:168px;cursor:pointer;border-radius:10px;overflow:hidden;border:2px solid ${i === deckCurrent ? '#22c55e' : '#dbe3ef'};transition:border-color 0.13s">
-      <div style="aspect-ratio:16/9;background:#0a1628;overflow:hidden;pointer-events:none">
-        <div style="width:960px;height:540px;transform:scale(0.175);transform-origin:0 0;pointer-events:none">${item.html}</div>
+    `<div onclick="jumpDeckSlide(${i})" id="deck-thumb-${i}" style="flex-shrink:0;width:180px;cursor:pointer;border-radius:12px;overflow:hidden;border:2px solid ${i === deckCurrent ? '#22c55e' : '#dbe3ef'};transition:all 0.15s;box-shadow:${i === deckCurrent ? '0 8px 20px rgba(34,197,94,0.15)' : 'none'}">
+      <div style="aspect-ratio:16/9;background:#050b14;overflow:hidden;pointer-events:none">
+        <div style="width:960px;height:540px;transform:scale(0.1875);transform-origin:0 0;pointer-events:none">${item.html}</div>
       </div>
-      <div style="font-size:10px;font-weight:700;color:#64748b;text-align:center;padding:6px;background:#f8fafc">${escapeHtml(item.title)}</div>
+      <div style="font-size:10px;font-weight:700;color:${i === deckCurrent ? '#0f2570' : '#64748b'};text-align:center;padding:7px;background:${i === deckCurrent ? '#ecfdf5' : '#f8fafc'}">${escapeHtml(item.title)}</div>
     </div>`
   ).join('');
 }
@@ -380,7 +472,7 @@ function updateDeckHeader() {
 function renderDeckSlide() {
   const viewer = document.getElementById('deck-viewer');
   if (!viewer || !deckSlides[deckCurrent]) return;
-  viewer.innerHTML = `<div style="width:100%;height:100%">${deckSlides[deckCurrent]}</div>`;
+  viewer.innerHTML = `<div class="deck-slide-frame" style="width:100%;height:100%">${deckSlides[deckCurrent]}</div>`;
   document.getElementById('deck-counter').textContent = 'Slide ' + (deckCurrent + 1) + ' of ' + deckSlides.length;
   deckSlideItems.forEach((_, i) => {
     const t = document.getElementById('deck-thumb-' + i);
