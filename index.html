@@ -480,6 +480,105 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 .period-tab.active,.period-tab:hover{background:var(--blue-bg);color:var(--blue);border-color:var(--blue)}
 .hca-chart{height:240px;position:relative}
 
+/* Company Health tracker */
+.health-status-badge{
+  display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;
+  padding:6px 14px;border-radius:20px;margin-bottom:1.25rem
+}
+.health-status-badge.pending{color:var(--amber);background:var(--amber-bg)}
+.health-status-badge.active{color:var(--green);background:var(--green-bg)}
+.health-upload-panel{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--r);
+  padding:1.25rem 1.5rem;margin-bottom:1.5rem
+}
+.health-upload-head{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.health-upload-title{font-size:15px;font-weight:800;color:var(--ink)}
+.health-upload-sub{font-size:12px;color:var(--ink-3);margin-top:3px;line-height:1.5}
+.health-upload-controls{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;margin-bottom:1rem}
+.health-month-field{display:flex;flex-direction:column;gap:4px}
+.health-month-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--ink-3)}
+.health-month-input{
+  padding:9px 12px;border:1px solid var(--border);border-radius:var(--rs);
+  font-size:13px;font-family:inherit;color:var(--ink);min-width:160px
+}
+.health-dropzone{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  width:100%;padding:1.75rem 1.25rem;border:2px dashed #c7d2ef;border-radius:var(--r);
+  background:linear-gradient(180deg,var(--off) 0%,var(--white) 100%);
+  cursor:pointer;transition:border-color 0.13s,background 0.13s;text-align:center
+}
+.health-dropzone:hover,.health-dropzone.dragover{border-color:var(--green);background:var(--green-bg)}
+.health-dropzone-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.health-dropzone-sub{font-size:12px;color:var(--ink-3)}
+.health-upload-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:1rem;align-items:center}
+.health-upload-status{font-size:12px;color:var(--ink-3);margin-left:auto}
+.health-upload-status.pending{color:var(--blue)}
+.health-upload-status.success{color:var(--green)}
+.health-upload-status.error{color:var(--red)}
+.health-summary-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:12px;margin-bottom:1.5rem
+}
+.health-kpi-card{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--r);
+  padding:1rem 1.1rem
+}
+.health-kpi-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.4px;color:var(--ink-3);margin-bottom:6px}
+.health-kpi-value{font-size:22px;font-weight:900;color:var(--ink);letter-spacing:-0.04em;line-height:1.1}
+.health-kpi-meta{display:flex;flex-direction:column;gap:3px;margin-top:8px}
+.health-kpi-change{font-size:11px;font-weight:600}
+.health-kpi-change.up{color:var(--green)}
+.health-kpi-change.down{color:var(--red)}
+.health-kpi-change.neutral{color:var(--ink-3)}
+.health-kpi-goal{font-size:10px;font-weight:600;color:var(--blue)}
+.health-goals-panel{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--r);
+  padding:1.25rem 1.5rem;margin-bottom:1.5rem
+}
+.health-goals-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:1rem}
+.health-goals-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.health-goal-field{display:flex;flex-direction:column;gap:5px}
+.health-goal-label{font-size:11px;font-weight:700;color:var(--ink-2)}
+.health-goal-input-wrap{display:flex;align-items:center;border:1px solid var(--border);border-radius:var(--rs);overflow:hidden;background:var(--off)}
+.health-goal-prefix,.health-goal-suffix{font-size:12px;color:var(--ink-3);padding:0 10px;background:var(--off)}
+.health-goal-field input{
+  flex:1;border:none;background:transparent;padding:9px 10px;font-size:13px;
+  font-family:inherit;color:var(--ink);min-width:0
+}
+.health-goal-field input:focus{outline:none}
+.health-metric-chips{display:flex;gap:6px;flex-wrap:wrap}
+.health-metric-chip{
+  font-size:11px;font-weight:600;padding:5px 10px;border-radius:999px;
+  border:1px solid var(--border);background:var(--off);color:var(--ink-3);cursor:pointer;transition:all 0.12s
+}
+.health-metric-chip.active,.health-metric-chip:hover{background:var(--blue-bg);border-color:var(--blue);color:var(--blue)}
+.health-history-panel{
+  background:var(--white);border:1px solid var(--border);border-radius:var(--r);
+  padding:1.25rem 1.5rem;margin-bottom:1.5rem;overflow-x:auto
+}
+.health-history-table{width:100%;border-collapse:collapse;font-size:12px}
+.health-history-table th{
+  text-align:left;padding:8px 10px;font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:0.5px;color:var(--ink-3);border-bottom:1px solid var(--border)
+}
+.health-history-table td{padding:10px;border-bottom:1px solid var(--border);color:var(--ink-2)}
+.health-history-file{color:var(--ink-3);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.health-history-empty{text-align:center;color:var(--ink-3);padding:1.5rem}
+.health-history-delete{
+  width:28px;height:28px;border-radius:6px;border:1px solid var(--border);
+  background:var(--off);color:var(--ink-3);cursor:pointer;font-size:16px;line-height:1
+}
+.health-history-delete:hover{background:#fef2f2;border-color:#fecaca;color:var(--red)}
+.health-save-banner{
+  display:none;align-items:center;gap:12px;flex-wrap:wrap;
+  padding:12px 14px;border-radius:var(--rs);margin:-0.5rem 0 1rem;
+  background:var(--green-bg);border:1px solid #cceedd;color:var(--ink-2);font-size:13px
+}
+.health-empty-hint{
+  background:var(--off);border:1px dashed var(--border);border-radius:var(--r);
+  padding:2rem;text-align:center;color:var(--ink-3);font-size:13px;margin-bottom:1.5rem
+}
+
 /* Bot page */
 .bot-split{display:grid;grid-template-columns:1fr 300px;gap:16px;height:560px}
 .bot-chat{background:var(--white);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;overflow:hidden}
@@ -853,6 +952,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       </div>
 
       <div class="ai-status pending" id="ai-status">Instant local preview ready. AI CFO analysis will appear here when the backend is connected.</div>
+      <div class="health-save-banner" id="health-save-banner"></div>
 
       <div class="metrics-grid" id="rpt-metrics"></div>
 
@@ -1030,36 +1130,105 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 ══════════════════════════════════════ -->
 <div class="page" id="page-health">
   <div class="svc-page">
-    <div class="svc-hero">
+    <div class="svc-hero" style="margin-bottom:1.5rem">
       <div class="svc-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>Company Health</div>
       <h1 class="svc-h1">See where you've been.<br>Know where you're going.</h1>
-      <p class="svc-sub">Upload your financials each month and watch your health score trend over time. Catch problems before they become crises, and see the impact of your decisions in real numbers.</p>
-      <div class="coming-soon-badge">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Coming soon — upload your first month to get started
-      </div>
+      <p class="svc-sub">Upload your Income Statement each month to build a running history. Track revenue, margins, and health score over time — and set goals to measure progress.</p>
+      <div class="health-status-badge pending" id="health-status-badge">Upload your first month to start tracking</div>
     </div>
-    <div class="health-chart-area">
-      <div class="hca-header">
-        <div><div class="hca-title">Health score over time</div><div class="hca-sub">Monthly trend — last 6 months</div></div>
-        <div class="period-tabs">
-          <button class="period-tab active">6 months</button>
-          <button class="period-tab">12 months</button>
-          <button class="period-tab">All time</button>
+
+    <div class="health-upload-panel">
+      <div class="health-upload-head">
+        <div>
+          <div class="health-upload-title">Add a month</div>
+          <div class="health-upload-sub">Select the month, then upload that period's P&amp;L (Excel or CSV). Re-uploading the same month replaces the previous entry.</div>
         </div>
       </div>
-      <div class="hca-chart"><canvas id="health-chart"></canvas></div>
-    </div>
-    <div class="health-chart-area">
-      <div class="hca-header">
-        <div><div class="hca-title">Key metrics trend</div><div class="hca-sub">Gross margin, net margin, and cash runway</div></div>
+      <div class="health-upload-controls">
+        <label class="health-month-field">
+          <span class="health-month-label">Month</span>
+          <input type="month" id="health-month" class="health-month-input">
+        </label>
       </div>
-      <div class="hca-chart"><canvas id="metrics-chart"></canvas></div>
+      <label class="health-dropzone" for="health-file" id="health-dropzone">
+        <div class="health-dropzone-title">Drop your Income Statement here</div>
+        <div class="health-dropzone-sub">QuickBooks, Xero, or Wave export · .xlsx or .csv</div>
+      </label>
+      <input type="file" id="health-file" style="display:none" accept=".xlsx,.xls,.csv" onchange="handleHealthFile(event)">
+      <div class="health-upload-actions">
+        <button class="btn-outline" onclick="saveCurrentAnalysisToHealth()" style="font-size:12px;padding:8px 14px">Use latest Financial Analysis upload</button>
+        <button class="btn-outline" onclick="clearHealthData()" style="font-size:12px;padding:8px 14px;color:var(--red);border-color:#fecaca">Clear all data</button>
+        <span class="health-upload-status" id="health-upload-status"></span>
+      </div>
     </div>
-    <div class="feature-grid">
-      <div class="feature-card"><div class="fc-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="fc-title">Monthly health tracking</div><div class="fc-desc">Upload your financials each month and MyCFOPro builds your trend automatically.</div></div>
-      <div class="feature-card"><div class="fc-icon si-gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"/><path d="M12 20V4"/><path d="M6 20v-6"/></svg></div><div class="fc-title">Metric benchmarking</div><div class="fc-desc">See each metric vs. your industry benchmark, updated monthly as your numbers change.</div></div>
-      <div class="feature-card"><div class="fc-icon si-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 17H2a3 3 0 000 6h20a3 3 0 000-6z"/><path d="M6 17V3"/><path d="M10 17V8"/><path d="M14 17V13"/><path d="M18 17V5"/></svg></div><div class="fc-title">Trend alerts</div><div class="fc-desc">Get notified when a key metric moves in the wrong direction — before it becomes a problem. <span style="color:var(--amber);font-size:11px;font-weight:600">Pro</span></div></div>
+
+    <div id="health-empty-hint" class="health-empty-hint">
+      Upload at least one month to unlock trend charts, growth comparisons, and goal tracking. Data is saved in your browser — no account required.
+    </div>
+
+    <div id="health-data-content" style="display:none">
+      <div class="health-summary-grid" id="health-summary-grid"></div>
+
+      <div class="health-chart-area">
+        <div class="hca-header">
+          <div><div class="hca-title">Health score over time</div><div class="hca-sub" id="health-score-sub">Last 6 months</div></div>
+          <div class="period-tabs">
+            <button class="period-tab active" onclick="setHealthPeriod(6, this)">6 months</button>
+            <button class="period-tab" onclick="setHealthPeriod(12, this)">12 months</button>
+            <button class="period-tab" onclick="setHealthPeriod(0, this)">All time</button>
+          </div>
+        </div>
+        <div class="hca-chart"><canvas id="health-chart"></canvas></div>
+      </div>
+
+      <div class="health-chart-area">
+        <div class="hca-header">
+          <div><div class="hca-title">Key metrics trend</div><div class="hca-sub">Toggle up to 3 metrics to compare growth</div></div>
+          <div class="health-metric-chips">
+            <button type="button" class="health-metric-chip active" data-metric="grossMargin" onclick="toggleHealthChartMetric('grossMargin')">Gross margin</button>
+            <button type="button" class="health-metric-chip active" data-metric="netMargin" onclick="toggleHealthChartMetric('netMargin')">Net margin</button>
+            <button type="button" class="health-metric-chip active" data-metric="netIncome" onclick="toggleHealthChartMetric('netIncome')">Net income</button>
+            <button type="button" class="health-metric-chip" data-metric="revenue" onclick="toggleHealthChartMetric('revenue')">Revenue</button>
+            <button type="button" class="health-metric-chip" data-metric="healthScore" onclick="toggleHealthChartMetric('healthScore')">Health score</button>
+          </div>
+        </div>
+        <div class="hca-chart"><canvas id="metrics-chart"></canvas></div>
+      </div>
+
+      <div class="health-goals-panel">
+        <div class="health-goals-head">
+          <div>
+            <div class="hca-title">Goals</div>
+            <div class="hca-sub">Set targets for the metrics you care about — progress shows on the summary cards and health chart.</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <span id="health-goals-status" style="font-size:12px;color:var(--ink-3)"></span>
+            <button class="btn-blue" onclick="saveHealthGoals()" style="font-size:12px;padding:8px 14px">Save goals</button>
+          </div>
+        </div>
+        <div class="health-goals-grid" id="health-goals-grid"></div>
+      </div>
+
+      <div class="health-history-panel">
+        <div class="hca-header" style="margin-bottom:0.75rem">
+          <div><div class="hca-title">Monthly history</div><div class="hca-sub">All uploaded periods stored locally in your browser</div></div>
+        </div>
+        <table class="health-history-table">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Health</th>
+              <th>Revenue</th>
+              <th>Gross margin</th>
+              <th>Net margin</th>
+              <th>Net income</th>
+              <th>File</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="health-history-body"></tbody>
+        </table>
+      </div>
     </div>
   </div>
 </div>
@@ -1072,6 +1241,7 @@ function goPage(id, btn) {
   document.getElementById('page-'+id).classList.add('active');
   if (btn) btn.classList.add('active');
   window.scrollTo(0, 0);
+  if (id === 'health' && typeof renderHealthPage === 'function') renderHealthPage();
 }
 
 // ── HERO CHARTS ──────────────────────────────────────
@@ -1087,35 +1257,13 @@ window.addEventListener('load', () => {
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:9},boxWidth:10,padding:8}}}}
   });
 
-  // Health charts (demo data)
-  new Chart(document.getElementById('health-chart'), {
-    type:'line',
-    data:{
-      labels:['Jan','Feb','Mar','Apr','May','Jun'],
-      datasets:[
-        {label:'Health Score',data:[51,54,58,55,62,68],borderColor:'#0f2570',backgroundColor:'rgba(15,37,112,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#0f2570',pointRadius:5},
-        {label:'Benchmark',data:[65,65,65,65,65,65],borderColor:'#22c55e',borderDash:[5,5],tension:0,fill:false,pointRadius:0}
-      ]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:12}}}},scales:{y:{min:40,max:100,ticks:{callback:v=>v+'/100'}}}}
-  });
-  new Chart(document.getElementById('metrics-chart'), {
-    type:'line',
-    data:{
-      labels:['Jan','Feb','Mar','Apr','May','Jun'],
-      datasets:[
-        {label:'Gross Margin %',data:[30,31,33,32,34,33],borderColor:'#0f2570',tension:0.4,fill:false,pointRadius:4},
-        {label:'Net Margin %',data:[4,5,6,5,7,6.3],borderColor:'#22c55e',tension:0.4,fill:false,pointRadius:4},
-        {label:'Cash Runway (mo)',data:[3,2.5,2,2.8,1.8,1.6],borderColor:'#dc2626',tension:0.4,fill:false,pointRadius:4}
-      ]
-    },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:12}}}}}
-  });
+  // Health charts initialized by health-engine.js when data exists
 
   buildKPIs();
   initBot();
   initUploadDropzone();
   updateStatementUploadCopy();
+  if (typeof initHealthPage === 'function') initHealthPage();
 });
 
 // ── KPI LIBRARY ──────────────────────────────────────
@@ -2375,6 +2523,8 @@ function resetAnalysis() {
   document.getElementById('analysis-report').style.display = 'none';
   document.getElementById('analysis-upload-view').style.display = 'block';
   document.getElementById('analysis-file').value = '';
+  const banner = document.getElementById('health-save-banner');
+  if (banner) banner.style.display = 'none';
   analysisCharts.forEach(c => c.destroy());
   analysisCharts = [];
   currentData = null;
@@ -2440,7 +2590,10 @@ function renderReport(d) {
   document.getElementById('rpt-summary').textContent = buildReportSummary(d);
 
   syncClaraWithData(d);
-  if (type === 'income_statement') buildDeck(d);
+  if (type === 'income_statement') {
+    buildDeck(d);
+    if (typeof saveAnalysisToHealthFromReport === 'function') saveAnalysisToHealthFromReport(d);
+  }
 
   document.getElementById('analysis-report').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -2470,5 +2623,6 @@ Speak like a trusted advisor, not a report. Use their exact numbers. Keep respon
 
 </script>
 <script src="deck-engine.js"></script>
+<script src="health-engine.js"></script>
 </body>
 </html>
