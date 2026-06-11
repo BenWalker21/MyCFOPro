@@ -614,6 +614,49 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   font-size:11px;font-weight:700;color:var(--blue);background:var(--blue-bg);padding:5px 10px;border-radius:999px;
   border:1px solid #c7d2ef;margin-right:6px
 }
+.auth-nav{display:flex;align-items:center;gap:8px;margin-left:auto}
+.auth-nav-signed-in{display:none;align-items:center;gap:8px}
+.auth-nav-email{font-size:12px;font-weight:600;color:var(--ink-2);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.auth-nav-btn{font-size:12px;font-weight:600;padding:7px 12px;border-radius:var(--rs);border:1px solid var(--border);background:var(--white);color:var(--ink-2);cursor:pointer}
+.auth-nav-btn:hover{border-color:var(--blue);color:var(--blue)}
+.auth-nav-btn.primary{background:var(--blue);color:var(--white);border-color:var(--blue)}
+.auth-nav-btn.primary:hover{background:var(--blue-l)}
+.cloud-sync-banner{
+  display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:12px 14px;border-radius:var(--rs);margin-bottom:1rem;font-size:13px;line-height:1.45
+}
+.cloud-sync-banner.prompt{background:var(--blue-bg);border:1px solid #c7d2ef;color:var(--ink-2)}
+.cloud-sync-banner.synced{background:var(--green-bg);border:1px solid #cceedd;color:var(--ink-2)}
+.cloud-sync-banner.error{background:var(--amber-bg);border:1px solid #f4dfad;color:var(--ink-2)}
+.auth-modal-overlay{
+  display:none;position:fixed;inset:0;background:rgba(10,22,40,0.55);z-index:1000;
+  align-items:center;justify-content:center;padding:1rem
+}
+.auth-modal{
+  width:100%;max-width:420px;background:var(--white);border-radius:var(--r);
+  border:1px solid var(--border);box-shadow:0 24px 48px rgba(10,22,40,0.18);overflow:hidden
+}
+.auth-modal-head{padding:1.25rem 1.5rem 0;display:flex;align-items:flex-start;justify-content:space-between;gap:1rem}
+.auth-modal-title{font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-0.03em}
+.auth-modal-sub{font-size:12px;color:var(--ink-3);margin-top:4px;line-height:1.45}
+.auth-modal-close{background:none;border:none;font-size:22px;color:var(--ink-3);cursor:pointer;line-height:1;padding:0}
+.auth-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin:1rem 1.5rem 0}
+.auth-tab{
+  flex:1;padding:10px 12px;font-size:13px;font-weight:700;color:var(--ink-3);
+  background:none;border:none;border-bottom:2px solid transparent;cursor:pointer
+}
+.auth-tab.active{color:var(--blue);border-bottom-color:var(--green)}
+.auth-modal-body{padding:1.25rem 1.5rem 1.5rem}
+.auth-field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.auth-field label{font-size:11px;font-weight:700;color:var(--ink-2)}
+.auth-field input{
+  padding:10px 12px;border:1px solid var(--border);border-radius:var(--rs);
+  font-size:13px;font-family:inherit;color:var(--ink)
+}
+.auth-field input:focus{outline:none;border-color:var(--blue)}
+.auth-error{font-size:12px;color:var(--red);min-height:18px;margin-bottom:8px}
+.auth-submit{width:100%;padding:11px;border:none;border-radius:var(--rs);background:var(--blue);color:var(--white);font-size:14px;font-weight:700;cursor:pointer}
+.auth-submit:hover{background:var(--blue-l)}
 
 /* Bot page */
 .bot-layout{display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:stretch}
@@ -769,7 +812,10 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   .nav-logo{width:100%;justify-content:space-between}
   .nav-links{width:100%;overflow-x:auto;padding-bottom:0.25rem;scrollbar-width:thin}
   .nav-link{flex:0 0 auto}
-  .nav-cta{width:100%}
+  .nav-cta,.auth-nav{width:100%}
+  .auth-nav{justify-content:stretch;flex-direction:column;margin-left:0;margin-top:0.5rem}
+  .auth-nav-signed-out,.auth-nav-signed-in{width:100%;flex-direction:column}
+  .auth-nav-btn,.auth-nav-btn.primary{width:100%;text-align:center}
   .hero{padding:3.25rem 1rem 0}
   .hero-actions,.hero-trust{align-items:stretch}
   .btn-gold,.btn-ghost,.btn-blue,.btn-outline{width:100%;text-align:center}
@@ -827,8 +873,51 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
     <button class="nav-link" onclick="goPage('health',this)">Company Health</button>
   </div>
   <span class="nav-company-badge" id="nav-company-badge"></span>
-  <button class="nav-cta" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Get Started Free</button>
+  <div class="auth-nav">
+    <div class="auth-nav-signed-out" id="auth-nav-signed-out">
+      <button class="auth-nav-btn" onclick="openAuthModal('signin')">Sign in</button>
+      <button class="auth-nav-btn primary" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Get Started Free</button>
+    </div>
+    <div class="auth-nav-signed-in" id="auth-nav-signed-in">
+      <span class="auth-nav-email" id="auth-nav-email"></span>
+      <button class="auth-nav-btn" onclick="signOut()">Sign out</button>
+    </div>
+  </div>
 </nav>
+
+<div class="auth-modal-overlay" id="auth-modal" onclick="if(event.target===this)closeAuthModal()">
+  <div class="auth-modal" role="dialog" aria-labelledby="auth-modal-title">
+    <div class="auth-modal-head">
+      <div>
+        <div class="auth-modal-title" id="auth-modal-title">Save your CFO workspace</div>
+        <div class="auth-modal-sub">Sign in to sync reports, health history, and your deck across devices.</div>
+      </div>
+      <button class="auth-modal-close" onclick="closeAuthModal()" aria-label="Close">×</button>
+    </div>
+    <div class="auth-tabs">
+      <button type="button" class="auth-tab active" data-mode="signin" onclick="setAuthTab('signin')">Sign in</button>
+      <button type="button" class="auth-tab" data-mode="signup" onclick="setAuthTab('signup')">Create account</button>
+    </div>
+    <div class="auth-modal-body">
+      <div id="auth-error" class="auth-error"></div>
+      <div id="auth-signin-panel">
+        <form onsubmit="submitSignIn(event)">
+          <div class="auth-field"><label>Email</label><input type="email" id="auth-signin-email" required autocomplete="email"></div>
+          <div class="auth-field"><label>Password</label><input type="password" id="auth-signin-password" required autocomplete="current-password"></div>
+          <button type="submit" class="auth-submit">Sign in</button>
+        </form>
+      </div>
+      <div id="auth-signup-panel" style="display:none">
+        <form onsubmit="submitSignUp(event)">
+          <div class="auth-field"><label>Name</label><input type="text" id="auth-signup-name" autocomplete="name" placeholder="Your name"></div>
+          <div class="auth-field"><label>Email</label><input type="email" id="auth-signup-email" required autocomplete="email"></div>
+          <div class="auth-field"><label>Password</label><input type="password" id="auth-signup-password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></div>
+          <button type="submit" class="auth-submit">Create account</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
 
 <!-- ══════════════════════════════════════
   HOME PAGE
@@ -846,7 +935,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
         <button class="btn-ghost" onclick="goPage('kpi',document.querySelectorAll('.nav-link')[3])">Explore the KPI library</button>
       </div>
       <div class="hero-trust">
-        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Saved privately in your browser</div>
+        <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Free account syncs across devices</div>
         <div class="trust-sep"></div>
         <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>Results in under 60 seconds</div>
         <div class="trust-sep"></div>
@@ -1058,6 +1147,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
         <input type="hidden" id="statement-type" value="income_statement">
         <div class="analysis-hint" id="statement-hint">Profit &amp; loss showing revenue, expenses, and net income for the period.</div>
         <div class="welcome-back-banner" id="welcome-back-banner"></div>
+        <div class="cloud-sync-banner" id="cloud-sync-banner"></div>
         <label class="upload-zone-big" for="analysis-file" id="analysis-dropzone">
           <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
           <div class="uz-title" id="uz-title">Drop your Income Statement (P&amp;L) here</div>
@@ -1423,7 +1513,13 @@ window.addEventListener('load', () => {
   initUploadDropzone();
   updateStatementUploadCopy();
   if (typeof initHealthPage === 'function') initHealthPage();
-  if (typeof hydrateAppFromStore === 'function') hydrateAppFromStore();
+  if (typeof initAuth === 'function') {
+    initAuth().then(() => {
+      if (typeof hydrateAppFromStore === 'function') hydrateAppFromStore();
+    });
+  } else if (typeof hydrateAppFromStore === 'function') {
+    hydrateAppFromStore();
+  }
 });
 
 // ── KPI LIBRARY ──────────────────────────────────────
@@ -2806,6 +2902,7 @@ Speak like a trusted advisor, not a report. Use their exact numbers. Keep respon
 
 </script>
 <script src="company-store.js"></script>
+<script src="auth-ui.js"></script>
 <script src="deck-engine.js"></script>
 <script src="health-engine.js"></script>
 <script src="clara-avatar.js"></script>

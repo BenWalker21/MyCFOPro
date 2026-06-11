@@ -3,6 +3,14 @@ import { readFile } from 'node:fs/promises';
 import { createServer } from 'node:http';
 import { extname, join, normalize, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  authenticateRequest,
+  authEnabled,
+  loadCompanyData,
+  saveCompanyData,
+  signInUser,
+  signUpUser
+} from './auth.mjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const root = resolve(__dirname);
@@ -45,6 +53,11 @@ const server = createServer(async (req, res) => {
       return;
     }
 
+    if (url.pathname.startsWith('/api/auth') || url.pathname.startsWith('/api/company')) {
+      await handleAuthAndCompanyRoutes(req, res, url);
+      return;
+    }
+
     if (req.method === 'GET' || req.method === 'HEAD') {
       await serveStatic(url.pathname, req, res);
       return;
@@ -59,7 +72,64 @@ const server = createServer(async (req, res) => {
 
 server.listen(port, () => {
   console.log(`MyCFOPro running at http://localhost:${port}`);
+  if (!process.env.SESSION_SECRET) {
+    console.warn('Warning: SESSION_SECRET not set — using dev default. Set it in .env before production.');
+  }
 });
+
+async function handleAuthAndCompanyRoutes(req, res, url) {
+  if (req.method === 'GET' && url.pathname === '/api/auth/status') {
+    sendJson(res, 200, { enabled: authEnabled(), cloudSync: true });
+    return;
+  }
+
+  if (req.method === 'POST' && url.pathname === '/api/auth/signup') {
+    const body = await readJsonBody(req);
+    const result = await signUpUser(body || {});
+    sendJson(res, 201, result);
+    return;
+  }
+
+  if (req.method === 'POST' && url.pathname === '/api/auth/signin') {
+    const body = await readJsonBody(req);
+    const result = await signInUser(body || {});
+    sendJson(res, 200, result);
+    return;
+  }
+
+  if (req.method === 'GET' && url.pathname === '/api/auth/me') {
+    const user = await authenticateRequest(req);
+    if (!user) {
+      sendJson(res, 401, { error: 'Not signed in' });
+      return;
+    }
+    sendJson(res, 200, { user });
+    return;
+  }
+
+  if (url.pathname === '/api/company') {
+    const user = await authenticateRequest(req);
+    if (!user) {
+      sendJson(res, 401, { error: 'Sign in required to sync company data' });
+      return;
+    }
+
+    if (req.method === 'GET') {
+      const store = await loadCompanyData(user.id);
+      sendJson(res, 200, { store: store || null, user });
+      return;
+    }
+
+    if (req.method === 'PUT') {
+      const body = await readJsonBody(req);
+      const saved = await saveCompanyData(user.id, body?.store);
+      sendJson(res, 200, { store: saved, user });
+      return;
+    }
+  }
+
+  sendJson(res, 404, { error: 'Not found' });
+}
 
 async function handleAnalyze(req, res) {
   const body = await readJsonBody(req);

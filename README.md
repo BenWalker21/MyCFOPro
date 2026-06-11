@@ -51,6 +51,18 @@ Uploads are remembered across the app in your browser:
 
 Return anytime and use **View saved report** on the Financial Analysis page to pick up where you left off.
 
+## Accounts and cloud sync
+
+When you run `npm start`, MyCFOPro includes built-in sign-in and cloud sync:
+
+1. Click **Sign in** or **Create account** in the nav
+2. Your connected CFO workspace (reports, health history, deck memory) saves to the server
+3. Sign in on any browser or device to restore your data
+
+User accounts and company data are stored in `./data/` on the server. Set `SESSION_SECRET` in `.env` before production deployment.
+
+Without signing in, data still works locally in your browser (same as before).
+
 On the Financial Analysis page, choose the statement type before uploading:
 
 - Income Statement (P&L)

@@ -68,6 +68,7 @@ function migrateLegacyHealthIntoStore() {
 function saveCompanyStore() {
   companyStore.lastUpdated = new Date().toISOString();
   localStorage.setItem(COMPANY_STORE_KEY, JSON.stringify(companyStore));
+  if (typeof pushCompanyToCloud === 'function') pushCompanyToCloud(false);
 }
 
 function persistHealthSlice(healthData) {
@@ -299,7 +300,7 @@ function renderConnectedFlowPanel() {
         <div class="cf-title">Everything remembered for ${escapeHtml(summary.company)}</div>
         <div class="cf-sub">${escapeHtml(buildConnectedNarrative(summary))}</div>
       </div>
-      <div class="cf-sync-badge">● Synced</div>
+      <div class="cf-sync-badge">${typeof isSignedIn === 'function' && isSignedIn() ? '● Cloud synced' : '● Saved on this device'}</div>
     </div>
     <div class="cf-grid">
       <div class="cf-card">
@@ -463,6 +464,7 @@ function clearCompanyMemory() {
   renderConnectedFlowPanel();
   updateNavCompanyBadge();
   if (typeof renderHealthPage === 'function') renderHealthPage();
+  if (typeof pushCompanyToCloud === 'function') pushCompanyToCloud(true);
   const deckNodata = document.getElementById('deck-nodata');
   const deckReady = document.getElementById('deck-ready');
   if (deckNodata) deckNodata.style.display = 'block';
