@@ -71,7 +71,7 @@ const server = createServer(async (req, res) => {
   }
 });
 
-server.listen(port, () => {
+server.listen(port, '0.0.0.0', () => {
   const url = `http://localhost:${port}`;
   console.log('');
   console.log('  MyCFOPro is running');
