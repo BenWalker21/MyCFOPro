@@ -8,33 +8,33 @@
 <meta property="og:title" content="MyCFOPro.AI — CFO Intelligence for Small Business">
 <meta property="og:description" content="Turn QuickBooks, Xero, Wave, Excel, CSV, or PDF exports into plain-English business insights.">
 <meta property="og:type" content="website">
-<meta name="theme-color" content="#0f2570">
+<meta name="theme-color" content="#0a1628">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --blue:#1a3caa;
-  --blue-d:#0f2570;
-  --blue-l:#2a52d4;
-  --blue-bg:#eef2fb;
-  --gold:#c9922a;
-  --gold-l:#e8b84b;
-  --gold-bg:#fdf6e3;
-  --ink:#0e0e0e;
-  --ink-2:#3a3a3a;
-  --ink-3:#717171;
-  --ink-4:#a8a8a8;
+  --blue:#0f2570;
+  --blue-d:#0a1628;
+  --blue-l:#1a4480;
+  --blue-bg:#e8eef6;
+  --gold:#22c55e;
+  --gold-l:#4ade80;
+  --gold-bg:#ecfdf5;
+  --ink:#0a1628;
+  --ink-2:#1e293b;
+  --ink-3:#64748b;
+  --ink-4:#94a3b8;
   --white:#ffffff;
-  --off:#f8f8f6;
-  --off2:#f2f1ee;
-  --border:#e4e3df;
-  --green:#0a7c4e;
-  --green-bg:#edfaf4;
+  --off:#f8fafc;
+  --off2:#f1f5f9;
+  --border:#dbe3ef;
+  --green:#22c55e;
+  --green-bg:#dcfce7;
   --amber:#b45309;
   --amber-bg:#fef9ec;
-  --red:#b91c1c;
+  --red:#dc2626;
   --red-bg:#fef2f2;
   --r:12px;--rs:8px;--rxs:6px;
 }
@@ -75,11 +75,11 @@ button{cursor:pointer;font-family:inherit}
 .nav-link.active{background:var(--blue-bg);color:var(--blue);font-weight:600}
 .nav-cta{
   font-size:13px;font-weight:700;
-  background:var(--blue);color:var(--white);
+  background:var(--gold);color:var(--blue-d);
   border:none;border-radius:var(--rs);padding:9px 18px;
   transition:background 0.13s;white-space:nowrap;
 }
-.nav-cta:hover{background:var(--blue-l)}
+.nav-cta:hover{background:var(--gold-l)}
 
 /* ── PAGES ── */
 .page{display:none}
@@ -99,9 +99,9 @@ button{cursor:pointer;font-family:inherit}
 .hero-eyebrow{
   display:inline-flex;align-items:center;gap:7px;
   font-size:12px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;
-  color:var(--gold-l);background:rgba(201,146,42,0.15);
+  color:var(--gold-l);background:rgba(34,197,94,0.14);
   padding:6px 14px;border-radius:20px;margin-bottom:1.5rem;
-  border:1px solid rgba(201,146,42,0.25);
+  border:1px solid rgba(34,197,94,0.28);
 }
 .hero-eyebrow span{width:6px;height:6px;border-radius:50%;background:var(--gold-l);display:inline-block}
 .hero-h1{
@@ -117,11 +117,11 @@ button{cursor:pointer;font-family:inherit}
 .hero-actions{display:flex;align-items:center;gap:12px;margin-bottom:3rem;flex-wrap:wrap}
 .btn-gold{
   font-size:15px;font-weight:700;
-  background:var(--gold);color:var(--ink);
+  background:var(--gold);color:var(--blue-d);
   border:none;border-radius:var(--rs);padding:13px 26px;
-  transition:background 0.13s;
+  transition:background 0.13s, transform 0.13s;
 }
-.btn-gold:hover{background:var(--gold-l)}
+.btn-gold:hover{background:var(--gold-l);transform:translateY(-1px)}
 .btn-ghost{
   font-size:15px;font-weight:500;color:rgba(255,255,255,0.65);
   background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
@@ -175,8 +175,8 @@ button{cursor:pointer;font-family:inherit}
 .si-blue{background:var(--blue-bg);color:var(--blue)}
 .si-gold{background:var(--gold-bg);color:var(--gold)}
 .si-green{background:var(--green-bg);color:var(--green)}
-.si-purple{background:#f3f0ff;color:#6d28d9}
-.si-teal{background:#e8faf8;color:#0d9488}
+.si-purple{background:var(--blue-bg);color:var(--blue)}
+.si-teal{background:var(--green-bg);color:var(--green)}
 .service-name{font-size:14px;font-weight:700;color:var(--ink)}
 .service-desc{font-size:12px;color:var(--ink-3);line-height:1.55}
 .service-cta{font-size:12px;font-weight:600;color:var(--blue);margin-top:auto}
@@ -221,14 +221,14 @@ button{cursor:pointer;font-family:inherit}
 .plan-btn.primary:hover{background:var(--blue-l)}
 
 /* CTA BANNER */
-.cta-banner{background:var(--blue);padding:5rem 2rem;text-align:center}
+.cta-banner{background:var(--blue-d);padding:5rem 2rem;text-align:center}
 .cta-inner{max-width:600px;margin:0 auto}
 .cta-h2{font-size:clamp(2rem,4vw,3rem);font-weight:900;color:var(--white);letter-spacing:-0.05em;margin-bottom:0.75rem;line-height:1.15}
 .cta-sub{font-size:16px;color:rgba(255,255,255,0.6);margin-bottom:2rem}
 .cta-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
 
 /* FOOTER */
-footer{background:var(--ink);padding:2rem;text-align:center}
+footer{background:var(--blue-d);padding:2rem;text-align:center}
 .footer-txt{font-size:12px;color:rgba(255,255,255,0.3);line-height:1.6}
 
 /* ═══════════════════════════════════════
@@ -264,12 +264,12 @@ footer{background:var(--ink);padding:2rem;text-align:center}
 }
 .upload-zone-big:hover,.upload-zone-big:focus-within,.upload-zone-big.dragover{
   border-color:var(--blue);background:linear-gradient(180deg,#f3f6ff 0%,var(--blue-bg) 100%);
-  transform:translateY(-1px);box-shadow:0 12px 28px rgba(26,60,170,0.08);
+  transform:translateY(-1px);box-shadow:0 12px 28px rgba(15,37,112,0.1);
 }
 .uz-icon{
-  width:64px;height:64px;background:var(--white);border:1px solid #d4def5;border-radius:18px;
+  width:64px;height:64px;background:var(--white);border:1px solid #c7d7ea;border-radius:18px;
   display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;
-  box-shadow:0 8px 18px rgba(26,60,170,0.08);
+  box-shadow:0 8px 18px rgba(15,37,112,0.08);
 }
 .uz-icon svg{width:26px;height:26px;color:var(--blue)}
 .uz-title{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:5px}
@@ -278,7 +278,7 @@ footer{background:var(--ink);padding:2rem;text-align:center}
 
 .analysis-panel{
   background:var(--white);border:1px solid var(--border);border-radius:18px;
-  padding:1.5rem;box-shadow:0 10px 30px rgba(15,37,112,0.05);margin-bottom:1.25rem;
+  padding:1.5rem;box-shadow:0 10px 30px rgba(15,37,112,0.06);margin-bottom:1.25rem;
 }
 .analysis-panel-head{
   display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
@@ -296,14 +296,14 @@ footer{background:var(--ink);padding:2rem;text-align:center}
 }
 .stmt-type-card:hover{border-color:#c7d2ef;background:var(--blue-bg);transform:translateY(-1px)}
 .stmt-type-card.active{
-  border-color:var(--blue);background:linear-gradient(180deg,#f7f9ff 0%,#eef2fb 100%);
-  box-shadow:0 0 0 3px rgba(26,60,170,0.1);
+  border-color:var(--blue);background:linear-gradient(180deg,#f4fbf7 0%,var(--gold-bg) 100%);
+  box-shadow:0 0 0 3px rgba(34,197,94,0.14);
 }
 .stmt-type-icon{
   width:32px;height:32px;border-radius:9px;background:var(--white);border:1px solid var(--border);
   display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:8px;
 }
-.stmt-type-card.active .stmt-type-icon{background:var(--blue);border-color:var(--blue);color:var(--white)}
+.stmt-type-card.active .stmt-type-icon{background:var(--gold);border-color:var(--gold);color:var(--blue-d)}
 .stmt-type-name{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px;line-height:1.3}
 .stmt-type-desc{display:block;font-size:11px;color:var(--ink-3);line-height:1.45}
 .analysis-hint{
@@ -313,12 +313,12 @@ footer{background:var(--ink);padding:2rem;text-align:center}
 .stmt-pill{
   font-size:11px;font-weight:700;letter-spacing:0.3px;
   padding:6px 11px;border-radius:20px;background:var(--blue-bg);color:var(--blue);
-  white-space:nowrap;border:1px solid #d4def5;
+  white-space:nowrap;border:1px solid rgba(34,197,94,0.25);
 }
 .rpt-header{
   display:flex;align-items:flex-start;justify-content:space-between;gap:14px;
   margin-bottom:1.25rem;flex-wrap:wrap;padding:1.25rem 1.35rem;
-  background:linear-gradient(135deg,var(--blue-d) 0%,#17307f 100%);
+  background:linear-gradient(135deg,var(--blue-d) 0%,#0f2570 100%);
   border-radius:16px;color:var(--white);
 }
 .rpt-header-main{flex:1;min-width:220px}
@@ -332,7 +332,7 @@ footer{background:var(--ink);padding:2rem;text-align:center}
   font-size:11px;font-weight:700;padding:6px 11px;border-radius:20px;white-space:nowrap;
   border:1px solid transparent;
 }
-.health-good{background:rgba(10,124,78,0.18);color:#86efac;border-color:rgba(10,124,78,0.35)}
+.health-good{background:rgba(34,197,94,0.18);color:#86efac;border-color:rgba(34,197,94,0.35)}
 .health-warn{background:rgba(180,83,9,0.18);color:#fcd34d;border-color:rgba(180,83,9,0.35)}
 .health-bad{background:rgba(185,28,28,0.18);color:#fca5a5;border-color:rgba(185,28,28,0.35)}
 .rpt-header .health-good,.rpt-header .health-warn,.rpt-header .health-bad{
@@ -345,8 +345,8 @@ footer{background:var(--ink);padding:2rem;text-align:center}
   background:var(--white);border:1px solid var(--border);border-radius:14px;padding:14px;
   transition:transform 0.13s, box-shadow 0.13s;
 }
-.metric-card:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(15,37,112,0.06)}
-.metric-card.flag-good{border-color:#b7e4cc}
+.metric-card:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(15,37,112,0.08)}
+.metric-card.flag-good{border-color:#86efac}
 .metric-card.flag-warn{border-color:#f0d59a}
 .metric-card.flag-bad{border-color:#f0b8b8}
 .metric-label{font-size:11px;color:var(--ink-3);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.35px}
@@ -465,8 +465,8 @@ footer{background:var(--ink);padding:2rem;text-align:center}
 .bot-panel{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;display:flex;flex-direction:column;gap:14px;overflow-y:auto}
 .bp-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.9px;color:var(--ink-4);margin-bottom:8px}
 .qs{display:flex;flex-direction:column;gap:6px}
-.qbtn{width:100%;text-align:left;font-size:12px;font-weight:500;color:var(--blue);background:var(--blue-bg);border:none;border-radius:var(--rxs);padding:8px 10px;line-height:1.4;transition:background .12s}
-.qbtn:hover{background:#dce6f8}
+.qbtn{width:100%;text-align:left;font-size:12px;font-weight:500;color:var(--blue-d);background:var(--gold-bg);border:1px solid rgba(34,197,94,0.18);border-radius:var(--rxs);padding:8px 10px;line-height:1.4;transition:background .12s}
+.qbtn:hover{background:#d1fae5}
 .cap-list{display:flex;flex-direction:column;gap:6px}
 .cap-item{font-size:12px;color:var(--ink-2);display:flex;gap:8px;align-items:flex-start;padding:8px 10px;background:var(--off);border-radius:var(--rxs)}
 .cap-item::before{content:"✦";color:var(--gold);flex-shrink:0;font-size:10px;margin-top:1px}
@@ -1018,12 +1018,12 @@ function goPage(id, btn) {
 window.addEventListener('load', () => {
   new Chart(document.getElementById('hero-chart1'), {
     type:'bar',
-    data:{labels:['Revenue','COGS','Gross P.','OpEx','Net Inc.'],datasets:[{data:[1850,1240,610,472,116],backgroundColor:['#1a3caa','#b91c1c','#0a7c4e','#c9922a','#1a3caa'],borderRadius:3}]},
+    data:{labels:['Revenue','COGS','Gross P.','OpEx','Net Inc.'],datasets:[{data:[1850,1240,610,472,116],backgroundColor:['#0f2570','#dc2626','#22c55e','#4ade80','#0f2570'],borderRadius:3}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{callback:v=>'$'+v+'K',font:{size:9}}}}}
   });
   new Chart(document.getElementById('hero-chart2'), {
     type:'doughnut',
-    data:{labels:['COGS','OpEx','Profit'],datasets:[{data:[1240,472,116],backgroundColor:['#b91c1c','#c9922a','#0a7c4e'],borderWidth:0}]},
+    data:{labels:['COGS','OpEx','Profit'],datasets:[{data:[1240,472,116],backgroundColor:['#dc2626','#0f2570','#22c55e'],borderWidth:0}]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:9},boxWidth:10,padding:8}}}}
   });
 
@@ -1033,8 +1033,8 @@ window.addEventListener('load', () => {
     data:{
       labels:['Jan','Feb','Mar','Apr','May','Jun'],
       datasets:[
-        {label:'Health Score',data:[51,54,58,55,62,68],borderColor:'#1a3caa',backgroundColor:'rgba(26,60,170,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#1a3caa',pointRadius:5},
-        {label:'Benchmark',data:[65,65,65,65,65,65],borderColor:'#c9922a',borderDash:[5,5],tension:0,fill:false,pointRadius:0}
+        {label:'Health Score',data:[51,54,58,55,62,68],borderColor:'#0f2570',backgroundColor:'rgba(15,37,112,0.08)',tension:0.4,fill:true,pointBackgroundColor:'#0f2570',pointRadius:5},
+        {label:'Benchmark',data:[65,65,65,65,65,65],borderColor:'#22c55e',borderDash:[5,5],tension:0,fill:false,pointRadius:0}
       ]
     },
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:12}}}},scales:{y:{min:40,max:100,ticks:{callback:v=>v+'/100'}}}}
@@ -1044,9 +1044,9 @@ window.addEventListener('load', () => {
     data:{
       labels:['Jan','Feb','Mar','Apr','May','Jun'],
       datasets:[
-        {label:'Gross Margin %',data:[30,31,33,32,34,33],borderColor:'#1a3caa',tension:0.4,fill:false,pointRadius:4},
-        {label:'Net Margin %',data:[4,5,6,5,7,6.3],borderColor:'#0a7c4e',tension:0.4,fill:false,pointRadius:4},
-        {label:'Cash Runway (mo)',data:[3,2.5,2,2.8,1.8,1.6],borderColor:'#b91c1c',tension:0.4,fill:false,pointRadius:4}
+        {label:'Gross Margin %',data:[30,31,33,32,34,33],borderColor:'#0f2570',tension:0.4,fill:false,pointRadius:4},
+        {label:'Net Margin %',data:[4,5,6,5,7,6.3],borderColor:'#22c55e',tension:0.4,fill:false,pointRadius:4},
+        {label:'Cash Runway (mo)',data:[3,2.5,2,2.8,1.8,1.6],borderColor:'#dc2626',tension:0.4,fill:false,pointRadius:4}
       ]
     },
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:12}}}}}
@@ -1060,23 +1060,23 @@ window.addEventListener('load', () => {
 
 // ── KPI LIBRARY ──────────────────────────────────────
 const KPIS = [
-  {cat:'Profitability',catColor:'#0a7c4e',catBg:'#edfaf4',name:'Gross Margin',formula:'Gross Profit / Revenue',desc:'The percentage of revenue remaining after deducting direct costs. Shows how efficiently you produce your product or service.',benchmark:'Varies by industry — retail 25–35%, services 50–70%'},
-  {cat:'Profitability',catColor:'#0a7c4e',catBg:'#edfaf4',name:'Net Profit Margin',formula:'Net Income / Revenue',desc:'The percentage of revenue that becomes actual profit after all expenses. The bottom line — what you actually keep.',benchmark:'Healthy: 8–15% depending on industry'},
-  {cat:'Profitability',catColor:'#0a7c4e',catBg:'#edfaf4',name:'EBITDA Margin',formula:'EBITDA / Revenue',desc:'Earnings before interest, taxes, depreciation, and amortization. Shows core operating profitability without accounting choices.',benchmark:'Strong: 15%+ for most businesses'},
-  {cat:'Profitability',catColor:'#0a7c4e',catBg:'#edfaf4',name:'Return on Assets',formula:'Net Income / Total Assets',desc:'How efficiently you use your assets to generate profit. Higher = better use of what you own.',benchmark:'Good: 5%+, excellent: 10%+'},
-  {cat:'Liquidity',catColor:'#1a3caa',catBg:'#eef2fb',name:'Current Ratio',formula:'Current Assets / Current Liabilities',desc:'Can you pay your short-term bills? A ratio above 1 means yes. Below 1 means you may struggle.',benchmark:'Healthy: 1.5–2.0'},
-  {cat:'Liquidity',catColor:'#1a3caa',catBg:'#eef2fb',name:'Cash Runway',formula:'Cash / Monthly Burn Rate',desc:'How many months you can operate without new revenue or funding. The most important survival metric for small businesses.',benchmark:'Target: 6+ months minimum'},
-  {cat:'Liquidity',catColor:'#1a3caa',catBg:'#eef2fb',name:'Quick Ratio',formula:'(Cash + AR) / Current Liabilities',desc:'Like the current ratio, but excludes inventory — a stricter test of whether you can cover immediate obligations.',benchmark:'Healthy: 1.0+'},
-  {cat:'Efficiency',catColor:'#b45309',catBg:'#fef9ec',name:'Days Sales Outstanding',formula:'AR / (Revenue / 365)',desc:'How long on average it takes customers to pay you. Lower is better — money sitting in AR is money you can\'t use.',benchmark:'Industry avg: 30–45 days'},
-  {cat:'Efficiency',catColor:'#b45309',catBg:'#fef9ec',name:'Inventory Turnover',formula:'COGS / Average Inventory',desc:'How many times you sell through your inventory in a year. Low turnover = cash tied up in unsold goods.',benchmark:'Higher is generally better — varies by industry'},
-  {cat:'Efficiency',catColor:'#b45309',catBg:'#fef9ec',name:'Accounts Payable Days',formula:'AP / (COGS / 365)',desc:'How long you take to pay your suppliers. Longer is better for your cash flow — as long as you stay within agreed terms.',benchmark:'30–60 days is typical'},
-  {cat:'Efficiency',catColor:'#b45309',catBg:'#fef9ec',name:'Revenue per Employee',formula:'Revenue / Number of Employees',desc:'A productivity measure. How much revenue does each person on the team generate? Rising trend = growing efficiently.',benchmark:'Varies — services: $100–200K/employee'},
-  {cat:'Leverage',catColor:'#6d28d9',catBg:'#f3f0ff',name:'Debt-to-Equity Ratio',formula:'Total Debt / Total Equity',desc:'How much you owe vs. how much owners have invested. High ratio means you\'re heavily reliant on borrowed money.',benchmark:'Healthy: below 2.0 for most industries'},
-  {cat:'Leverage',catColor:'#6d28d9',catBg:'#f3f0ff',name:'Debt Ratio',formula:'Total Liabilities / Total Assets',desc:'What percentage of your assets are financed by debt. Higher = riskier — less cushion if revenue drops.',benchmark:'Healthy: below 50%, concerning: 80%+'},
-  {cat:'Leverage',catColor:'#6d28d9',catBg:'#f3f0ff',name:'Interest Coverage Ratio',formula:'EBIT / Interest Expense',desc:'Can your business earnings cover your interest payments? Below 1.5 is a warning sign.',benchmark:'Healthy: 3.0+'},
-  {cat:'Growth',catColor:'#0d9488',catBg:'#e8faf8',name:'Revenue Growth Rate',formula:'(Current Revenue - Prior Revenue) / Prior Revenue',desc:'How fast your revenue is growing year-over-year. The most fundamental indicator of business momentum.',benchmark:'Strong: 15–25% YoY for established businesses'},
-  {cat:'Growth',catColor:'#0d9488',catBg:'#e8faf8',name:'Customer Acquisition Cost',formula:'Sales & Marketing Spend / New Customers',desc:'How much it costs to win one new customer. Must be significantly lower than your customer lifetime value.',benchmark:'Target: LTV at least 3x your CAC'},
-  {cat:'Growth',catColor:'#0d9488',catBg:'#e8faf8',name:'Customer Lifetime Value',formula:'Avg Purchase × Frequency × Avg Customer Lifespan',desc:'The total revenue you can expect from a single customer over the whole relationship. Your most valuable growth metric.',benchmark:'Higher is always better — track the trend'},
+  {cat:'Profitability',catColor:'#22c55e',catBg:'#dcfce7',name:'Gross Margin',formula:'Gross Profit / Revenue',desc:'The percentage of revenue remaining after deducting direct costs. Shows how efficiently you produce your product or service.',benchmark:'Varies by industry — retail 25–35%, services 50–70%'},
+  {cat:'Profitability',catColor:'#22c55e',catBg:'#dcfce7',name:'Net Profit Margin',formula:'Net Income / Revenue',desc:'The percentage of revenue that becomes actual profit after all expenses. The bottom line — what you actually keep.',benchmark:'Healthy: 8–15% depending on industry'},
+  {cat:'Profitability',catColor:'#22c55e',catBg:'#dcfce7',name:'EBITDA Margin',formula:'EBITDA / Revenue',desc:'Earnings before interest, taxes, depreciation, and amortization. Shows core operating profitability without accounting choices.',benchmark:'Strong: 15%+ for most businesses'},
+  {cat:'Profitability',catColor:'#22c55e',catBg:'#dcfce7',name:'Return on Assets',formula:'Net Income / Total Assets',desc:'How efficiently you use your assets to generate profit. Higher = better use of what you own.',benchmark:'Good: 5%+, excellent: 10%+'},
+  {cat:'Liquidity',catColor:'#0f2570',catBg:'#e8eef6',name:'Current Ratio',formula:'Current Assets / Current Liabilities',desc:'Can you pay your short-term bills? A ratio above 1 means yes. Below 1 means you may struggle.',benchmark:'Healthy: 1.5–2.0'},
+  {cat:'Liquidity',catColor:'#0f2570',catBg:'#e8eef6',name:'Cash Runway',formula:'Cash / Monthly Burn Rate',desc:'How many months you can operate without new revenue or funding. The most important survival metric for small businesses.',benchmark:'Target: 6+ months minimum'},
+  {cat:'Liquidity',catColor:'#0f2570',catBg:'#e8eef6',name:'Quick Ratio',formula:'(Cash + AR) / Current Liabilities',desc:'Like the current ratio, but excludes inventory — a stricter test of whether you can cover immediate obligations.',benchmark:'Healthy: 1.0+'},
+  {cat:'Efficiency',catColor:'#1a4480',catBg:'#e8eef6',name:'Days Sales Outstanding',formula:'AR / (Revenue / 365)',desc:'How long on average it takes customers to pay you. Lower is better — money sitting in AR is money you can\'t use.',benchmark:'Industry avg: 30–45 days'},
+  {cat:'Efficiency',catColor:'#1a4480',catBg:'#e8eef6',name:'Inventory Turnover',formula:'COGS / Average Inventory',desc:'How many times you sell through your inventory in a year. Low turnover = cash tied up in unsold goods.',benchmark:'Higher is generally better — varies by industry'},
+  {cat:'Efficiency',catColor:'#1a4480',catBg:'#e8eef6',name:'Accounts Payable Days',formula:'AP / (COGS / 365)',desc:'How long you take to pay your suppliers. Longer is better for your cash flow — as long as you stay within agreed terms.',benchmark:'30–60 days is typical'},
+  {cat:'Efficiency',catColor:'#1a4480',catBg:'#e8eef6',name:'Revenue per Employee',formula:'Revenue / Number of Employees',desc:'A productivity measure. How much revenue does each person on the team generate? Rising trend = growing efficiently.',benchmark:'Varies — services: $100–200K/employee'},
+  {cat:'Leverage',catColor:'#0a1628',catBg:'#e8eef6',name:'Debt-to-Equity Ratio',formula:'Total Debt / Total Equity',desc:'How much you owe vs. how much owners have invested. High ratio means you\'re heavily reliant on borrowed money.',benchmark:'Healthy: below 2.0 for most industries'},
+  {cat:'Leverage',catColor:'#0a1628',catBg:'#e8eef6',name:'Debt Ratio',formula:'Total Liabilities / Total Assets',desc:'What percentage of your assets are financed by debt. Higher = riskier — less cushion if revenue drops.',benchmark:'Healthy: below 50%, concerning: 80%+'},
+  {cat:'Leverage',catColor:'#0a1628',catBg:'#e8eef6',name:'Interest Coverage Ratio',formula:'EBIT / Interest Expense',desc:'Can your business earnings cover your interest payments? Below 1.5 is a warning sign.',benchmark:'Healthy: 3.0+'},
+  {cat:'Growth',catColor:'#22c55e',catBg:'#dcfce7',name:'Revenue Growth Rate',formula:'(Current Revenue - Prior Revenue) / Prior Revenue',desc:'How fast your revenue is growing year-over-year. The most fundamental indicator of business momentum.',benchmark:'Strong: 15–25% YoY for established businesses'},
+  {cat:'Growth',catColor:'#22c55e',catBg:'#dcfce7',name:'Customer Acquisition Cost',formula:'Sales & Marketing Spend / New Customers',desc:'How much it costs to win one new customer. Must be significantly lower than your customer lifetime value.',benchmark:'Target: LTV at least 3x your CAC'},
+  {cat:'Growth',catColor:'#22c55e',catBg:'#dcfce7',name:'Customer Lifetime Value',formula:'Avg Purchase × Frequency × Avg Customer Lifespan',desc:'The total revenue you can expect from a single customer over the whole relationship. Your most valuable growth metric.',benchmark:'Higher is always better — track the trend'},
 ];
 
 function buildKPIs() {
@@ -1713,7 +1713,7 @@ function setChartTitles(titles) {
 
 function renderReportCharts(d) {
   const type = d.statementType || 'income_statement';
-  const barColors = ['#1a3caa', '#c9922a', '#0a7c4e', '#6d28d9', '#0d9488', '#b91c1c', '#b45309', '#0369a1'];
+  const barColors = ['#0f2570', '#22c55e', '#4ade80', '#1a4480', '#16a34a', '#dc2626', '#b45309', '#0a1628'];
 
   if (type === 'balance_sheet') {
     setChartTitles([
@@ -1747,8 +1747,8 @@ function renderReportCharts(d) {
       data: {
         labels: ['Current Ratio', 'Working Capital', 'Equity Strength', 'Debt Load', 'Cash Buffer'],
         datasets: [
-          { label: 'Your Business', data: [Math.min((d.currentRatio || 0) / 2 * 100, 100), d.workingCapital > 0 ? 75 : 25, (d.totalEquity || 0) > 0 ? 80 : 20, Math.max(0, 100 - (d.debtToEquity || 0) * 25), Math.min(((d.cash || 0) / Math.max(d.totalAssets || 1, 1)) * 400, 100)], backgroundColor: 'rgba(26,60,170,0.12)', borderColor: '#1a3caa', borderWidth: 2 },
-          { label: 'Benchmark', data: [75, 70, 75, 70, 60], backgroundColor: 'rgba(201,146,42,0.1)', borderColor: '#c9922a', borderWidth: 1.5, borderDash: [5, 5] }
+          { label: 'Your Business', data: [Math.min((d.currentRatio || 0) / 2 * 100, 100), d.workingCapital > 0 ? 75 : 25, (d.totalEquity || 0) > 0 ? 80 : 20, Math.max(0, 100 - (d.debtToEquity || 0) * 25), Math.min(((d.cash || 0) / Math.max(d.totalAssets || 1, 1)) * 400, 100)], backgroundColor: 'rgba(15,37,112,0.12)', borderColor: '#0f2570', borderWidth: 2 },
+          { label: 'Benchmark', data: [75, 70, 75, 70, 60], backgroundColor: 'rgba(34,197,94,0.1)', borderColor: '#22c55e', borderWidth: 1.5, borderDash: [5, 5] }
         ]
       },
       options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { display: false } } }, plugins: { legend: { position: 'bottom' } } }
@@ -1767,7 +1767,7 @@ function renderReportCharts(d) {
       type: 'bar',
       data: {
         labels: ['Operating', 'Investing', 'Financing', 'Net Change'],
-        datasets: [{ data: [d.operatingCashFlow || 0, d.investingCashFlow || 0, d.financingCashFlow || 0, d.netCashChange || 0], backgroundColor: ['#0a7c4e', '#1a3caa', '#c9922a', '#6d28d9'], borderRadius: 4 }]
+        datasets: [{ data: [d.operatingCashFlow || 0, d.investingCashFlow || 0, d.financingCashFlow || 0, d.netCashChange || 0], backgroundColor: ['#22c55e', '#0f2570', '#4ade80', '#1a4480'], borderRadius: 4 }]
       },
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' } } } }
     }));
@@ -1781,7 +1781,7 @@ function renderReportCharts(d) {
       type: 'bar',
       data: {
         labels: ['Beginning Cash', 'Net Change', 'Ending Cash'],
-        datasets: [{ data: [d.beginningCash || 0, d.netCashChange || 0, d.endingCash || 0], backgroundColor: ['#1a3caa', '#c9922a', '#0a7c4e'], borderRadius: 4 }]
+        datasets: [{ data: [d.beginningCash || 0, d.netCashChange || 0, d.endingCash || 0], backgroundColor: ['#0f2570', '#22c55e', '#22c55e'], borderRadius: 4 }]
       },
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
     }));
@@ -1790,8 +1790,8 @@ function renderReportCharts(d) {
       data: {
         labels: ['Operating Cash', 'Net Change', 'Ending Cash', 'Investing Discipline', 'Financing Reliance'],
         datasets: [
-          { label: 'Your Business', data: [(d.operatingCashFlow || 0) > 0 ? 80 : 20, (d.netCashChange || 0) > 0 ? 75 : 25, (d.endingCash || 0) > 0 ? 75 : 20, 60, (d.financingCashFlow || 0) > 0 ? 35 : 70], backgroundColor: 'rgba(26,60,170,0.12)', borderColor: '#1a3caa', borderWidth: 2 },
-          { label: 'Benchmark', data: [75, 70, 70, 65, 60], backgroundColor: 'rgba(201,146,42,0.1)', borderColor: '#c9922a', borderWidth: 1.5, borderDash: [5, 5] }
+          { label: 'Your Business', data: [(d.operatingCashFlow || 0) > 0 ? 80 : 20, (d.netCashChange || 0) > 0 ? 75 : 25, (d.endingCash || 0) > 0 ? 75 : 20, 60, (d.financingCashFlow || 0) > 0 ? 35 : 70], backgroundColor: 'rgba(15,37,112,0.12)', borderColor: '#0f2570', borderWidth: 2 },
+          { label: 'Benchmark', data: [75, 70, 70, 65, 60], backgroundColor: 'rgba(34,197,94,0.1)', borderColor: '#22c55e', borderWidth: 1.5, borderDash: [5, 5] }
         ]
       },
       options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { display: false } } }, plugins: { legend: { position: 'bottom' } } }
@@ -1826,7 +1826,7 @@ function renderReportCharts(d) {
       type: 'doughnut',
       data: {
         labels: ['Current', 'Overdue'],
-        datasets: [{ data: [buckets.current || 0, d.overdueBalance || 0], backgroundColor: ['#0a7c4e', '#b91c1c'], borderWidth: 0 }]
+        datasets: [{ data: [buckets.current || 0, d.overdueBalance || 0], backgroundColor: ['#22c55e', '#dc2626'], borderWidth: 0 }]
       },
       options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } }, cutout: '60%' }
     }));
@@ -1835,8 +1835,8 @@ function renderReportCharts(d) {
       data: {
         labels: ['Current %', 'Low Overdue', '90+ Control', 'Concentration', 'Total Balance Health'],
         datasets: [
-          { label: 'Your Business', data: [Math.max(0, 100 - (d.overduePct || 0)), d.overduePct <= 20 ? 80 : 35, (buckets.d90plus || 0) === 0 ? 85 : 25, d.topCounterparties[0] && d.totalBalance ? Math.max(0, 100 - (d.topCounterparties[0].val / d.totalBalance * 100)) : 70, calcHealthScore(d)], backgroundColor: 'rgba(26,60,170,0.12)', borderColor: '#1a3caa', borderWidth: 2 },
-          { label: 'Benchmark', data: [80, 75, 80, 70, 75], backgroundColor: 'rgba(201,146,42,0.1)', borderColor: '#c9922a', borderWidth: 1.5, borderDash: [5, 5] }
+          { label: 'Your Business', data: [Math.max(0, 100 - (d.overduePct || 0)), d.overduePct <= 20 ? 80 : 35, (buckets.d90plus || 0) === 0 ? 85 : 25, d.topCounterparties[0] && d.totalBalance ? Math.max(0, 100 - (d.topCounterparties[0].val / d.totalBalance * 100)) : 70, calcHealthScore(d)], backgroundColor: 'rgba(15,37,112,0.12)', borderColor: '#0f2570', borderWidth: 2 },
+          { label: 'Benchmark', data: [80, 75, 80, 70, 75], backgroundColor: 'rgba(34,197,94,0.1)', borderColor: '#22c55e', borderWidth: 1.5, borderDash: [5, 5] }
         ]
       },
       options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { display: false } } }, plugins: { legend: { position: 'bottom' } } }
@@ -1867,7 +1867,7 @@ function renderReportCharts(d) {
   const mCogsVals = sharedSvcs.length > 0 ? sharedSvcs.map(s => { const c = svcCogs.find(x => x.name === s.name); return c ? c.val : 0; }) : mRevVals.map(v => v * (d.cogs / d.revenue));
   analysisCharts.push(new Chart(document.getElementById('rpt-chart-margin'), {
     type: 'bar',
-    data: { labels: mLabels, datasets: [{ label: 'Revenue', data: mRevVals, backgroundColor: 'rgba(26,60,170,0.8)', borderRadius: 4 }, { label: 'Direct Cost', data: mCogsVals, backgroundColor: 'rgba(185,28,28,0.7)', borderRadius: 4 }] },
+    data: { labels: mLabels, datasets: [{ label: 'Revenue', data: mRevVals, backgroundColor: 'rgba(15,37,112,0.8)', borderRadius: 4 }, { label: 'Direct Cost', data: mCogsVals, backgroundColor: 'rgba(185,28,28,0.7)', borderRadius: 4 }] },
     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 10, boxWidth: 10 } } }, scales: { x: { ticks: { font: { size: 10 } } }, y: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' }, grid: { color: 'rgba(0,0,0,0.04)' } } } }
   }));
 
@@ -1889,8 +1889,8 @@ function renderReportCharts(d) {
     data: {
       labels: ['Gross Margin', 'Net Margin', 'Op. Margin', 'Payroll Efficiency', 'Profitability'],
       datasets: [
-        { label: 'Your Business', data: [gmScore, nmScore, omScore, prScore, profScore], backgroundColor: 'rgba(26,60,170,0.12)', borderColor: '#1a3caa', pointBackgroundColor: '#1a3caa', borderWidth: 2, pointRadius: 4 },
-        { label: 'Benchmark', data: [76, 60, 65, 70, 75], backgroundColor: 'rgba(201,146,42,0.1)', borderColor: '#c9922a', pointBackgroundColor: '#c9922a', borderWidth: 1.5, borderDash: [5, 5], pointRadius: 3 }
+        { label: 'Your Business', data: [gmScore, nmScore, omScore, prScore, profScore], backgroundColor: 'rgba(15,37,112,0.12)', borderColor: '#0f2570', pointBackgroundColor: '#0f2570', borderWidth: 2, pointRadius: 4 },
+        { label: 'Benchmark', data: [76, 60, 65, 70, 75], backgroundColor: 'rgba(34,197,94,0.1)', borderColor: '#22c55e', pointBackgroundColor: '#22c55e', borderWidth: 1.5, borderDash: [5, 5], pointRadius: 3 }
       ]
     },
     options: { responsive: true, maintainAspectRatio: false, scales: { r: { min: 0, max: 100, ticks: { display: false }, grid: { color: 'rgba(0,0,0,0.05)' } } }, plugins: { legend: { position: 'bottom', labels: { font: { size: 11 }, padding: 12 } } } }
@@ -2419,27 +2419,27 @@ function buildDeck(d) {
   const safePeriod = escapeHtml(d.period || '');
   const findings = buildFindingsPL(d);
   const actions  = buildActionsPL(d);
-  const hColor   = h >= 70 ? '#0a7c4e' : h >= 50 ? '#b45309' : '#b91c1c';
+  const hColor   = h >= 70 ? '#22c55e' : h >= 50 ? '#b45309' : '#dc2626';
 
   // Helper
-  const mColor = (val, good, warn) => val >= good ? '#0a7c4e' : val >= warn ? '#b45309' : '#b91c1c';
+  const mColor = (val, good, warn) => val >= good ? '#22c55e' : val >= warn ? '#b45309' : '#dc2626';
 
   deckSlides = [
 
     // ── SLIDE 1: COVER ──
     `<div style="width:100%;height:100%;background:#0f2570;display:flex;flex-direction:column;justify-content:flex-end;padding:7% 9%;position:relative;box-sizing:border-box">
       <div style="position:absolute;top:7%;right:7%;font-size:1.1vw;font-weight:700;color:rgba(255,255,255,0.25);letter-spacing:1px">MyCFOPro.AI</div>
-      <div style="position:absolute;top:0;right:0;width:40%;height:100%;background:linear-gradient(135deg,transparent,rgba(26,60,170,0.4))"></div>
+      <div style="position:absolute;top:0;right:0;width:40%;height:100%;background:linear-gradient(135deg,transparent,rgba(15,37,112,0.4))"></div>
       <div style="font-size:0.85vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:1.5vh">Confidential · For Executive Review</div>
-      <div style="width:52px;height:4px;background:#c9922a;border-radius:2px;margin-bottom:2.5vh"></div>
-      <div style="font-size:3.4vw;font-weight:900;color:#fff;line-height:1.1;letter-spacing:-0.05em;margin-bottom:1.5vh">${safeCompany}<br><span style="color:#e8b84b">Overview & Analysis</span></div>
+      <div style="width:52px;height:4px;background:#22c55e;border-radius:2px;margin-bottom:2.5vh"></div>
+      <div style="font-size:3.4vw;font-weight:900;color:#fff;line-height:1.1;letter-spacing:-0.05em;margin-bottom:1.5vh">${safeCompany}<br><span style="color:#4ade80">Overview & Analysis</span></div>
       <div style="font-size:1.05vw;color:rgba(255,255,255,0.5);margin-bottom:3vh">${safePeriod} · Prepared by MyCFOPro.AI</div>
       <div style="font-size:0.8vw;color:rgba(255,255,255,0.3)">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</div>
     </div>`,
 
     // ── SLIDE 2: SCORECARD ──
     `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;padding:6% 8%;box-sizing:border-box">
-      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1a3caa;margin-bottom:1vh">Executive Summary</div>
+      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0f2570;margin-bottom:1vh">Executive Summary</div>
       <div style="font-size:2.2vw;font-weight:900;color:#0e0e0e;letter-spacing:-0.04em;margin-bottom:3vh;line-height:1.15">Financial Scorecard · ${safePeriod}</div>
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.5%;flex:1">
         ${[
@@ -2448,8 +2448,8 @@ function buildDeck(d) {
           {l:'Gross Margin', v:fp(d.grossMargin),      c:mColor(d.grossMargin,38,25)},
           {l:'Net Margin',   v:fp(d.netMargin),         c:mColor(d.netMargin,8,3)},
           {l:'Gross Profit', v:fc(d.grossProfit),       c:'#0e0e0e'},
-          {l:'Net Income',   v:fc(d.netIncome),         c:d.netIncome>0?'#0a7c4e':'#b91c1c'},
-          {l:'Operating Income', v:fc(d.opIncome||0),  c:(d.opIncome||0)>0?'#0a7c4e':'#b91c1c'},
+          {l:'Net Income',   v:fc(d.netIncome),         c:d.netIncome>0?'#22c55e':'#dc2626'},
+          {l:'Operating Income', v:fc(d.opIncome||0),  c:(d.opIncome||0)>0?'#22c55e':'#dc2626'},
           {l:'Total OpEx',   v:fc(d.opex||0),           c:'#b45309'},
         ].map(m => '<div style="background:#f8f8f6;border-radius:8px;padding:4% 5%;display:flex;flex-direction:column;justify-content:center">' +
           '<div style="font-size:0.65vw;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#aaa;margin-bottom:0.8vh">' + m.l + '</div>' +
@@ -2460,12 +2460,12 @@ function buildDeck(d) {
 
     // ── SLIDE 3: REVENUE BY SERVICE ──
     `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;padding:6% 8%;box-sizing:border-box">
-      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1a3caa;margin-bottom:1vh">Revenue Analysis</div>
+      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0f2570;margin-bottom:1vh">Revenue Analysis</div>
       <div style="font-size:2.2vw;font-weight:900;color:#0e0e0e;letter-spacing:-0.04em;margin-bottom:3vh;line-height:1.15">Revenue by Service Line</div>
       <div style="flex:1;display:flex;flex-direction:column;gap:1.2vh">
         ${(d.serviceRevenue && d.serviceRevenue.length > 0 ? d.serviceRevenue : [{name:'Revenue',val:d.revenue}]).slice(0,7).map((s,i) => {
           const pct = d.revenue > 0 ? (s.val / d.revenue * 100) : 0;
-          const colors = ['#1a3caa','#c9922a','#0a7c4e','#6d28d9','#0d9488','#b45309','#0369a1'];
+          const colors = ['#0f2570','#22c55e','#4ade80','#1a4480','#16a34a','#b45309','#0a1628'];
           const c = colors[i % colors.length];
           return '<div style="display:flex;align-items:center;gap:2%;flex:1">' +
             '<div style="font-size:0.75vw;color:#444;min-width:22%;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">' + escapeHtml(s.name) + '</div>' +
@@ -2485,11 +2485,11 @@ function buildDeck(d) {
 
     // ── SLIDE 4: KEY FINDINGS ──
     `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;padding:6% 8%;box-sizing:border-box">
-      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1a3caa;margin-bottom:1vh">Analysis</div>
+      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0f2570;margin-bottom:1vh">Analysis</div>
       <div style="font-size:2.2vw;font-weight:900;color:#0e0e0e;letter-spacing:-0.04em;margin-bottom:2.5vh;line-height:1.15">Key Findings</div>
       <div style="flex:1;display:flex;flex-direction:column;gap:1.2vh">
         ${findings.slice(0,5).map(f => {
-          const bg  = f.t==='good'?'#edfaf4':f.t==='warn'?'#fef9ec':'#fef2f2';
+          const bg  = f.t==='good'?'#dcfce7':f.t==='warn'?'#fef9ec':'#fef2f2';
           const dot = f.t==='good'?'#22c55e':f.t==='warn'?'#f59e0b':'#ef4444';
           return '<div style="display:flex;gap:1.5%;align-items:flex-start;background:' + bg + ';border-radius:6px;padding:2% 2.5%;flex:1">' +
             '<div style="width:8px;height:8px;border-radius:50%;background:' + dot + ';flex-shrink:0;margin-top:0.5vh"></div>' +
@@ -2501,16 +2501,16 @@ function buildDeck(d) {
 
     // ── SLIDE 5: ACTION PLAN ──
     `<div style="width:100%;height:100%;background:#fff;display:flex;flex-direction:column;padding:6% 8%;box-sizing:border-box">
-      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#1a3caa;margin-bottom:1vh">Recommendations</div>
+      <div style="font-size:0.75vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:#0f2570;margin-bottom:1vh">Recommendations</div>
       <div style="font-size:2.2vw;font-weight:900;color:#0e0e0e;letter-spacing:-0.04em;margin-bottom:2.5vh;line-height:1.15">Priority Action Plan</div>
       <div style="flex:1;display:flex;flex-direction:column;gap:1.1vh">
         ${actions.slice(0,4).map((a,i) =>
           '<div style="display:flex;gap:2%;align-items:flex-start;background:#f8f8f6;border-radius:6px;padding:2% 2.5%;flex:1">' +
-            '<div style="width:1.8vw;height:1.8vw;border-radius:50%;background:#1a3caa;color:#fff;font-size:0.7vw;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + (i+1) + '</div>' +
+            '<div style="width:1.8vw;height:1.8vw;border-radius:50%;background:#0f2570;color:#fff;font-size:0.7vw;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">' + (i+1) + '</div>' +
             '<div>' +
               '<div style="font-size:0.85vw;font-weight:700;color:#0e0e0e;margin-bottom:0.3vh">' + a.title + '</div>' +
               '<div style="font-size:0.75vw;color:#555;line-height:1.5">' + a.desc.substring(0,140) + (a.desc.length>140?'…':'') + '</div>' +
-              (a.impact ? '<div style="font-size:0.65vw;font-weight:700;color:#0a7c4e;margin-top:0.4vh">' + a.impact + '</div>' : '') +
+              (a.impact ? '<div style="font-size:0.65vw;font-weight:700;color:#22c55e;margin-top:0.4vh">' + a.impact + '</div>' : '') +
             '</div>' +
           '</div>'
         ).join('')}
@@ -2518,18 +2518,18 @@ function buildDeck(d) {
     </div>`,
 
     // ── SLIDE 6: CLOSING ──
-    `<div style="width:100%;height:100%;background:#1a3caa;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8%;box-sizing:border-box">
+    `<div style="width:100%;height:100%;background:#0f2570;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8%;box-sizing:border-box">
       <div style="font-size:0.85vw;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:2vh">Bottom Line</div>
-      <div style="width:44px;height:3px;background:#c9922a;border-radius:2px;margin-bottom:2.5vh"></div>
+      <div style="width:44px;height:3px;background:#22c55e;border-radius:2px;margin-bottom:2.5vh"></div>
       <div style="font-size:2.6vw;font-weight:900;color:#fff;letter-spacing:-0.04em;line-height:1.15;margin-bottom:2vh">
-        ${d.netIncome > 0 ? 'Profitable. <span style="color:#e8b84b">Room to grow.</span>' : '<span style="color:#f87171">Action needed now.</span>'}
+        ${d.netIncome > 0 ? 'Profitable. <span style="color:#4ade80">Room to grow.</span>' : '<span style="color:#f87171">Action needed now.</span>'}
       </div>
       <div style="font-size:0.95vw;color:rgba(255,255,255,0.55);max-width:55%;line-height:1.75;margin-bottom:4vh">${buildSummary(d).substring(0,200)}…</div>
       <div style="display:flex;gap:4rem;justify-content:center">
         ${[
-          {l:'Revenue',    v:fc(d.revenue),    c:'#e8b84b'},
+          {l:'Revenue',    v:fc(d.revenue),    c:'#4ade80'},
           {l:'Net Income', v:fc(d.netIncome),  c:d.netIncome>0?'#a3e635':'#f87171'},
-          {l:'Health',     v:h+'/100',          c:hColor==='#0a7c4e'?'#a3e635':hColor==='#b45309'?'#fbbf24':'#f87171'},
+          {l:'Health',     v:h+'/100',          c:hColor==='#22c55e'?'#4ade80':hColor==='#b45309'?'#fbbf24':'#f87171'},
         ].map(s =>
           '<div style="text-align:center">' +
             '<div style="font-size:2.8vw;font-weight:900;color:' + s.c + ';letter-spacing:-0.05em;line-height:1">' + s.v + '</div>' +
@@ -2547,7 +2547,7 @@ function buildDeck(d) {
   // Thumbnails
   const thumbStrip = document.getElementById('deck-thumbs');
   thumbStrip.innerHTML = deckSlides.map((s,i) =>
-    '<div onclick="jumpDeckSlide(' + i + ')" id="deck-thumb-' + i + '" style="flex-shrink:0;width:160px;cursor:pointer;border-radius:8px;overflow:hidden;border:2px solid ' + (i===0?'#1a3caa':'#e4e3df') + ';transition:border-color 0.13s">' +
+    '<div onclick="jumpDeckSlide(' + i + ')" id="deck-thumb-' + i + '" style="flex-shrink:0;width:160px;cursor:pointer;border-radius:8px;overflow:hidden;border:2px solid ' + (i===0?'#0f2570':'#e4e3df') + ';transition:border-color 0.13s">' +
       '<div style="aspect-ratio:16/9;background:#1c1c2a;overflow:hidden;transform:scale(1);pointer-events:none">' +
         '<div style="width:800px;height:450px;transform:scale(0.2);transform-origin:0 0;pointer-events:none">' + s + '</div>' +
       '</div>' +
@@ -2573,7 +2573,7 @@ function renderDeckSlide() {
   // Update thumb borders
   deckSlides.forEach((_,i) => {
     const t = document.getElementById('deck-thumb-'+i);
-    if (t) t.style.borderColor = i===deckCurrent?'#1a3caa':'#e4e3df';
+    if (t) t.style.borderColor = i===deckCurrent?'#0f2570':'#e4e3df';
   });
 }
 
