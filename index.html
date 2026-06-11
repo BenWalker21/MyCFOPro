@@ -257,37 +257,149 @@ footer{background:var(--ink);padding:2rem;text-align:center}
 
 /* Upload zone */
 .upload-zone-big{
-  border:2px dashed var(--border);border-radius:var(--r);
-  padding:4rem 2rem;text-align:center;cursor:pointer;
-  transition:all 0.15s;background:var(--off);margin-bottom:1.5rem;
+  border:2px dashed #cfd6ea;border-radius:16px;
+  padding:3.25rem 2rem;text-align:center;cursor:pointer;
+  transition:all 0.15s;background:linear-gradient(180deg,#fbfcff 0%,var(--off) 100%);
+  margin-bottom:0;
 }
-.upload-zone-big:hover,.upload-zone-big:focus-within,.upload-zone-big.dragover{border-color:var(--blue);background:var(--blue-bg);transform:translateY(-1px)}
-.uz-icon{width:60px;height:60px;background:var(--blue-bg);border-radius:15px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem}
+.upload-zone-big:hover,.upload-zone-big:focus-within,.upload-zone-big.dragover{
+  border-color:var(--blue);background:linear-gradient(180deg,#f3f6ff 0%,var(--blue-bg) 100%);
+  transform:translateY(-1px);box-shadow:0 12px 28px rgba(26,60,170,0.08);
+}
+.uz-icon{
+  width:64px;height:64px;background:var(--white);border:1px solid #d4def5;border-radius:18px;
+  display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;
+  box-shadow:0 8px 18px rgba(26,60,170,0.08);
+}
 .uz-icon svg{width:26px;height:26px;color:var(--blue)}
 .uz-title{font-size:16px;font-weight:700;color:var(--ink);margin-bottom:5px}
 .uz-sub{font-size:13px;color:var(--ink-3)}
 .uz-sub span{color:var(--blue);font-weight:500}
 
-.analysis-controls{
-  display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;
+.analysis-panel{
+  background:var(--white);border:1px solid var(--border);border-radius:18px;
+  padding:1.5rem;box-shadow:0 10px 30px rgba(15,37,112,0.05);margin-bottom:1.25rem;
+}
+.analysis-panel-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  margin-bottom:1rem;flex-wrap:wrap;
+}
+.analysis-panel-title{font-size:14px;font-weight:800;color:var(--ink);letter-spacing:-0.2px}
+.analysis-panel-sub{font-size:12px;color:var(--ink-3);margin-top:4px;max-width:520px;line-height:1.55}
+.stmt-type-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;
   margin-bottom:1rem;
 }
-.analysis-field{display:flex;flex-direction:column;gap:6px}
-.analysis-label{font-size:12px;font-weight:700;color:var(--ink-2);letter-spacing:0.2px}
-.analysis-select{
-  appearance:none;-webkit-appearance:none;
-  font:inherit;font-size:14px;font-weight:500;color:var(--ink);
-  background:var(--white) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23717171' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E") no-repeat right 14px center;
-  border:1px solid var(--border);border-radius:var(--rs);padding:11px 40px 11px 14px;
-  transition:border-color 0.13s, box-shadow 0.13s;
+.stmt-type-card{
+  text-align:left;background:var(--off);border:1.5px solid var(--border);border-radius:14px;
+  padding:12px 13px;cursor:pointer;transition:all 0.15s;font-family:inherit;color:inherit;
 }
-.analysis-select:focus{outline:none;border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,60,170,0.12)}
-.analysis-hint{font-size:12px;color:var(--ink-3);line-height:1.5}
+.stmt-type-card:hover{border-color:#c7d2ef;background:var(--blue-bg);transform:translateY(-1px)}
+.stmt-type-card.active{
+  border-color:var(--blue);background:linear-gradient(180deg,#f7f9ff 0%,#eef2fb 100%);
+  box-shadow:0 0 0 3px rgba(26,60,170,0.1);
+}
+.stmt-type-icon{
+  width:32px;height:32px;border-radius:9px;background:var(--white);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:15px;margin-bottom:8px;
+}
+.stmt-type-card.active .stmt-type-icon{background:var(--blue);border-color:var(--blue);color:var(--white)}
+.stmt-type-name{display:block;font-size:13px;font-weight:700;color:var(--ink);margin-bottom:3px;line-height:1.3}
+.stmt-type-desc{display:block;font-size:11px;color:var(--ink-3);line-height:1.45}
+.analysis-hint{
+  font-size:12px;color:var(--ink-3);line-height:1.55;
+  padding:10px 12px;background:var(--off);border-radius:var(--rs);border:1px solid var(--border);
+}
 .stmt-pill{
   font-size:11px;font-weight:700;letter-spacing:0.3px;
   padding:6px 11px;border-radius:20px;background:var(--blue-bg);color:var(--blue);
-  white-space:nowrap;
+  white-space:nowrap;border:1px solid #d4def5;
 }
+.rpt-header{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:14px;
+  margin-bottom:1.25rem;flex-wrap:wrap;padding:1.25rem 1.35rem;
+  background:linear-gradient(135deg,var(--blue-d) 0%,#17307f 100%);
+  border-radius:16px;color:var(--white);
+}
+.rpt-header-main{flex:1;min-width:220px}
+.rpt-header-title{font-size:22px;font-weight:800;letter-spacing:-0.4px;margin-bottom:4px;line-height:1.2}
+.rpt-header-sub{font-size:13px;color:rgba(255,255,255,0.62);line-height:1.5}
+.rpt-header-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.rpt-header .stmt-pill{background:rgba(255,255,255,0.12);color:var(--white);border-color:rgba(255,255,255,0.18)}
+.rpt-header .btn-outline{color:var(--white);border-color:rgba(255,255,255,0.28);background:rgba(255,255,255,0.06)}
+.rpt-header .btn-outline:hover{border-color:rgba(255,255,255,0.5);color:var(--white);background:rgba(255,255,255,0.12)}
+.health-pill{
+  font-size:11px;font-weight:700;padding:6px 11px;border-radius:20px;white-space:nowrap;
+  border:1px solid transparent;
+}
+.health-good{background:rgba(10,124,78,0.18);color:#86efac;border-color:rgba(10,124,78,0.35)}
+.health-warn{background:rgba(180,83,9,0.18);color:#fcd34d;border-color:rgba(180,83,9,0.35)}
+.health-bad{background:rgba(185,28,28,0.18);color:#fca5a5;border-color:rgba(185,28,28,0.35)}
+.rpt-header .health-good,.rpt-header .health-warn,.rpt-header .health-bad{
+  backdrop-filter:blur(4px);
+}
+.metrics-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin-bottom:1.5rem;
+}
+.metric-card{
+  background:var(--white);border:1px solid var(--border);border-radius:14px;padding:14px;
+  transition:transform 0.13s, box-shadow 0.13s;
+}
+.metric-card:hover{transform:translateY(-1px);box-shadow:0 8px 20px rgba(15,37,112,0.06)}
+.metric-card.flag-good{border-color:#b7e4cc}
+.metric-card.flag-warn{border-color:#f0d59a}
+.metric-card.flag-bad{border-color:#f0b8b8}
+.metric-label{font-size:11px;color:var(--ink-3);margin-bottom:6px;font-weight:600;text-transform:uppercase;letter-spacing:0.35px}
+.metric-value{font-size:24px;font-weight:800;letter-spacing:-0.5px;line-height:1.1}
+.metric-note{font-size:12px;color:var(--ink-3);margin-top:4px}
+.metric-value.tone-good{color:var(--green)}
+.metric-value.tone-warn{color:var(--amber)}
+.metric-value.tone-bad{color:var(--red)}
+.metric-value.tone-blue{color:var(--blue)}
+.rpt-charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem}
+.rpt-section{margin-bottom:1.5rem}
+.rpt-section-head{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.9px;color:var(--ink-4);
+  padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px;
+}
+.findings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.finding-card{
+  background:var(--white);border:1px solid var(--border);border-radius:14px;padding:14px;
+}
+.finding-tag{
+  display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.5px;padding:4px 9px;border-radius:20px;margin-bottom:8px;
+}
+.tag-dot{width:6px;height:6px;border-radius:50%;background:currentColor}
+.tag-good{background:var(--green-bg);color:var(--green)}
+.tag-warn{background:var(--amber-bg);color:var(--amber)}
+.tag-bad{background:var(--red-bg);color:var(--red)}
+.finding-text{font-size:13px;color:var(--ink-2);line-height:1.65}
+.actions-stack{display:flex;flex-direction:column;gap:10px}
+.action-card{
+  display:flex;gap:12px;background:var(--white);border:1px solid var(--border);
+  border-radius:14px;padding:14px;
+}
+.action-number{
+  width:28px;height:28px;border-radius:8px;background:var(--blue-bg);color:var(--blue);
+  display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0;
+}
+.action-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.action-desc{font-size:13px;color:var(--ink-3);line-height:1.6}
+.action-impact{
+  display:inline-block;margin-top:8px;font-size:11px;font-weight:600;color:var(--green);
+  background:var(--green-bg);padding:4px 8px;border-radius:20px;
+}
+.rpt-summary-box{
+  background:var(--blue-d);border-radius:16px;padding:1.5rem 1.75rem;
+  border:1px solid rgba(255,255,255,0.08);
+}
+.rpt-summary-label{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.9px;
+  color:rgba(255,255,255,0.42);margin-bottom:10px;
+}
+.rpt-summary-text{font-size:14px;color:rgba(255,255,255,0.84);line-height:1.85}
+.rpt-disclaimer{margin-top:1rem;font-size:11px;color:var(--ink-4);text-align:center}
 
 /* KPI grid */
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
@@ -392,7 +504,8 @@ footer{background:var(--ink);padding:2rem;text-align:center}
   .svc-page{padding:2rem 1rem}
   .bot-split{grid-template-columns:1fr;height:auto}
   .bot-chat{min-height:520px}
-  #analysis-report > div[style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr !important}
+  .rpt-charts-grid{grid-template-columns:1fr}
+  .stmt-type-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
 
 @media (max-width: 560px) {
@@ -401,6 +514,8 @@ footer{background:var(--ink);padding:2rem;text-align:center}
   .preview-metrics,.stats-row,.plans{grid-template-columns:1fr}
   .trust-sep{display:none}
   .upload-zone-big{padding:2.5rem 1rem}
+  .stmt-type-grid{grid-template-columns:1fr}
+  .analysis-panel{padding:1rem}
   .bot-panel{max-height:none}
   .bmsg{max-width:100%}
   .period-tabs{width:100%;overflow-x:auto}
@@ -626,18 +741,42 @@ footer{background:var(--ink);padding:2rem;text-align:center}
         <h1 class="svc-h1">Upload once.<br>Understand everything.</h1>
         <p class="svc-sub">Choose your statement type, then drop your QuickBooks, Xero, or Wave export. MyCFOPro reads your numbers and returns a CFO-grade report tailored to that statement.</p>
       </div>
-      <div class="analysis-controls">
-        <div class="analysis-field">
-          <label for="statement-type" class="analysis-label">Statement type</label>
-          <select id="statement-type" class="analysis-select" onchange="updateStatementUploadCopy()">
-            <option value="income_statement">Income Statement (P&amp;L)</option>
-            <option value="balance_sheet">Balance Sheet</option>
-            <option value="cash_flow">Statement of Cash Flows</option>
-            <option value="ar_summary">AR Summary (Aging)</option>
-            <option value="ap_balance">AP Balance (Aging)</option>
-          </select>
-          <div class="analysis-hint" id="statement-hint">Profit &amp; loss showing revenue, expenses, and net income for the period.</div>
+      <div class="analysis-panel">
+        <div class="analysis-panel-head">
+          <div>
+            <div class="analysis-panel-title">Choose your statement type</div>
+            <div class="analysis-panel-sub">Pick the report you are uploading so MyCFOPro parses the right fields and builds the right analysis.</div>
+          </div>
         </div>
+        <div class="stmt-type-grid" id="stmt-type-grid">
+          <button type="button" class="stmt-type-card active" data-value="income_statement" onclick="selectStatementType('income_statement', this)">
+            <span class="stmt-type-icon">PL</span>
+            <span class="stmt-type-name">Income Statement</span>
+            <span class="stmt-type-desc">P&amp;L · revenue &amp; profit</span>
+          </button>
+          <button type="button" class="stmt-type-card" data-value="balance_sheet" onclick="selectStatementType('balance_sheet', this)">
+            <span class="stmt-type-icon">BS</span>
+            <span class="stmt-type-name">Balance Sheet</span>
+            <span class="stmt-type-desc">Assets, liabilities, equity</span>
+          </button>
+          <button type="button" class="stmt-type-card" data-value="cash_flow" onclick="selectStatementType('cash_flow', this)">
+            <span class="stmt-type-icon">CF</span>
+            <span class="stmt-type-name">Cash Flow</span>
+            <span class="stmt-type-desc">Operating, investing, financing</span>
+          </button>
+          <button type="button" class="stmt-type-card" data-value="ar_summary" onclick="selectStatementType('ar_summary', this)">
+            <span class="stmt-type-icon">AR</span>
+            <span class="stmt-type-name">AR Summary</span>
+            <span class="stmt-type-desc">Customer aging buckets</span>
+          </button>
+          <button type="button" class="stmt-type-card" data-value="ap_balance" onclick="selectStatementType('ap_balance', this)">
+            <span class="stmt-type-icon">AP</span>
+            <span class="stmt-type-name">AP Balance</span>
+            <span class="stmt-type-desc">Vendor aging buckets</span>
+          </button>
+        </div>
+        <input type="hidden" id="statement-type" value="income_statement">
+        <div class="analysis-hint" id="statement-hint">Profit &amp; loss showing revenue, expenses, and net income for the period.</div>
       </div>
       <label class="upload-zone-big" for="analysis-file" id="analysis-dropzone">
         <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
@@ -653,12 +792,12 @@ footer{background:var(--ink);padding:2rem;text-align:center}
     </div>
 
     <div id="analysis-report" style="display:none">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.75rem;flex-wrap:wrap;gap:10px">
-        <div>
-          <div style="font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-0.4px;margin-bottom:3px" id="rpt-title">CFO Analysis Report</div>
-          <div style="font-size:13px;color:var(--ink-3)" id="rpt-sub"></div>
+      <div class="rpt-header">
+        <div class="rpt-header-main">
+          <div class="rpt-header-title" id="rpt-title">CFO Analysis Report</div>
+          <div class="rpt-header-sub" id="rpt-sub"></div>
         </div>
-        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+        <div class="rpt-header-actions">
           <span class="stmt-pill" id="rpt-statement-pill">Income Statement</span>
           <div class="health-pill" id="rpt-health-pill"></div>
           <button class="btn-outline" onclick="resetAnalysis()" style="font-size:12px;padding:7px 14px">← New analysis</button>
@@ -667,9 +806,9 @@ footer{background:var(--ink);padding:2rem;text-align:center}
 
       <div class="ai-status pending" id="ai-status">Instant local preview ready. AI CFO analysis will appear here when the backend is connected.</div>
 
-      <div class="metrics-grid" id="rpt-metrics" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:1.5rem"></div>
+      <div class="metrics-grid" id="rpt-metrics"></div>
 
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:1.5rem">
+      <div class="rpt-charts-grid">
         <div class="health-chart-area" style="margin:0">
           <div class="hca-header"><div><div class="hca-title" id="rpt-chart-1-title">Revenue by service line</div><div class="hca-sub" id="rpt-chart-1-sub">Where your income comes from</div></div></div>
           <div style="height:240px;position:relative"><canvas id="rpt-chart-revenue"></canvas></div>
@@ -688,22 +827,22 @@ footer{background:var(--ink);padding:2rem;text-align:center}
         </div>
       </div>
 
-      <div style="margin-bottom:1.5rem">
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.9px;color:var(--ink-4);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px">Key Findings</div>
+      <div class="rpt-section">
+        <div class="rpt-section-head">Key Findings</div>
         <div class="findings-grid" id="rpt-findings"></div>
       </div>
 
-      <div style="margin-bottom:1.5rem">
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.9px;color:var(--ink-4);padding-bottom:10px;border-bottom:1px solid var(--border);margin-bottom:12px">Priority Action Plan</div>
+      <div class="rpt-section">
+        <div class="rpt-section-head">Priority Action Plan</div>
         <div class="actions-stack" id="rpt-actions"></div>
       </div>
 
-      <div style="background:var(--blue-d);border-radius:var(--r);padding:1.5rem 1.75rem">
-        <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.9px;color:rgba(255,255,255,0.4);margin-bottom:10px">CFO Summary</div>
-        <div style="font-size:14px;color:rgba(255,255,255,0.8);line-height:1.85" id="rpt-summary"></div>
+      <div class="rpt-summary-box">
+        <div class="rpt-summary-label">CFO Summary</div>
+        <div class="rpt-summary-text" id="rpt-summary"></div>
       </div>
 
-      <div style="margin-top:1rem;font-size:11px;color:var(--ink-4);text-align:center">For informational purposes only. Not financial advice. Consult a qualified CPA or financial advisor for major decisions.</div>
+      <div class="rpt-disclaimer">For informational purposes only. Not financial advice. Consult a qualified CPA or financial advisor for major decisions.</div>
     </div>
   </div>
 </div>
@@ -1119,6 +1258,15 @@ const STATEMENT_TYPES = {
 
 function getStatementType() {
   return document.getElementById('statement-type')?.value || 'income_statement';
+}
+
+function selectStatementType(type, button) {
+  const input = document.getElementById('statement-type');
+  if (input) input.value = type;
+  document.querySelectorAll('.stmt-type-card').forEach(card => {
+    card.classList.toggle('active', card === button);
+  });
+  updateStatementUploadCopy();
 }
 
 function updateStatementUploadCopy() {
@@ -2190,25 +2338,19 @@ function renderReport(d) {
   hp.textContent = (h >= 70 ? '● Healthy — ' : h >= 50 ? '● Moderate — ' : '● Needs Attention — ') + h + '/100';
   hp.className = 'health-pill ' + (h >= 70 ? 'health-good' : h >= 50 ? 'health-warn' : 'health-bad');
 
-  function flagColor(f) {
-    if (f === 'flag-good') return '#0a7c4e';
-    if (f === 'flag-warn') return '#b45309';
-    if (f === 'flag-bad') return '#b91c1c';
-    return '#1a3caa';
-  }
-  function flagBorder(f) {
-    if (f === 'flag-good') return '#0a7c4e';
-    if (f === 'flag-warn') return '#c9922a';
-    if (f === 'flag-bad') return '#b91c1c';
-    return '#e4e3df';
+  function metricTone(flag) {
+    if (flag === 'flag-good') return 'tone-good';
+    if (flag === 'flag-warn') return 'tone-warn';
+    if (flag === 'flag-bad') return 'tone-bad';
+    return 'tone-blue';
   }
 
   const metrics = buildReportMetrics(d);
   document.getElementById('rpt-metrics').innerHTML = metrics.map(m => `
-    <div style="background:#fff;border:1px solid ${flagBorder(m.f)};border-radius:12px;padding:14px">
-      <div style="font-size:11px;color:#717171;margin-bottom:6px">${m.l}</div>
-      <div style="font-size:24px;font-weight:800;color:${flagColor(m.f)}">${m.v}</div>
-      <div style="font-size:12px;color:#717171;margin-top:4px">${m.n}</div>
+    <div class="metric-card ${m.f || ''}">
+      <div class="metric-label">${m.l}</div>
+      <div class="metric-value ${metricTone(m.f)}">${m.v}</div>
+      <div class="metric-note">${m.n}</div>
     </div>
   `).join('');
 
@@ -2221,16 +2363,16 @@ function renderReport(d) {
       <span class="finding-tag tag-${f.t === 'good' ? 'good' : f.t === 'warn' ? 'warn' : 'bad'}">
         <span class="tag-dot"></span>${f.t === 'good' ? 'Strength' : f.t === 'warn' ? 'Watch closely' : 'Critical'}
       </span>
-      <div class="finding-text">${f.text}</div>
+      <div class="finding-text">${escapeHtml(f.text)}</div>
     </div>`).join('');
 
   document.getElementById('rpt-actions').innerHTML = buildReportActions(d).map((a, i) => `
     <div class="action-card">
       <div class="action-number">${i + 1}</div>
       <div class="action-body">
-        <div class="action-title">${a.title}</div>
-        <div class="action-desc">${a.desc}</div>
-        ${a.impact ? `<span class="action-impact">${a.impact}</span>` : ''}
+        <div class="action-title">${escapeHtml(a.title)}</div>
+        <div class="action-desc">${escapeHtml(a.desc)}</div>
+        ${a.impact ? `<span class="action-impact">${escapeHtml(a.impact)}</span>` : ''}
       </div>
     </div>`).join('');
 
