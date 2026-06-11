@@ -511,6 +511,53 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 .health-kpi-remove{background:none;border:none;color:var(--ink-3);font-size:18px;line-height:1;cursor:pointer;padding:0 2px;border-radius:4px}
 .health-kpi-remove:hover{color:var(--red);background:#fef2f2}
 
+/* AP Cash Planner */
+.ap-cash-planner{
+  background:var(--white);border:1px solid #c7d2ef;border-radius:var(--r);
+  padding:1.25rem 1.35rem;margin-bottom:1.25rem;box-shadow:0 4px 18px rgba(15,37,112,0.06)
+}
+.ap-planner-head{display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;margin-bottom:1rem}
+.ap-planner-eyebrow{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:var(--blue);margin-bottom:4px}
+.ap-planner-title{font-size:18px;font-weight:800;color:var(--ink);letter-spacing:-0.03em}
+.ap-planner-sub{font-size:12px;color:var(--ink-3);line-height:1.6;margin-top:6px;max-width:560px}
+.ap-planner-stats{display:flex;gap:10px;flex-wrap:wrap}
+.ap-planner-stat{background:var(--off);border:1px solid var(--border);border-radius:10px;padding:10px 14px;min-width:90px}
+.ap-planner-stat span{display:block;font-size:10px;font-weight:700;text-transform:uppercase;color:var(--ink-4);margin-bottom:4px}
+.ap-planner-stat strong{font-size:16px;font-weight:800;color:var(--ink)}
+.ap-planner-controls{margin-bottom:12px}
+.ap-cash-field{display:flex;flex-direction:column;gap:6px;max-width:320px}
+.ap-cash-field span{font-size:11px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.3px}
+.ap-cash-input-wrap{display:flex;align-items:center;border:1px solid var(--border);border-radius:var(--rs);background:var(--white);overflow:hidden}
+.ap-cash-prefix{padding:10px 12px;background:var(--off);color:var(--ink-3);font-weight:700;border-right:1px solid var(--border)}
+.ap-cash-field input{border:none;flex:1;padding:10px 12px;font-size:16px;font-weight:700;font-family:inherit;outline:none}
+.ap-cash-hint{font-size:11px;color:var(--green);margin-top:6px}
+.ap-planner-summary{font-size:13px;line-height:1.65;color:var(--ink-2);background:var(--off);border:1px solid var(--border);border-radius:10px;padding:12px 14px;margin-bottom:12px}
+.ap-planner-summary.good{border-color:#cceedd;background:var(--green-bg);color:#166534}
+.ap-planner-summary.warn{border-color:#f4dfad;background:var(--amber-bg);color:#92400e}
+.ap-planner-table-wrap{overflow-x:auto}
+.ap-planner-table{width:100%;border-collapse:collapse;font-size:12px}
+.ap-planner-table th,.ap-planner-table td{padding:10px 10px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+.ap-planner-table th{font-size:10px;text-transform:uppercase;letter-spacing:0.4px;color:var(--ink-4);background:var(--off)}
+.ap-planner-table tr.ap-row-pay{background:rgba(34,197,94,0.04)}
+.ap-planner-table tr.ap-row-skip{opacity:0.72}
+.ap-pay-yes{font-weight:800;color:var(--green)}
+.ap-pay-no{color:var(--ink-4)}
+.ap-reason{max-width:220px;color:var(--ink-3);line-height:1.5}
+.ap-urgency{display:inline-block;font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px}
+.ap-urgency-critical{background:#fef2f2;color:var(--red);border:1px solid #fecaca}
+.ap-urgency-high{background:var(--amber-bg);color:var(--amber);border:1px solid #f4dfad}
+.ap-urgency-medium{background:var(--blue-bg);color:var(--blue);border:1px solid #c7d2ef}
+.ap-urgency-moderate,.ap-urgency-low{background:var(--off);color:var(--ink-3);border:1px solid var(--border)}
+.ap-planner-empty{font-size:12px;color:var(--ink-3);padding:14px;background:var(--off);border-radius:10px;border:1px dashed var(--border)}
+.ap-vendor-totals{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.ap-vendor-totals-title{font-size:11px;font-weight:700;text-transform:uppercase;color:var(--ink-4);margin-bottom:10px}
+.ap-vendor-total-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.ap-vendor-total-card{background:var(--off);border:1px solid var(--border);border-radius:10px;padding:10px 12px}
+.ap-vendor-total-name{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:4px}
+.ap-vendor-total-amt{font-size:18px;font-weight:900;color:var(--green)}
+.ap-vendor-total-sub{font-size:10px;color:var(--ink-3);margin-top:4px}
+.ap-planner-foot{font-size:11px;color:var(--ink-4);margin-top:10px;line-height:1.5}
+
 /* Slideshow preview */
 .slides-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:2rem}
 .slide-thumb{border-radius:10px;overflow:hidden;border:1px solid var(--border);cursor:pointer;transition:all 0.13s}
@@ -1233,6 +1280,8 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 
       <div class="metrics-grid" id="rpt-metrics"></div>
 
+      <div class="ap-cash-planner" id="ap-cash-planner" style="display:none"></div>
+
       <div class="rpt-charts-grid">
         <div class="health-chart-area" style="margin:0">
           <div class="hca-header"><div><div class="hca-title" id="rpt-chart-1-title">Revenue by service line</div><div class="hca-sub" id="rpt-chart-1-sub">Where your income comes from</div></div></div>
@@ -1852,7 +1901,7 @@ const STATEMENT_TYPES = {
     reportLabel: 'Accounts Payable Analysis',
     hint: 'What you owe vendors and how those balances are aging.',
     uploadTitle: 'Drop your AP Balance / Aging report here',
-    uploadSub: 'Vendor balances by aging bucket (Current, 1–30, 31–60, 61–90, 90+).'
+    uploadSub: 'Vendor balances by aging bucket (Current, 1–30, 31–60, 61–90, 90+). Includes AP Cash Planner recommendations.'
   }
 };
 
@@ -2251,6 +2300,7 @@ function buildFindingsAP(d) {
 
   if ((d.agingBuckets.d90plus || 0) > 0) out.push({ t: 'bad', text: `${fc(d.agingBuckets.d90plus)} is over 90 days overdue — resolve these balances immediately.` });
   if (d.topCounterparties[0]) out.push({ t: 'warn', text: `Largest vendor balance: ${d.topCounterparties[0].name} at ${fc(d.topCounterparties[0].val)}.` });
+  out.push({ t: 'good', text: 'Use the AP Cash Planner below — enter available cash to get a prioritized vendor payment list by aging.' });
   return out;
 }
 
@@ -2280,9 +2330,9 @@ function buildActionsAR(d) {
 
 function buildActionsAP(d) {
   return [
+    { title: 'Run the AP Cash Planner', desc: 'Enter how much cash you can spend and pay oldest vendor balances first — 90+ and 61–90 day bills before current invoices.', impact: 'Protects critical suppliers when cash is limited.' },
     { title: 'Prioritize overdue vendor payments', desc: `Address ${fc(d.overdueBalance || 0)} in past-due AP, starting with ${d.topCounterparties[0]?.name || 'critical vendors'}.`, impact: 'Protects supply chain and credit terms.' },
-    { title: 'Align payment timing with cash inflows', desc: 'Schedule vendor payments after expected customer collections when possible.', impact: undefined },
-    { title: 'Renegotiate terms on large balances', desc: 'Large AP balances may qualify for payment plans or extended terms if communicated early.', impact: undefined }
+    { title: 'Call vendors you cannot pay in full', desc: 'Proactive calls on unpaid 90+ and 61–90 day balances often buy payment plans or extended terms.', impact: undefined }
   ];
 }
 
@@ -2985,6 +3035,12 @@ function renderReport(d) {
 
   document.getElementById('rpt-summary').textContent = buildReportSummary(d);
 
+  if (typeof renderApCashPlanner === 'function') renderApCashPlanner(d);
+  else {
+    const apPanel = document.getElementById('ap-cash-planner');
+    if (apPanel) apPanel.style.display = 'none';
+  }
+
   syncClaraWithData(d);
   if (typeof recordCompanyUpload === 'function') {
     recordCompanyUpload(d, window.latestAIReport);
@@ -3008,7 +3064,8 @@ function syncClaraWithData(d) {
   } else if (type === 'ar_summary') {
     facts = `Statement type: AR Aging Summary. Total AR: ${fc(d.totalBalance || 0)} | Overdue AR: ${fc(d.overdueBalance || 0)} (${fp(d.overduePct || 0)}) | 90+ Days: ${fc(d.agingBuckets?.d90plus || 0)} | Health Score: ${h}/100`;
   } else if (type === 'ap_balance') {
-    facts = `Statement type: AP Aging Summary. Total AP: ${fc(d.totalBalance || 0)} | Overdue AP: ${fc(d.overdueBalance || 0)} (${fp(d.overduePct || 0)}) | 90+ Days: ${fc(d.agingBuckets?.d90plus || 0)} | Health Score: ${h}/100`;
+    const planNote = typeof getApPaymentPlanForClara === 'function' ? getApPaymentPlanForClara() : '';
+    facts = `Statement type: AP Aging Summary. Total AP: ${fc(d.totalBalance || 0)} | Overdue AP: ${fc(d.overdueBalance || 0)} (${fp(d.overduePct || 0)}) | 90+ Days: ${fc(d.agingBuckets?.d90plus || 0)} | Health Score: ${h}/100 | Vendors: ${(d.counterparties || d.topCounterparties || []).length}.${planNote}`;
   } else {
     facts = `Statement type: Income Statement. Revenue: ${fc(d.revenue)} | COGS: ${fc(d.cogs || 0)} | Gross Profit: ${fc(d.grossProfit)} (${fp(d.grossMargin)} margin) | Operating Expenses: ${fc(d.opex || 0)} | Operating Income: ${fc(d.opIncome || 0)} | Net Income: ${fc(d.netIncome)} (${fp(d.netMargin)} margin) | Payroll: ${fc(d.payroll)} (${fp(d.payrollPct)} of revenue) | Health Score: ${h}/100`;
   }
@@ -3023,6 +3080,7 @@ Speak like a trusted advisor, not a report. Use their exact numbers. Keep respon
 <script src="company-store.js"></script>
 <script src="auth-ui.js"></script>
 <script src="kpi-engine.js"></script>
+<script src="ap-pay-engine.js"></script>
 <script src="deck-engine.js"></script>
 <script src="health-engine.js"></script>
 <script src="clara-avatar.js"></script>
