@@ -257,10 +257,11 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 
 /* Upload zone */
 .upload-zone-big{
+  display:block;width:100%;box-sizing:border-box;
   border:2px dashed #cfd6ea;border-radius:16px;
   padding:3.25rem 2rem;text-align:center;cursor:pointer;
   transition:all 0.15s;background:linear-gradient(180deg,#fbfcff 0%,var(--off) 100%);
-  margin-bottom:0;
+  margin:1rem 0 0;
 }
 .upload-zone-big:hover,.upload-zone-big:focus-within,.upload-zone-big.dragover{
   border-color:var(--blue);background:linear-gradient(180deg,#f3f6ff 0%,var(--blue-bg) 100%);
@@ -279,7 +280,11 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 .analysis-panel{
   background:var(--white);border:1px solid var(--border);border-radius:18px;
   padding:1.5rem;box-shadow:0 10px 30px rgba(15,37,112,0.06);margin-bottom:1.25rem;
+  width:100%;box-sizing:border-box;
 }
+#analysis-upload-view{display:flex;flex-direction:column;align-items:stretch;width:100%}
+#analysis-upload-view .analysis-panel{margin-bottom:0}
+#analysis-status{width:100%;box-sizing:border-box;margin-top:12px}
 .analysis-panel-head{
   display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
   margin-bottom:1rem;flex-wrap:wrap;
@@ -777,14 +782,14 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
         </div>
         <input type="hidden" id="statement-type" value="income_statement">
         <div class="analysis-hint" id="statement-hint">Profit &amp; loss showing revenue, expenses, and net income for the period.</div>
+        <label class="upload-zone-big" for="analysis-file" id="analysis-dropzone">
+          <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
+          <div class="uz-title" id="uz-title">Drop your Income Statement (P&amp;L) here</div>
+          <div class="uz-sub" id="uz-sub">or <span>click to browse</span> &nbsp;·&nbsp; Excel (.xlsx) · CSV · PDF · QuickBooks · Xero · Wave</div>
+        </label>
       </div>
-      <label class="upload-zone-big" for="analysis-file" id="analysis-dropzone">
-        <div class="uz-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
-        <div class="uz-title" id="uz-title">Drop your Income Statement (P&amp;L) here</div>
-        <div class="uz-sub" id="uz-sub">or <span>click to browse</span> &nbsp;·&nbsp; Excel (.xlsx) · CSV · PDF · QuickBooks · Xero · Wave</div>
-      </label>
       <input type="file" id="analysis-file" style="display:none" accept=".xlsx,.xls,.csv,.pdf" onchange="handleAnalysisFile(event)">
-      <div id="analysis-status" style="display:none;align-items:center;gap:10px;padding:14px 16px;background:var(--blue-bg);border-radius:var(--rs);margin-top:12px;font-size:13px;color:var(--blue)">
+      <div id="analysis-status" style="display:none;align-items:center;gap:10px;padding:14px 16px;background:var(--blue-bg);border-radius:var(--rs);font-size:13px;color:var(--blue)">
         <div style="width:15px;height:15px;border:2px solid var(--blue-bg);border-top-color:var(--blue);border-radius:50%;animation:spin 0.7s linear infinite;flex-shrink:0"></div>
         <span id="analysis-status-text">Reading your file...</span>
       </div>
