@@ -184,24 +184,38 @@ async function handleChat(req, res) {
   const message = String(body?.message || '').trim();
   const financials = body?.financials && typeof body.financials === 'object' ? body.financials : null;
   const history = Array.isArray(body?.history) ? body.history.slice(-8) : [];
+  const claraContext = String(body?.claraContext || '').trim();
+  const healthSummary = String(body?.healthSummary || '').trim();
+  const company = String(body?.company || '').trim();
+  const aiReport = body?.aiReport && typeof body.aiReport === 'object' ? body.aiReport : null;
 
   if (!message) {
     sendJson(res, 400, { error: 'Missing chat message' });
     return;
   }
 
-  const context = financials
-    ? `Use this business financial data when answering:\n${JSON.stringify(trimFinancials(financials), null, 2)}`
-    : 'No financial file has been uploaded yet. Answer generally and ask the owner to upload financials for specific guidance.';
+  const contextParts = [];
+  if (company) contextParts.push(`Company: ${company}`);
+  if (financials) {
+    contextParts.push(`Current financial data:\n${JSON.stringify(trimFinancials(financials), null, 2)}`);
+  } else {
+    contextParts.push('No financial file has been uploaded yet. Answer generally and ask the owner to upload financials for specific guidance.');
+  }
+  if (healthSummary) contextParts.push(`Company Health tracking:\n${healthSummary}`);
+  if (aiReport?.summary) contextParts.push(`Latest CFO report summary:\n${aiReport.summary.slice(0, 1200)}`);
+  if (Array.isArray(aiReport?.actions) && aiReport.actions.length) {
+    contextParts.push('Top recommended actions:\n' + aiReport.actions.slice(0, 4).map((a, i) => `${i + 1}. ${a.title || a.text || 'Action'}${a.description || a.desc ? ' — ' + (a.description || a.desc) : ''}`).join('\n'));
+  }
+  if (claraContext) contextParts.push(`Additional company memory:\n${claraContext.slice(0, 3500)}`);
 
   const ai = await callAiModel({
     system: `You are Clara, MyCFOPro's CFO Advisor for small businesses.
 Be warm, direct, and practical. Explain financial concepts in plain English.
-Use exact provided numbers when available. Do not invent missing data.
-Keep answers to 3-5 sentences unless the user asks for detail.
+Use exact provided numbers when available. Reference month-over-month trends when health tracking data is present.
+Do not invent missing data. Keep answers to 3-5 sentences unless the user asks for detail.
 This is informational and not a substitute for a CPA or licensed advisor.`,
     messages: [
-      { role: 'user', content: context },
+      { role: 'user', content: contextParts.join('\n\n') },
       ...history.map(item => ({
         role: item.role === 'assistant' ? 'assistant' : 'user',
         content: String(item.content || '').slice(0, 2000)

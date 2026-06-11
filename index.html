@@ -144,7 +144,8 @@ button{cursor:pointer;font-family:inherit}
   padding:1.5rem 1.5rem 0;
   max-width:900px;
 }
-.preview-bar{display:flex;align-items:center;gap:7px;margin-bottom:1.25rem}
+.preview-bar{display:flex;align-items:center;gap:7px;margin-bottom:1.25rem;flex-wrap:wrap}
+.hero-preview-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--ink-3);background:var(--white);border:1px solid var(--border);padding:4px 8px;border-radius:999px;margin-left:auto}
 .pb-dot{width:10px;height:10px;border-radius:50%}
 .pb-dot.r{background:#ff5f57}.pb-dot.y{background:#febc2e}.pb-dot.g{background:#28c840}
 .pb-url{font-size:11px;color:var(--ink-4);margin-left:6px}
@@ -154,6 +155,17 @@ button{cursor:pointer;font-family:inherit}
 .pm-value{font-size:20px;font-weight:800;letter-spacing:-0.5px;color:var(--ink);margin-bottom:2px}
 .pm-note{font-size:11px}
 .pm-green{color:var(--green)}.pm-amber{color:var(--amber)}.pm-red{color:var(--red)}
+.use-case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:2rem;text-align:left}
+.use-case-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.25rem 1.35rem}
+.use-case-title{font-size:14px;font-weight:800;color:var(--ink);margin-bottom:8px}
+.use-case-text{font-size:13px;color:var(--ink-3);line-height:1.65}
+.proof-disclaimer{font-size:12px;color:var(--ink-4);margin-top:1.25rem;text-align:center}
+.plan-pricing-note{font-size:12px;color:var(--ink-3);margin-top:1rem;text-align:center;max-width:520px;margin-left:auto;margin-right:auto;line-height:1.6}
+.toast-stack{position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:8px;max-width:360px}
+.toast-item{background:var(--ink);color:var(--white);padding:12px 14px;border-radius:12px;font-size:13px;line-height:1.5;box-shadow:0 10px 30px rgba(10,22,40,0.25);animation:toastIn 0.25s ease}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.clara-avatar-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f2570,#1a4480);color:#fff;font-size:42px;font-weight:900;border-radius:50%}
+.clara-mini-fallback{width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0f2570,#1a4480);color:#fff;font-size:14px;font-weight:800;border-radius:50%}
 .preview-charts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .pc-card{background:var(--off);border-radius:var(--rs);padding:12px 14px}
 .pc-title{font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:10px}
@@ -875,6 +887,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 @media (max-width: 560px) {
   .hero-h1,.svc-h1,.proof-h2,.section-h2,.cta-h2{letter-spacing:-0.035em}
   .hero-preview{padding:1rem 1rem 0;margin-top:2rem}
+  .use-case-grid{grid-template-columns:1fr}
   .preview-metrics,.stats-row,.plans{grid-template-columns:1fr}
   .trust-sep{display:none}
   .upload-zone-big{padding:2.5rem 1rem}
@@ -985,13 +998,14 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       <div class="hero-preview">
         <div class="preview-bar">
           <div class="pb-dot r"></div><div class="pb-dot y"></div><div class="pb-dot g"></div>
-          <span class="pb-url">mycfopro.ai/dashboard</span>
+          <span class="pb-url" id="hero-preview-url">mycfopro.ai/dashboard</span>
+          <span class="hero-preview-badge" id="hero-preview-badge">Sample dashboard</span>
         </div>
         <div class="preview-metrics">
-          <div class="pm-card"><div class="pm-label">Health Score</div><div class="pm-value pm-amber">68/100</div><div class="pm-note pm-amber">Needs attention</div></div>
-          <div class="pm-card"><div class="pm-label">Gross Margin</div><div class="pm-value pm-amber">33%</div><div class="pm-note" style="color:var(--ink-3)">Benchmark: 38%</div></div>
-          <div class="pm-card"><div class="pm-label">Cash Runway</div><div class="pm-value pm-red">1.6 mo</div><div class="pm-note pm-red">Critical</div></div>
-          <div class="pm-card"><div class="pm-label">Net Income</div><div class="pm-value pm-green">$116K</div><div class="pm-note pm-green">Profitable</div></div>
+          <div class="pm-card"><div class="pm-label">Health Score</div><div class="pm-value pm-amber" id="hero-health-value">68/100</div><div class="pm-note pm-amber" id="hero-health-note">Needs attention</div></div>
+          <div class="pm-card"><div class="pm-label">Gross Margin</div><div class="pm-value pm-amber" id="hero-margin-value">33%</div><div class="pm-note" id="hero-margin-note" style="color:var(--ink-3)">Benchmark: 38%</div></div>
+          <div class="pm-card"><div class="pm-label">Cash Runway</div><div class="pm-value pm-red" id="hero-runway-value">1.6 mo</div><div class="pm-note pm-red" id="hero-runway-note">Critical</div></div>
+          <div class="pm-card"><div class="pm-label">Net Income</div><div class="pm-value pm-green" id="hero-income-value">$116K</div><div class="pm-note pm-green" id="hero-income-note">Profitable</div></div>
         </div>
         <div class="preview-charts">
           <div class="pc-card"><div class="pc-title">P&L Overview</div><div class="pc-chart"><canvas id="hero-chart1"></canvas></div></div>
@@ -1021,7 +1035,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
         <div class="service-card" onclick="goPage('kpi',document.querySelectorAll('.nav-link')[3])">
           <div class="service-icon si-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
           <div class="service-name">KPI Library</div>
-          <div class="service-desc">50+ key performance indicators — what they mean, how to calculate them, and what good looks like for your industry.</div>
+          <div class="service-desc">17 essential KPI calculators — enter your numbers, see benchmarks, and track what matters month over month.</div>
           <div class="service-cta">Explore KPIs →</div>
         </div>
         <div class="service-card" onclick="goPage('bot',document.querySelectorAll('.nav-link')[4])">
@@ -1047,26 +1061,24 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
     <div class="stats-row">
       <div class="stat-item"><div class="stat-num">$180K</div><div class="stat-label">Average CFO salary MyCFOPro replaces</div></div>
       <div class="stat-item"><div class="stat-num">&lt;60s</div><div class="stat-label">From upload to full CFO report</div></div>
-      <div class="stat-item"><div class="stat-num">50+</div><div class="stat-label">KPIs tracked and explained</div></div>
-      <div class="stat-item"><div class="stat-num">$49</div><div class="stat-label">Per month for unlimited access</div></div>
+      <div class="stat-item"><div class="stat-num">17+</div><div class="stat-label">Essential KPI calculators with benchmarks</div></div>
+      <div class="stat-item"><div class="stat-num">Free</div><div class="stat-label">Full access while we polish locally</div></div>
     </div>
-    <div class="testimonials">
-      <div class="testi">
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-text">"I finally understand why we're profitable but always short on cash. MyCFOPro spotted the receivables problem in the first report and told me exactly what to do about it."</div>
-        <div class="testi-author">Marcus T. — Owner, logistics company</div>
+    <div class="use-case-grid">
+      <div class="use-case-card">
+        <div class="use-case-title">Monthly bank meeting prep</div>
+        <div class="use-case-text">Upload your P&amp;L, review the CFO report, and walk in with a clear read on margins, cash pressure, and the top two actions to discuss.</div>
       </div>
-      <div class="testi">
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-text">"My accountant tells me what happened. Clara tells me what to do about it. I use MyCFOPro every month before my bank meeting."</div>
-        <div class="testi-author">Sarah K. — Owner, boutique retail</div>
+      <div class="use-case-card">
+        <div class="use-case-title">Profitable but tight on cash</div>
+        <div class="use-case-text">Use the analysis and KPI tools to separate profit from collections timing — then ask Clara what to fix first based on your actual numbers.</div>
       </div>
-      <div class="testi">
-        <div class="testi-stars">★★★★★</div>
-        <div class="testi-text">"The slide deck alone is worth the $49. I walked into our board meeting with a report that looked like we had a full finance team."</div>
-        <div class="testi-author">James R. — Founder, services firm</div>
+      <div class="use-case-card">
+        <div class="use-case-title">Board-ready in minutes</div>
+        <div class="use-case-text">Turn a financial upload into a polished slide deck and health score trend without rebuilding everything in PowerPoint from scratch.</div>
       </div>
     </div>
+    <p class="proof-disclaimer">Illustrative scenarios based on common small-business workflows. Upload your own financials to see your real numbers.</p>
   </section>
 
   <!-- PRICING -->
@@ -1081,29 +1093,29 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
           <div class="plan-price"><sup>$</sup>0<sub>/mo</sub></div>
           <p class="plan-desc">See what MyCFOPro can do. No credit card required.</p>
           <ul class="plan-features">
-            <li>1 financial analysis/month</li>
-            <li>Full CFO report</li>
-            <li>KPI library access</li>
-            <li class="no">CEO slide deck</li>
-            <li class="no">CFO Advisor (Clara)</li>
-            <li class="no">Company health tracking</li>
+            <li>Financial analysis &amp; CFO report</li>
+            <li>17 KPI calculators</li>
+            <li>Company health tracking</li>
+            <li>CEO slide deck builder</li>
+            <li>CFO Advisor (Clara)</li>
+            <li>Cloud sync with free account</li>
           </ul>
           <button class="plan-btn" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Start for free</button>
         </div>
         <div class="plan featured">
-          <div class="plan-badge">Most popular</div>
+          <div class="plan-badge">Planned</div>
           <div class="plan-name">Pro</div>
           <div class="plan-price"><sup>$</sup>49<sub>/mo</sub></div>
-          <p class="plan-desc">Everything you need to run your finances with confidence.</p>
+          <p class="plan-desc">Everything unlimited, plus monthly email delivery when billing launches.</p>
           <ul class="plan-features">
             <li>Unlimited analyses</li>
             <li>CEO slide deck builder</li>
             <li>CFO Advisor (Clara)</li>
             <li>Company health tracking</li>
-            <li>PDF & PowerPoint export</li>
+            <li>PDF &amp; PowerPoint export</li>
             <li>Monthly email delivery</li>
           </ul>
-          <button class="plan-btn primary">Get Pro — $49/mo</button>
+          <button class="plan-btn primary disabled-plan" onclick="showPricingComingSoon('Pro')">Pro checkout coming soon</button>
         </div>
         <div class="plan">
           <div class="plan-name">Business</div>
@@ -1117,9 +1129,10 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
             <li>White-label reports</li>
             <li>Priority support</li>
           </ul>
-          <button class="plan-btn">Get Business</button>
+          <button class="plan-btn disabled-plan" onclick="showPricingComingSoon('Business')">Business checkout coming soon</button>
         </div>
       </div>
+      <p class="plan-pricing-note">All features are currently free while we perfect the product locally. Paid plans and checkout are coming soon — no surprise charges.</p>
     </div>
   </section>
 
@@ -1366,7 +1379,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       <aside class="clara-avatar-panel idle" id="clara-avatar-panel">
         <div class="clara-avatar-wrap">
           <div class="clara-avatar-ring"></div>
-          <img src="/assets/clara-avatar.png" alt="Clara — CFO Advisor" class="clara-avatar-photo" id="clara-avatar-photo">
+          <img src="/assets/clara-avatar.svg" alt="Clara — CFO Advisor" class="clara-avatar-photo" id="clara-avatar-photo">
           <div class="clara-mouth-overlay" aria-hidden="true"><div class="clara-mouth" id="clara-mouth"></div></div>
           <div class="clara-voice-bars" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
         </div>
@@ -1387,7 +1400,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       <div class="bot-split">
       <div class="bot-chat">
         <div class="bot-header">
-          <div class="bot-av"><img src="/assets/clara-avatar.png" alt="Clara"></div>
+          <div class="bot-av"><img src="/assets/clara-avatar.svg" alt="Clara"></div>
           <div><div class="bot-name">Clara — CFO Advisor</div><div class="bot-status">● Online · ready to help</div></div>
         </div>
         <div class="bot-msgs" id="bot-msgs"></div>
@@ -1551,23 +1564,101 @@ function goPage(id, btn) {
 }
 
 // ── HERO CHARTS ──────────────────────────────────────
-window.addEventListener('load', () => {
-  new Chart(document.getElementById('hero-chart1'), {
-    type:'bar',
-    data:{labels:['Revenue','COGS','Gross P.','OpEx','Net Inc.'],datasets:[{data:[1850,1240,610,472,116],backgroundColor:['#0f2570','#dc2626','#22c55e','#4ade80','#0f2570'],borderRadius:3}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{ticks:{font:{size:9}}},y:{ticks:{callback:v=>'$'+v+'K',font:{size:9}}}}}
-  });
-  new Chart(document.getElementById('hero-chart2'), {
-    type:'doughnut',
-    data:{labels:['COGS','OpEx','Profit'],datasets:[{data:[1240,472,116],backgroundColor:['#dc2626','#0f2570','#22c55e'],borderWidth:0}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:9},boxWidth:10,padding:8}}}}
+// ── HERO CHARTS + TOASTS ─────────────────────────────────────────────
+let heroChart1 = null;
+let heroChart2 = null;
+
+const HERO_DEMO_CHART = {
+  bar: { labels: ['Revenue', 'COGS', 'Gross P.', 'OpEx', 'Net Inc.'], data: [1850, 1240, 610, 472, 116] },
+  doughnut: { labels: ['COGS', 'OpEx', 'Profit'], data: [1240, 472, 116] }
+};
+
+function initHeroPreviewCharts(d) {
+  const c1 = document.getElementById('hero-chart1');
+  const c2 = document.getElementById('hero-chart2');
+  if (!c1 || !c2 || typeof Chart === 'undefined') return;
+
+  const bar = d && d.revenue ? buildHeroBarData(d) : HERO_DEMO_CHART.bar;
+  const doughnut = d && d.revenue ? buildHeroDoughnutData(d) : HERO_DEMO_CHART.doughnut;
+
+  if (heroChart1) heroChart1.destroy();
+  if (heroChart2) heroChart2.destroy();
+
+  heroChart1 = new Chart(c1, {
+    type: 'bar',
+    data: {
+      labels: bar.labels,
+      datasets: [{ data: bar.data, backgroundColor: ['#0f2570', '#dc2626', '#22c55e', '#4ade80', '#0f2570'], borderRadius: 3 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { font: { size: 9 } } }, y: { ticks: { callback: v => '$' + v + 'K', font: { size: 9 } } } } }
   });
 
-  // Health charts initialized by health-engine.js when data exists
+  heroChart2 = new Chart(c2, {
+    type: 'doughnut',
+    data: {
+      labels: doughnut.labels,
+      datasets: [{ data: doughnut.data, backgroundColor: ['#dc2626', '#0f2570', '#22c55e'], borderWidth: 0 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 9 }, boxWidth: 10, padding: 8 } } } }
+  });
+}
+
+function buildHeroBarData(d) {
+  const k = v => Math.round(Math.abs(v || 0) / 1000);
+  return {
+    labels: ['Revenue', 'COGS', 'Gross P.', 'OpEx', 'Net Inc.'],
+    data: [k(d.revenue), k(d.cogs), k(d.grossProfit || (d.revenue - (d.cogs || 0))), k(d.opex), k(d.netIncome)]
+  };
+}
+
+function buildHeroDoughnutData(d) {
+  const profit = Math.max(0, d.netIncome || 0);
+  return {
+    labels: ['COGS', 'OpEx', 'Profit'],
+    data: [Math.abs(d.cogs || 0), Math.abs(d.opex || 0), profit].map(v => Math.round(v / 1000))
+  };
+}
+
+function updateHeroPreviewCharts(d) {
+  if (!d?.revenue) return;
+  initHeroPreviewCharts(d);
+}
+
+function ensureToastStack() {
+  let stack = document.getElementById('toast-stack');
+  if (!stack) {
+    stack = document.createElement('div');
+    stack.id = 'toast-stack';
+    stack.className = 'toast-stack';
+    document.body.appendChild(stack);
+  }
+  return stack;
+}
+
+function showToast(message, durationMs) {
+  const stack = ensureToastStack();
+  const el = document.createElement('div');
+  el.className = 'toast-item';
+  el.textContent = message;
+  stack.appendChild(el);
+  window.setTimeout(() => {
+    el.style.opacity = '0';
+    el.style.transition = 'opacity 0.2s ease';
+    window.setTimeout(() => el.remove(), 220);
+  }, durationMs || 4200);
+}
+
+function showPricingComingSoon(tier) {
+  showToast(`${tier} checkout is coming soon. Everything is free while we polish the product locally.`);
+}
+
+window.addEventListener('load', () => {
+  initHeroPreviewCharts(null);
 
   buildKPIs();
   initUploadDropzone();
   updateStatementUploadCopy();
+  if (typeof initClaraAvatarImages === 'function') initClaraAvatarImages();
   if (typeof initHealthPage === 'function') initHealthPage();
   if (typeof initAuth === 'function') {
     initAuth().then(() => {
@@ -1600,7 +1691,7 @@ function addBotMsg(html) {
   }
   const el = document.createElement('div');
   el.className = 'bmsg b';
-  el.innerHTML = `<div class="bav clara-mini-av"><img src="/assets/clara-avatar.png" alt="Clara" class="clara-mini-img"></div><div class="bbubble">${html}</div>`;
+  el.innerHTML = `<div class="bav clara-mini-av">${typeof claraMiniAvatarHtml === 'function' ? claraMiniAvatarHtml() : '<img src="/assets/clara-avatar.svg" alt="Clara" class="clara-mini-img">'}</div><div class="bbubble">${html}</div>`;
   document.getElementById('bot-msgs').appendChild(el);
   document.getElementById('bot-msgs').scrollTop = 99999;
 }
@@ -1617,7 +1708,7 @@ function showTyping() {
   if (typeof onClaraThinking === 'function') onClaraThinking();
   const el = document.createElement('div');
   el.className = 'bmsg b'; el.id = 'bot-typing';
-  el.innerHTML = `<div class="bav clara-mini-av"><img src="/assets/clara-avatar.png" alt="Clara" class="clara-mini-img"></div><div class="typdots"><span></span><span></span><span></span></div>`;
+  el.innerHTML = `<div class="bav clara-mini-av">${typeof claraMiniAvatarHtml === 'function' ? claraMiniAvatarHtml() : '<img src="/assets/clara-avatar.svg" alt="Clara" class="clara-mini-img">'}</div><div class="typdots"><span></span><span></span><span></span></div>`;
   document.getElementById('bot-msgs').appendChild(el);
   document.getElementById('bot-msgs').scrollTop = 99999;
 }
@@ -1641,13 +1732,18 @@ async function botSend() {
   showTyping();
 
   try {
+    const claraPayload = typeof getClaraApiPayload === 'function' ? getClaraApiPayload() : {};
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         message: text,
         financials: currentData,
-        history: botHistory.slice(-8)
+        history: botHistory.slice(-8),
+        claraContext: claraPayload.claraContext || window.claraContext || '',
+        aiReport: claraPayload.aiReport || window.latestAIReport || null,
+        healthSummary: claraPayload.healthSummary || '',
+        company: claraPayload.company || ''
       })
     });
     if (!response.ok) throw new Error('AI chat unavailable');
@@ -2462,7 +2558,7 @@ function handleAnalysisFile(e) {
 
   } else {
     hideAnalysisStatus();
-    alert('Please upload an Excel (.xlsx), CSV, or PDF file.');
+    showToast('Please upload an Excel (.xlsx), CSV, or PDF file.');
   }
 }
 
@@ -2568,13 +2664,13 @@ async function extractPDFText(arrayBuffer, filename) {
     processRows(rows, filename);
   } catch(err) {
     hideAnalysisStatus();
-    alert('Could not extract text from this PDF. Try exporting as CSV or Excel from your accounting software for best results.');
+    showToast('Could not extract text from this PDF. Try exporting as CSV or Excel from your accounting software for best results.');
   }
 }
 
 function showAnalysisError() {
   hideAnalysisStatus();
-  alert('Could not read file. Try exporting as CSV or Excel directly from QuickBooks, Xero, or Wave.');
+  showToast('Could not read file. Try exporting as CSV or Excel directly from QuickBooks, Xero, or Wave.');
 }
 
 function parseCSV(text) {

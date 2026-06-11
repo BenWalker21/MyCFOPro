@@ -1,5 +1,26 @@
 // ── CLARA AVATAR (face + natural voice + lip sync) ───────────────────
-const CLARA_AVATAR_SRC = '/assets/clara-avatar.png';
+const CLARA_AVATAR_SRC = '/assets/clara-avatar.svg';
+
+function claraAvatarImgHtml(className, alt) {
+  return `<img src="${CLARA_AVATAR_SRC}" alt="${alt || 'Clara'}" class="${className || ''}" onerror="this.replaceWith(claraAvatarFallback('${className || ''}'))">`;
+}
+
+function claraAvatarFallback(className) {
+  const el = document.createElement('div');
+  el.className = (className || '').includes('mini') ? 'clara-mini-fallback' : 'clara-avatar-fallback';
+  el.textContent = 'C';
+  el.setAttribute('aria-label', 'Clara');
+  return el;
+}
+
+function initClaraAvatarImages() {
+  document.querySelectorAll('img[src*="clara-avatar"]').forEach(img => {
+    img.onerror = () => {
+      const fb = claraAvatarFallback(img.className);
+      img.replaceWith(fb);
+    };
+  });
+}
 let claraVoiceEnabled = true;
 let claraVoiceMode = 'loading';
 let claraTypewriterTimer = null;
@@ -12,6 +33,7 @@ let claraSpeechActive = false;
 let claraBrowserUtterance = null;
 
 function initClaraAvatar() {
+  initClaraAvatarImages();
   const toggle = document.getElementById('clara-voice-toggle');
   if (toggle) {
     toggle.checked = claraVoiceEnabled;
@@ -81,7 +103,7 @@ function setClaraCaption(text) {
 }
 
 function claraMiniAvatarHtml() {
-  return `<img src="${CLARA_AVATAR_SRC}" alt="Clara" class="clara-mini-img">`;
+  return claraAvatarImgHtml('clara-mini-img', 'Clara');
 }
 
 function stopLipSync() {

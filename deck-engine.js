@@ -23,10 +23,30 @@ function getDefaultDeckOptions() {
   return opts;
 }
 
+function loadDeckOptionsFromStore() {
+  if (typeof loadCompanyStore === 'function') {
+    loadCompanyStore();
+    const saved = companyStore.deck?.optionsState;
+    if (saved && Object.keys(saved).length) {
+      deckOptionsState = { ...getDefaultDeckOptions(), ...saved };
+      return;
+    }
+  }
+  if (!Object.keys(deckOptionsState).length) deckOptionsState = getDefaultDeckOptions();
+}
+
+function saveDeckOptionsToStore() {
+  if (typeof loadCompanyStore !== 'function') return;
+  loadCompanyStore();
+  if (!companyStore.deck) companyStore.deck = { optionsState: {} };
+  companyStore.deck.optionsState = { ...deckOptionsState };
+  saveCompanyStore();
+}
+
 function buildDeck(d) {
   if (!d) return;
   deckSourceData = d;
-  if (!Object.keys(deckOptionsState).length) deckOptionsState = getDefaultDeckOptions();
+  loadDeckOptionsFromStore();
   renderDeckOptions();
   composeAndRenderDeck();
 }
@@ -55,6 +75,7 @@ function toggleDeckOption(id, enabled) {
     return;
   }
   deckOptionsState[id] = enabled;
+  saveDeckOptionsToStore();
   document.querySelectorAll('.deck-option').forEach(el => {
     const input = el.querySelector('input');
     el.classList.toggle('selected', input && input.checked);
