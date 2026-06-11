@@ -93,15 +93,31 @@ Without signing in, data still works locally in your browser (same as before).
 
 Host MyCFOPro on the web so anyone can visit it without running `npm start` on their computer.
 
+**Click this link** (sign in to Render with GitHub when asked):
+
+**[Deploy MyCFOPro on Render](https://render.com/deploy?repo=https://github.com/BenWalker21/MyCFOPro)**
+
+Or use the button:
+
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/BenWalker21/MyCFOPro)
 
 ### Steps
 
-1. Click **Deploy to Render** above (sign in to Render with GitHub if asked).
-2. Render reads `render.yaml` in the repo and sets up the server for you.
+1. Click the link above. If Render asks you to sign in, choose **GitHub** and approve access.
+2. Render shows a preview of what it will create from `render.yaml`. Click **Apply**.
 3. When prompted, paste your **OpenAI API key** (`OPENAI_API_KEY`). Render auto-generates `SESSION_SECRET`.
-4. Click **Apply** and wait a few minutes for the build to finish.
+4. Wait a few minutes for the build to finish (first deploy can take 5–10 minutes).
 5. Open the URL Render gives you (for example `https://mycfopro.onrender.com`).
+
+### If the link does not open correctly
+
+Use the manual path instead:
+
+1. Go to **[dashboard.render.com](https://dashboard.render.com)** and sign in with GitHub.
+2. Click **New +** → **Blueprint**.
+3. Connect the **BenWalker21/MyCFOPro** repo if it is not already connected.
+4. Leave the branch as **main** and click **Apply**.
+5. Enter your **OpenAI API key** when prompted.
 
 ### Important notes
 
