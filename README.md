@@ -89,6 +89,26 @@ User accounts and company data are stored in `./data/` on the server. Set `SESSI
 
 Without signing in, data still works locally in your browser (same as before).
 
+## Deploy to Render (one click)
+
+Host MyCFOPro on the web so anyone can visit it without running `npm start` on their computer.
+
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/BenWalker21/MyCFOPro)
+
+### Steps
+
+1. Click **Deploy to Render** above (sign in to Render with GitHub if asked).
+2. Render reads `render.yaml` in the repo and sets up the server for you.
+3. When prompted, paste your **OpenAI API key** (`OPENAI_API_KEY`). Render auto-generates `SESSION_SECRET`.
+4. Click **Apply** and wait a few minutes for the build to finish.
+5. Open the URL Render gives you (for example `https://mycfopro.onrender.com`).
+
+### Important notes
+
+- **Starter plan** (~$7/month) is required so user accounts and saved company data persist on a disk. Without the disk, sign-in data resets on each deploy.
+- After deploy, you can add or change environment variables in the Render dashboard under **Environment**.
+- The live app must be served by the server — do not upload `index.html` alone to a static host.
+
 On the Financial Analysis page, choose the statement type before uploading:
 
 - Income Statement (P&L)

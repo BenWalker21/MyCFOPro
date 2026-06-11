@@ -54,6 +54,11 @@ const server = createServer(async (req, res) => {
       return;
     }
 
+    if (req.method === 'GET' && url.pathname === '/health') {
+      sendJson(res, 200, { ok: true });
+      return;
+    }
+
     if (url.pathname.startsWith('/api/auth') || url.pathname.startsWith('/api/company')) {
       await handleAuthAndCompanyRoutes(req, res, url);
       return;

@@ -1,0 +1,22 @@
+# MyCFOPro — Render Blueprint (one-click deploy)
+# Docs: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: mycfopro
+    runtime: docker
+    plan: starter
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: OPEN_BROWSER
+        value: "0"
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: OPENAI_API_KEY
+        sync: false
+    disk:
+      name: mycfopro-data
+      mountPath: /app/data
+      sizeGB: 1
