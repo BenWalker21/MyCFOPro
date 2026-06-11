@@ -1379,7 +1379,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       <aside class="clara-avatar-panel idle" id="clara-avatar-panel">
         <div class="clara-avatar-wrap">
           <div class="clara-avatar-ring"></div>
-          <img src="/assets/clara-avatar.svg" alt="Clara — CFO Advisor" class="clara-avatar-photo" id="clara-avatar-photo">
+          <img src="/assets/clara-avatar.png" alt="Clara — CFO Advisor" class="clara-avatar-photo" id="clara-avatar-photo">
           <div class="clara-mouth-overlay" aria-hidden="true"><div class="clara-mouth" id="clara-mouth"></div></div>
           <div class="clara-voice-bars" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
         </div>
@@ -1400,7 +1400,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       <div class="bot-split">
       <div class="bot-chat">
         <div class="bot-header">
-          <div class="bot-av"><img src="/assets/clara-avatar.svg" alt="Clara"></div>
+          <div class="bot-av"><img src="/assets/clara-avatar.png" alt="Clara"></div>
           <div><div class="bot-name">Clara — CFO Advisor</div><div class="bot-status">● Online · ready to help</div></div>
         </div>
         <div class="bot-msgs" id="bot-msgs"></div>
@@ -1691,7 +1691,7 @@ function addBotMsg(html) {
   }
   const el = document.createElement('div');
   el.className = 'bmsg b';
-  el.innerHTML = `<div class="bav clara-mini-av">${typeof claraMiniAvatarHtml === 'function' ? claraMiniAvatarHtml() : '<img src="/assets/clara-avatar.svg" alt="Clara" class="clara-mini-img">'}</div><div class="bbubble">${html}</div>`;
+  el.innerHTML = `<div class="bav clara-mini-av">${typeof claraMiniAvatarHtml === 'function' ? claraMiniAvatarHtml() : '<img src="/assets/clara-avatar.png" alt="Clara" class="clara-mini-img">'}</div><div class="bbubble">${html}</div>`;
   document.getElementById('bot-msgs').appendChild(el);
   document.getElementById('bot-msgs').scrollTop = 99999;
 }
@@ -1708,7 +1708,7 @@ function showTyping() {
   if (typeof onClaraThinking === 'function') onClaraThinking();
   const el = document.createElement('div');
   el.className = 'bmsg b'; el.id = 'bot-typing';
-  el.innerHTML = `<div class="bav clara-mini-av">${typeof claraMiniAvatarHtml === 'function' ? claraMiniAvatarHtml() : '<img src="/assets/clara-avatar.svg" alt="Clara" class="clara-mini-img">'}</div><div class="typdots"><span></span><span></span><span></span></div>`;
+  el.innerHTML = `<div class="bav clara-mini-av">${typeof claraMiniAvatarHtml === 'function' ? claraMiniAvatarHtml() : '<img src="/assets/clara-avatar.png" alt="Clara" class="clara-mini-img">'}</div><div class="typdots"><span></span><span></span><span></span></div>`;
   document.getElementById('bot-msgs').appendChild(el);
   document.getElementById('bot-msgs').scrollTop = 99999;
 }

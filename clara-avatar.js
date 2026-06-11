@@ -1,8 +1,9 @@
 // ── CLARA AVATAR (face + natural voice + lip sync) ───────────────────
-const CLARA_AVATAR_SRC = '/assets/clara-avatar.svg';
+const CLARA_AVATAR_SRC = '/assets/clara-avatar.png';
+const CLARA_AVATAR_FALLBACK = '/assets/clara-avatar.svg';
 
 function claraAvatarImgHtml(className, alt) {
-  return `<img src="${CLARA_AVATAR_SRC}" alt="${alt || 'Clara'}" class="${className || ''}" onerror="this.replaceWith(claraAvatarFallback('${className || ''}'))">`;
+  return `<img src="${CLARA_AVATAR_SRC}" alt="${alt || 'Clara'}" class="${className || ''}">`;
 }
 
 function claraAvatarFallback(className) {
@@ -13,13 +14,21 @@ function claraAvatarFallback(className) {
   return el;
 }
 
+function bindClaraAvatarImage(img) {
+  if (!img || img.dataset.claraBound) return;
+  img.dataset.claraBound = '1';
+  img.onerror = () => {
+    if (img.dataset.fallbackAttempted !== 'svg' && !img.src.includes('clara-avatar.svg')) {
+      img.dataset.fallbackAttempted = 'svg';
+      img.src = CLARA_AVATAR_FALLBACK;
+      return;
+    }
+    img.replaceWith(claraAvatarFallback(img.className));
+  };
+}
+
 function initClaraAvatarImages() {
-  document.querySelectorAll('img[src*="clara-avatar"]').forEach(img => {
-    img.onerror = () => {
-      const fb = claraAvatarFallback(img.className);
-      img.replaceWith(fb);
-    };
-  });
+  document.querySelectorAll('img[src*="clara-avatar"]').forEach(bindClaraAvatarImage);
 }
 let claraVoiceEnabled = true;
 let claraVoiceMode = 'loading';
@@ -337,6 +346,7 @@ function deliverClaraReply(text) {
   el.className = 'bmsg b';
   el.innerHTML = `<div class="bav clara-mini-av">${claraMiniAvatarHtml()}</div><div class="bbubble"><span class="clara-typewriter"></span><span class="clara-cursor">|</span></div>`;
   msgs.appendChild(el);
+  el.querySelectorAll('img[src*="clara-avatar"]').forEach(bindClaraAvatarImage);
   msgs.scrollTop = msgs.scrollHeight;
 
   const span = el.querySelector('.clara-typewriter');
