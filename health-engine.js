@@ -38,11 +38,13 @@ function loadHealthStore() {
   }
   if (!healthStore.goals) healthStore.goals = defaultHealthGoals();
   if (!Array.isArray(healthStore.entries)) healthStore.entries = [];
+  if (!Array.isArray(healthStore.trackedKpiIds)) healthStore.trackedKpiIds = [];
+  if (!healthStore.kpiSnapshots) healthStore.kpiSnapshots = {};
   return healthStore;
 }
 
 function createEmptyHealthStore() {
-  return { company: '', goals: defaultHealthGoals(), entries: [] };
+  return { company: '', goals: defaultHealthGoals(), entries: [], trackedKpiIds: [], kpiSnapshots: {} };
 }
 
 function defaultHealthGoals() {
@@ -376,7 +378,7 @@ function saveHealthGoals() {
 
 function renderHealthPage() {
   loadHealthStore();
-  const hasData = healthStore.entries.length > 0;
+  const hasData = healthStore.entries.length > 0 || (healthStore.trackedKpiIds?.length > 0);
   const empty = document.getElementById('health-empty-hint');
   const content = document.getElementById('health-data-content');
   if (empty) empty.style.display = hasData ? 'none' : 'block';
@@ -398,6 +400,7 @@ function renderHealthPage() {
   renderHealthGoals();
   renderHealthCharts();
   renderHealthHistory();
+  if (typeof renderTrackedKpisPanel === 'function') renderTrackedKpisPanel();
   updateHealthPeriodLabel();
 }
 

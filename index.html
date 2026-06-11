@@ -450,15 +450,48 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 .deck-export-status{font-size:12px;color:var(--ink-3)}
 
 /* KPI grid */
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
-.kpi-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.3rem;cursor:pointer;transition:border-color 0.13s}
-.kpi-card:hover{border-color:var(--blue)}
+.kpi-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:1.25rem}
+.kpi-cat-tabs{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.kpi-cat-tab{font-size:12px;font-weight:600;padding:7px 12px;border-radius:999px;border:1px solid var(--border);background:var(--white);color:var(--ink-3);cursor:pointer}
+.kpi-cat-tab.active,.kpi-cat-tab:hover{background:var(--blue-bg);border-color:var(--blue);color:var(--blue)}
+.kpi-search{flex:1;min-width:180px;max-width:280px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--rs);font-size:13px;font-family:inherit}
+.kpi-prefill-status{font-size:12px;color:var(--green);min-width:120px}
+.kpi-track-status{font-size:12px;color:var(--green);margin-bottom:1rem;min-height:18px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
+.kpi-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.3rem;transition:border-color 0.13s}
+.kpi-card-calc:hover{border-color:#c7d2ef}
+.kpi-name-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}
+.kpi-tracked-badge{font-size:10px;font-weight:700;color:var(--green);background:var(--green-bg);padding:3px 8px;border-radius:999px;border:1px solid #cceedd;white-space:nowrap}
 .kpi-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;padding:3px 8px;border-radius:10px;display:inline-block;margin-bottom:9px}
-.kpi-name{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:5px}
+.kpi-name{font-size:15px;font-weight:700;color:var(--ink)}
 .kpi-formula{font-size:11px;font-family:monospace;color:var(--blue);background:var(--blue-bg);padding:3px 8px;border-radius:5px;display:inline-block;margin-bottom:8px}
-.kpi-desc{font-size:12px;color:var(--ink-3);line-height:1.6}
-.kpi-benchmark{display:flex;align-items:center;gap:6px;margin-top:9px;padding-top:9px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-3)}
+.kpi-desc{font-size:12px;color:var(--ink-3);line-height:1.6;margin-bottom:12px}
+.kpi-calc-panel{background:var(--off);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
+.kpi-calc-inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px}
+.kpi-calc-field{display:flex;flex-direction:column;gap:4px}
+.kpi-calc-field span{font-size:10px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.3px}
+.kpi-calc-field input{padding:8px 10px;border:1px solid var(--border);border-radius:var(--rs);font-size:13px;font-family:inherit;background:var(--white)}
+.kpi-calc-field input:focus{outline:none;border-color:var(--blue)}
+.kpi-result-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+.kpi-result-block{flex:1;min-width:120px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--white)}
+.kpi-result-block.kpi-status-good{border-color:#cceedd;background:var(--green-bg)}
+.kpi-result-block.kpi-status-warn{border-color:#f4dfad;background:var(--amber-bg)}
+.kpi-result-block.kpi-status-bad{border-color:#fecaca;background:#fef2f2}
+.kpi-result-label{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
+.kpi-result-value{font-size:22px;font-weight:900;color:var(--ink);letter-spacing:-0.04em}
+.kpi-result-status{font-size:11px;font-weight:700;margin-top:4px}
+.kpi-status-good .kpi-result-status{color:var(--green)}
+.kpi-status-warn .kpi-result-status{color:var(--amber)}
+.kpi-status-bad .kpi-result-status{color:var(--red)}
+.kpi-track-col{display:flex;flex-direction:column;gap:6px;min-width:160px}
+.kpi-month-field{display:flex;flex-direction:column;gap:4px}
+.kpi-month-field span{font-size:10px;font-weight:700;color:var(--ink-3)}
+.kpi-month-field input{padding:7px 10px;border:1px solid var(--border);border-radius:var(--rs);font-size:12px;font-family:inherit}
+.kpi-track-btn{font-size:12px;padding:9px 12px;width:100%}
+.kpi-benchmark{display:flex;align-items:flex-start;gap:6px;margin-top:4px;padding-top:9px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-3)}
 .kpi-benchmark strong{color:var(--ink)}
+.health-tracked-kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.health-tracked-kpi-card{background:var(--off);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem}
 
 /* Slideshow preview */
 .slides-preview{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;margin-bottom:2rem}
@@ -1290,11 +1323,25 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 ══════════════════════════════════════ -->
 <div class="page" id="page-kpi">
   <div class="svc-page">
-    <div class="svc-hero">
+    <div class="svc-hero" style="margin-bottom:1.25rem">
       <div class="svc-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>KPI Library</div>
-      <h1 class="svc-h1">50+ KPIs explained.<br>In plain English.</h1>
-      <p class="svc-sub">Every key performance indicator your business should be tracking — what it means, how to calculate it, what a healthy number looks like, and why it matters.</p>
+      <h1 class="svc-h1">Calculate any KPI.<br>Track what matters.</h1>
+      <p class="svc-sub">Enter your numbers, get instant results with benchmarks — then add any KPI to your monthly Company Health tracker with one click.</p>
     </div>
+    <div class="kpi-toolbar">
+      <div class="kpi-cat-tabs" id="kpi-cat-tabs">
+        <button type="button" class="kpi-cat-tab active" onclick="setKpiCategory('All', this)">All</button>
+        <button type="button" class="kpi-cat-tab" onclick="setKpiCategory('Profitability', this)">Profitability</button>
+        <button type="button" class="kpi-cat-tab" onclick="setKpiCategory('Liquidity', this)">Liquidity</button>
+        <button type="button" class="kpi-cat-tab" onclick="setKpiCategory('Efficiency', this)">Efficiency</button>
+        <button type="button" class="kpi-cat-tab" onclick="setKpiCategory('Leverage', this)">Leverage</button>
+        <button type="button" class="kpi-cat-tab" onclick="setKpiCategory('Growth', this)">Growth</button>
+      </div>
+      <input type="search" class="kpi-search" placeholder="Search KPIs…" oninput="filterKpiSearch(this.value)">
+      <button class="btn-outline" style="font-size:12px;padding:8px 14px;white-space:nowrap" onclick="prefillKpiInputsFromFinancials(true)">Fill from my financials</button>
+      <span class="kpi-prefill-status" id="kpi-prefill-status"></span>
+    </div>
+    <div class="kpi-track-status" id="kpi-track-status"></div>
     <div class="kpi-grid" id="kpi-grid"></div>
   </div>
 </div>
@@ -1417,6 +1464,8 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
     <div id="health-data-content" style="display:none">
       <div class="health-summary-grid" id="health-summary-grid"></div>
 
+      <div class="health-chart-area" id="health-tracked-kpis" style="display:none"></div>
+
       <div class="health-chart-area">
         <div class="hca-header">
           <div><div class="hca-title">Health score over time</div><div class="hca-sub" id="health-score-sub">Last 6 months</div></div>
@@ -1490,6 +1539,7 @@ function goPage(id, btn) {
   if (btn) btn.classList.add('active');
   window.scrollTo(0, 0);
   if (id === 'health' && typeof renderHealthPage === 'function') renderHealthPage();
+  if (id === 'kpi' && typeof initKpiPage === 'function') initKpiPage();
   if (id === 'bot' && typeof ensureBotInit === 'function') ensureBotInit();
   if (id === 'analysis' && typeof renderWelcomeBackBanner === 'function') renderWelcomeBackBanner();
 }
@@ -1521,39 +1571,6 @@ window.addEventListener('load', () => {
     hydrateAppFromStore();
   }
 });
-
-// ── KPI LIBRARY ──────────────────────────────────────
-const KPIS = [
-  {cat:'Profitability',catColor:'#22c55e',catBg:'#dcfce7',name:'Gross Margin',formula:'Gross Profit / Revenue',desc:'The percentage of revenue remaining after deducting direct costs. Shows how efficiently you produce your product or service.',benchmark:'Varies by industry — retail 25–35%, services 50–70%'},
-  {cat:'Profitability',catColor:'#22c55e',catBg:'#dcfce7',name:'Net Profit Margin',formula:'Net Income / Revenue',desc:'The percentage of revenue that becomes actual profit after all expenses. The bottom line — what you actually keep.',benchmark:'Healthy: 8–15% depending on industry'},
-  {cat:'Profitability',catColor:'#22c55e',catBg:'#dcfce7',name:'EBITDA Margin',formula:'EBITDA / Revenue',desc:'Earnings before interest, taxes, depreciation, and amortization. Shows core operating profitability without accounting choices.',benchmark:'Strong: 15%+ for most businesses'},
-  {cat:'Profitability',catColor:'#22c55e',catBg:'#dcfce7',name:'Return on Assets',formula:'Net Income / Total Assets',desc:'How efficiently you use your assets to generate profit. Higher = better use of what you own.',benchmark:'Good: 5%+, excellent: 10%+'},
-  {cat:'Liquidity',catColor:'#0f2570',catBg:'#e8eef6',name:'Current Ratio',formula:'Current Assets / Current Liabilities',desc:'Can you pay your short-term bills? A ratio above 1 means yes. Below 1 means you may struggle.',benchmark:'Healthy: 1.5–2.0'},
-  {cat:'Liquidity',catColor:'#0f2570',catBg:'#e8eef6',name:'Cash Runway',formula:'Cash / Monthly Burn Rate',desc:'How many months you can operate without new revenue or funding. The most important survival metric for small businesses.',benchmark:'Target: 6+ months minimum'},
-  {cat:'Liquidity',catColor:'#0f2570',catBg:'#e8eef6',name:'Quick Ratio',formula:'(Cash + AR) / Current Liabilities',desc:'Like the current ratio, but excludes inventory — a stricter test of whether you can cover immediate obligations.',benchmark:'Healthy: 1.0+'},
-  {cat:'Efficiency',catColor:'#1a4480',catBg:'#e8eef6',name:'Days Sales Outstanding',formula:'AR / (Revenue / 365)',desc:'How long on average it takes customers to pay you. Lower is better — money sitting in AR is money you can\'t use.',benchmark:'Industry avg: 30–45 days'},
-  {cat:'Efficiency',catColor:'#1a4480',catBg:'#e8eef6',name:'Inventory Turnover',formula:'COGS / Average Inventory',desc:'How many times you sell through your inventory in a year. Low turnover = cash tied up in unsold goods.',benchmark:'Higher is generally better — varies by industry'},
-  {cat:'Efficiency',catColor:'#1a4480',catBg:'#e8eef6',name:'Accounts Payable Days',formula:'AP / (COGS / 365)',desc:'How long you take to pay your suppliers. Longer is better for your cash flow — as long as you stay within agreed terms.',benchmark:'30–60 days is typical'},
-  {cat:'Efficiency',catColor:'#1a4480',catBg:'#e8eef6',name:'Revenue per Employee',formula:'Revenue / Number of Employees',desc:'A productivity measure. How much revenue does each person on the team generate? Rising trend = growing efficiently.',benchmark:'Varies — services: $100–200K/employee'},
-  {cat:'Leverage',catColor:'#0a1628',catBg:'#e8eef6',name:'Debt-to-Equity Ratio',formula:'Total Debt / Total Equity',desc:'How much you owe vs. how much owners have invested. High ratio means you\'re heavily reliant on borrowed money.',benchmark:'Healthy: below 2.0 for most industries'},
-  {cat:'Leverage',catColor:'#0a1628',catBg:'#e8eef6',name:'Debt Ratio',formula:'Total Liabilities / Total Assets',desc:'What percentage of your assets are financed by debt. Higher = riskier — less cushion if revenue drops.',benchmark:'Healthy: below 50%, concerning: 80%+'},
-  {cat:'Leverage',catColor:'#0a1628',catBg:'#e8eef6',name:'Interest Coverage Ratio',formula:'EBIT / Interest Expense',desc:'Can your business earnings cover your interest payments? Below 1.5 is a warning sign.',benchmark:'Healthy: 3.0+'},
-  {cat:'Growth',catColor:'#22c55e',catBg:'#dcfce7',name:'Revenue Growth Rate',formula:'(Current Revenue - Prior Revenue) / Prior Revenue',desc:'How fast your revenue is growing year-over-year. The most fundamental indicator of business momentum.',benchmark:'Strong: 15–25% YoY for established businesses'},
-  {cat:'Growth',catColor:'#22c55e',catBg:'#dcfce7',name:'Customer Acquisition Cost',formula:'Sales & Marketing Spend / New Customers',desc:'How much it costs to win one new customer. Must be significantly lower than your customer lifetime value.',benchmark:'Target: LTV at least 3x your CAC'},
-  {cat:'Growth',catColor:'#22c55e',catBg:'#dcfce7',name:'Customer Lifetime Value',formula:'Avg Purchase × Frequency × Avg Customer Lifespan',desc:'The total revenue you can expect from a single customer over the whole relationship. Your most valuable growth metric.',benchmark:'Higher is always better — track the trend'},
-];
-
-function buildKPIs() {
-  document.getElementById('kpi-grid').innerHTML = KPIS.map(k => `
-    <div class="kpi-card">
-      <span class="kpi-cat" style="background:${k.catBg};color:${k.catColor}">${k.cat}</span>
-      <div class="kpi-name">${k.name}</div>
-      <div class="kpi-formula">${k.formula}</div>
-      <div class="kpi-desc">${k.desc}</div>
-      <div class="kpi-benchmark"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><strong>Benchmark:</strong> ${k.benchmark}</div>
-    </div>
-  `).join('');
-}
 
 // ── CFO BOT ──────────────────────────────────────────
 let botHistory = [];
@@ -2903,6 +2920,7 @@ Speak like a trusted advisor, not a report. Use their exact numbers. Keep respon
 </script>
 <script src="company-store.js"></script>
 <script src="auth-ui.js"></script>
+<script src="kpi-engine.js"></script>
 <script src="deck-engine.js"></script>
 <script src="health-engine.js"></script>
 <script src="clara-avatar.js"></script>

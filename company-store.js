@@ -14,7 +14,9 @@ function createEmptyCompanyStore() {
     health: {
       company: '',
       goals: defaultHealthGoalsStore(),
-      entries: []
+      entries: [],
+      trackedKpiIds: [],
+      kpiSnapshots: {}
     },
     deck: { optionsState: {} }
   };
@@ -48,6 +50,8 @@ function normalizeCompanyStore() {
   if (!companyStore.health) companyStore.health = { company: '', goals: defaultHealthGoalsStore(), entries: [] };
   if (!companyStore.health.goals) companyStore.health.goals = defaultHealthGoalsStore();
   if (!Array.isArray(companyStore.health.entries)) companyStore.health.entries = [];
+  if (!Array.isArray(companyStore.health.trackedKpiIds)) companyStore.health.trackedKpiIds = [];
+  if (!companyStore.health.kpiSnapshots) companyStore.health.kpiSnapshots = {};
   if (!Array.isArray(companyStore.history)) companyStore.history = [];
   if (!companyStore.deck) companyStore.deck = { optionsState: {} };
 }
