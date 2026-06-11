@@ -7,6 +7,7 @@ import { fileURLToPath } from 'node:url';
 import {
   authenticateRequest,
   authEnabled,
+  checkDataDirWritable,
   loadCompanyData,
   saveCompanyData,
   signInUser,
@@ -55,7 +56,12 @@ const server = createServer(async (req, res) => {
     }
 
     if (req.method === 'GET' && url.pathname === '/health') {
-      sendJson(res, 200, { ok: true });
+      const dataDirWritable = checkDataDirWritable();
+      sendJson(res, dataDirWritable ? 200 : 503, {
+        ok: dataDirWritable,
+        dataDirWritable,
+        cloudSyncReady: dataDirWritable && authEnabled()
+      });
       return;
     }
 
@@ -78,10 +84,14 @@ const server = createServer(async (req, res) => {
 
 server.listen(port, '0.0.0.0', () => {
   const url = `http://localhost:${port}`;
+  const dataDirWritable = checkDataDirWritable();
   console.log('');
   console.log('  MyCFOPro is running');
   console.log(`  Open in your browser: ${url}`);
   console.log('');
+  if (!dataDirWritable) {
+    console.warn('Warning: ./data is not writable — cloud sync and accounts will fail until storage is fixed.');
+  }
   if (process.env.OPEN_BROWSER !== '0') {
     openBrowser(url);
   }
@@ -148,7 +158,7 @@ async function handleAuthAndCompanyRoutes(req, res, url) {
     }
 
     if (req.method === 'PUT') {
-      const body = await readJsonBody(req);
+      const body = await readJsonBody(req, 5_000_000);
       const saved = await saveCompanyData(user.id, body?.store);
       sendJson(res, 200, { store: saved, user });
       return;
@@ -540,13 +550,13 @@ async function serveStatic(pathname, req, res) {
   createReadStream(pathToServe).pipe(res);
 }
 
-async function readJsonBody(req) {
+async function readJsonBody(req, maxBytes = 1_000_000) {
   const chunks = [];
   let size = 0;
 
   for await (const chunk of req) {
     size += chunk.length;
-    if (size > 1_000_000) {
+    if (size > maxBytes) {
       const error = new Error('Request body too large');
       error.statusCode = 413;
       throw error;

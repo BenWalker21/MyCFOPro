@@ -765,6 +765,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 }
 .auth-field input:focus{outline:none;border-color:var(--blue)}
 .auth-error{font-size:12px;color:var(--red);min-height:18px;margin-bottom:8px}
+.auth-note{font-size:12px;color:var(--ink-3);line-height:1.5;margin:0 0 12px}
 .auth-submit{width:100%;padding:11px;border:none;border-radius:var(--rs);background:var(--blue);color:var(--white);font-size:14px;font-weight:700;cursor:pointer}
 .auth-submit:hover{background:var(--blue-l)}
 
@@ -1023,6 +1024,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
           <div class="auth-field"><label>Name</label><input type="text" id="auth-signup-name" autocomplete="name" placeholder="Your name"></div>
           <div class="auth-field"><label>Email</label><input type="email" id="auth-signup-email" required autocomplete="email"></div>
           <div class="auth-field"><label>Password</label><input type="password" id="auth-signup-password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></div>
+          <p class="auth-note">Your account is ready immediately — no email confirmation link during beta.</p>
           <button type="submit" class="auth-submit">Create account</button>
         </form>
       </div>

@@ -7,6 +7,25 @@ let authToken = null;
 let authEnabledFlag = false;
 let cloudSyncTimer = null;
 let cloudSyncStatus = 'idle';
+let cloudSyncError = '';
+
+async function readApiError(res, fallback) {
+  try {
+    const json = await res.json();
+    return json.error || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+function handleAuthFailure(message) {
+  cloudSyncError = message;
+  cloudSyncStatus = 'error';
+  if (/sign in|session|unauthorized|expired/i.test(message)) {
+    setAuthSession(null, null);
+  }
+  renderCloudSyncBanner();
+}
 
 function getAuthToken() {
   return authToken || localStorage.getItem(AUTH_TOKEN_KEY) || '';
@@ -57,7 +76,7 @@ async function initAuth() {
       if (res.ok) {
         const json = await res.json();
         setAuthSession(json.user, authToken);
-        await pullCompanyFromCloud();
+        await pullCompanyFromCloud(true);
         return;
       }
     } catch { /* fall through */ }
@@ -112,6 +131,7 @@ async function submitSignIn(event) {
     closeAuthModal();
     await pullCompanyFromCloud(true);
     if (typeof hydrateAppFromStore === 'function') hydrateAppFromStore();
+    if (typeof showToast === 'function') showToast('Signed in — your workspace is syncing to the cloud.');
   } catch (error) {
     errEl.textContent = error.message;
   }
@@ -138,6 +158,9 @@ async function submitSignUp(event) {
     closeAuthModal();
     await pushCompanyToCloud(true);
     if (typeof hydrateAppFromStore === 'function') hydrateAppFromStore();
+    if (typeof showToast === 'function') {
+      showToast('Account created — you are signed in. No email confirmation needed.');
+    }
   } catch (error) {
     errEl.textContent = error.message;
   }
@@ -182,13 +205,19 @@ function mergeCompanyStores(localStore, cloudStore) {
 async function pullCompanyFromCloud(mergeLocal) {
   if (!isSignedIn()) return;
   cloudSyncStatus = 'syncing';
+  cloudSyncError = '';
   renderCloudSyncBanner();
 
   try {
     const res = await fetch('/api/company', {
       headers: { Authorization: 'Bearer ' + getAuthToken() }
     });
-    if (!res.ok) throw new Error('Could not load cloud data');
+    if (res.status === 401) {
+      handleAuthFailure('Session expired — please sign in again.');
+      return;
+    }
+    if (!res.ok) throw new Error(await readApiError(res, 'Could not load cloud data'));
+
     const json = await res.json();
 
     if (json.store) {
@@ -197,16 +226,22 @@ async function pullCompanyFromCloud(mergeLocal) {
       if (typeof applyCompanyStoreFromCloud === 'function') applyCompanyStoreFromCloud(merged);
       if (mergeLocal && merged === local && local?.latest?.financials) {
         await pushCompanyToCloud(true);
+        return;
       }
     } else if (mergeLocal && typeof loadCompanyStore === 'function') {
       const local = loadCompanyStore();
-      if (local?.latest?.financials) await pushCompanyToCloud(true);
+      if (local?.latest?.financials) {
+        await pushCompanyToCloud(true);
+        return;
+      }
     }
 
     cloudSyncStatus = 'synced';
+    cloudSyncError = '';
   } catch (error) {
     console.warn('Cloud pull failed:', error);
     cloudSyncStatus = 'error';
+    cloudSyncError = error.message || 'Could not sync from cloud';
   }
   renderCloudSyncBanner();
 }
@@ -220,6 +255,7 @@ async function pushCompanyToCloud(immediate) {
   }
 
   cloudSyncStatus = 'syncing';
+  cloudSyncError = '';
   renderCloudSyncBanner();
 
   try {
@@ -232,11 +268,17 @@ async function pushCompanyToCloud(immediate) {
       },
       body: JSON.stringify({ store })
     });
-    if (!res.ok) throw new Error('Cloud save failed');
+    if (res.status === 401) {
+      handleAuthFailure('Session expired — please sign in again.');
+      return;
+    }
+    if (!res.ok) throw new Error(await readApiError(res, 'Cloud save failed'));
     cloudSyncStatus = 'synced';
+    cloudSyncError = '';
   } catch (error) {
     console.warn('Cloud push failed:', error);
     cloudSyncStatus = 'error';
+    cloudSyncError = error.message || 'Cloud save failed';
   }
   renderCloudSyncBanner();
 }
@@ -270,10 +312,21 @@ function renderCloudSyncBanner() {
     idle: 'Signed in · cloud sync ready',
     syncing: 'Syncing to cloud…',
     synced: 'Saved to cloud',
-    error: 'Cloud sync issue — saved locally'
+    error: cloudSyncError || 'Cloud sync issue — saved locally on this device'
   };
   el.className = 'cloud-sync-banner ' + (cloudSyncStatus === 'error' ? 'error' : 'synced');
-  el.innerHTML = `<span>● ${labels[cloudSyncStatus] || labels.idle} · ${escapeHtml(authUser.email)}</span>`;
+  const retryBtn = cloudSyncStatus === 'error'
+    ? `<button class="btn-outline" style="font-size:12px;padding:7px 12px" onclick="retryCloudSync()">Retry sync</button>`
+    : '';
+  el.innerHTML = `<span>● ${labels[cloudSyncStatus] || labels.idle} · ${escapeHtml(authUser.email)}</span>${retryBtn}`;
+}
+
+async function retryCloudSync() {
+  if (!isSignedIn()) return;
+  await pullCompanyFromCloud(true);
+  if (cloudSyncStatus === 'error') return;
+  const local = typeof loadCompanyStore === 'function' ? loadCompanyStore() : null;
+  if (local) await pushCompanyToCloud(true);
 }
 
 function applyCompanyStoreFromCloud(store) {

@@ -1,20 +1,50 @@
 import { randomUUID, scryptSync, timingSafeEqual } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
-import { readFile, writeFile } from 'node:fs/promises';
+import { readFile, rename, unlink, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { SignJWT, jwtVerify } from 'jose';
 
-const USERS_FILE = join(process.cwd(), 'data', 'users.json');
-const COMPANIES_DIR = join(process.cwd(), 'data', 'companies');
+const DATA_DIR = join(process.cwd(), 'data');
+const USERS_FILE = join(DATA_DIR, 'users.json');
+const COMPANIES_DIR = join(DATA_DIR, 'companies');
 
 function ensureDataDirs() {
-  mkdirSync(join(process.cwd(), 'data', 'companies'), { recursive: true });
+  mkdirSync(COMPANIES_DIR, { recursive: true });
   if (!existsSync(USERS_FILE)) {
     writeFileSync(USERS_FILE, JSON.stringify({ users: [] }, null, 2));
   }
 }
 
 ensureDataDirs();
+
+export function checkDataDirWritable() {
+  try {
+    ensureDataDirs();
+    const probe = join(DATA_DIR, '.write-test');
+    writeFileSync(probe, 'ok');
+    writeFileSync(probe, '');
+    return true;
+  } catch (error) {
+    console.error('Data directory is not writable:', DATA_DIR, error.message);
+    return false;
+  }
+}
+
+async function writeJsonAtomic(path, data) {
+  const tempPath = `${path}.tmp-${process.pid}-${Date.now()}`;
+  try {
+    await writeFile(tempPath, JSON.stringify(data, null, 2));
+    await rename(tempPath, path);
+  } catch (error) {
+    try {
+      await unlink(tempPath);
+    } catch { /* ignore */ }
+    const wrapped = new Error(`Could not save data: ${error.message}`);
+    wrapped.statusCode = 500;
+    wrapped.cause = error;
+    throw wrapped;
+  }
+}
 
 function getSessionSecret() {
   const secret = process.env.SESSION_SECRET || 'mycfopro-dev-secret-change-in-production';
@@ -47,7 +77,7 @@ async function readUsersFile() {
 
 async function writeUsersFile(data) {
   ensureDataDirs();
-  await writeFile(USERS_FILE, JSON.stringify(data, null, 2));
+  await writeJsonAtomic(USERS_FILE, data);
 }
 
 export async function signUpUser({ email, password, name }) {
@@ -147,23 +177,48 @@ export async function loadCompanyData(userId) {
   ensureDataDirs();
   const path = companyPath(userId);
   if (!existsSync(path)) return null;
-  const raw = await readFile(path, 'utf8');
-  return JSON.parse(raw);
+  try {
+    const raw = await readFile(path, 'utf8');
+    return JSON.parse(raw);
+  } catch (error) {
+    console.error('Could not read company data for user', userId, error.message);
+    return null;
+  }
+}
+
+function normalizeCloudStore(store) {
+  if (!store || typeof store !== 'object' || Array.isArray(store)) return null;
+  return {
+    version: 1,
+    company: typeof store.company === 'string' ? store.company : '',
+    lastUpdated: store.lastUpdated || null,
+    latest: store.latest || null,
+    history: Array.isArray(store.history) ? store.history : [],
+    health: store.health && typeof store.health === 'object' ? store.health : {
+      company: '',
+      goals: {},
+      entries: [],
+      trackedKpiIds: [],
+      kpiSnapshots: {}
+    },
+    deck: store.deck && typeof store.deck === 'object' ? store.deck : { optionsState: {} }
+  };
 }
 
 export async function saveCompanyData(userId, store) {
   ensureDataDirs();
-  if (!store || typeof store !== 'object') {
+  const normalized = normalizeCloudStore(store);
+  if (!normalized) {
     const error = new Error('Invalid company data');
     error.statusCode = 400;
     throw error;
   }
   const payload = {
-    ...store,
+    ...normalized,
     lastUpdated: new Date().toISOString(),
     cloudSyncedAt: new Date().toISOString()
   };
-  await writeFile(companyPath(userId), JSON.stringify(payload, null, 2));
+  await writeJsonAtomic(companyPath(userId), payload);
   return payload;
 }
 
