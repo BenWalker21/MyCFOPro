@@ -68,10 +68,12 @@ const server = createServer(async (req, res) => {
 
     if (req.method === 'GET' && url.pathname === '/health') {
       const dataDirWritable = checkDataDirWritable();
+      const cashqueueApp = existsSync(join(root, 'collections', 'app', 'index.html'));
       sendJson(res, dataDirWritable ? 200 : 503, {
         ok: dataDirWritable,
         dataDirWritable,
-        cloudSyncReady: dataDirWritable && authEnabled()
+        cloudSyncReady: dataDirWritable && authEnabled(),
+        cashqueueApp
       });
       return;
     }
@@ -94,21 +96,41 @@ const server = createServer(async (req, res) => {
 });
 
 server.listen(port, '0.0.0.0', () => {
-  const url = `http://localhost:${port}`;
+  const url = `http://127.0.0.1:${port}`;
   const dataDirWritable = checkDataDirWritable();
+  const cashqueueApp = existsSync(join(root, 'collections', 'app', 'index.html'));
   console.log('');
   console.log('  MyCFOPro is running');
-  console.log(`  Open in your browser: ${url}`);
+  console.log(`  Homepage:    ${url}/`);
+  console.log(`  CashQueue:   ${url}/collections/app/`);
+  console.log(`  Health:      ${url}/health`);
   console.log('');
+  if (!cashqueueApp) {
+    console.warn('Warning: collections/app/index.html missing — run: git pull origin main');
+  }
   if (!dataDirWritable) {
     console.warn('Warning: ./data is not writable — cloud sync and accounts will fail until storage is fixed.');
   }
   if (process.env.OPEN_BROWSER !== '0') {
-    openBrowser(url);
+    openBrowser(`${url}/`);
   }
   if (!process.env.SESSION_SECRET) {
     console.warn('Warning: SESSION_SECRET not set — using dev default. Set it in .env before production.');
   }
+});
+
+server.on('error', error => {
+  if (error.code === 'EADDRINUSE') {
+    console.error('');
+    console.error(`  Port ${port} is already in use.`);
+    console.error('  Close the other MyCFOPro window, or run in PowerShell:');
+    console.error('    netstat -ano | findstr :3000');
+    console.error('    taskkill /PID <number> /F');
+    console.error('');
+  } else {
+    console.error('Server failed to start:', error.message);
+  }
+  process.exit(1);
 });
 
 function openBrowser(url) {
@@ -608,8 +630,11 @@ function trimItems(items) {
 }
 
 async function serveStatic(pathname, req, res) {
-  const safePath = normalize(decodeURIComponent(pathname)).replace(/^(\.\.[/\\])+/, '');
-  const relativePath = safePath === '/' || safePath === '.' ? 'index.html' : safePath.replace(/^[/\\]/, '');
+  let safePath = normalize(decodeURIComponent(pathname)).replace(/^(\.\.[/\\])+/, '');
+  if (safePath.length > 1 && safePath.endsWith('/')) {
+    safePath = safePath.slice(0, -1);
+  }
+  const relativePath = safePath === '/' || safePath === '.' ? 'index.html' : safePath.replace(/^[/\\]+/, '');
   const filePath = resolve(root, relativePath);
 
   if (!filePath.startsWith(root)) {
@@ -622,9 +647,11 @@ async function serveStatic(pathname, req, res) {
     : filePath;
 
   if (!existsSync(pathToServe) || !statSync(pathToServe).isFile()) {
-    sendJson(res, 404, { error: 'Not found' });
+    sendJson(res, 404, { error: 'Not found', path: pathname });
     return;
   }
+
+  if (res.headersSent) return;
 
   res.writeHead(200, {
     'content-type': contentTypes[extname(pathToServe)] || 'application/octet-stream'
@@ -635,7 +662,16 @@ async function serveStatic(pathname, req, res) {
     return;
   }
 
-  createReadStream(pathToServe).pipe(res);
+  const stream = createReadStream(pathToServe);
+  stream.on('error', error => {
+    console.error('Static file read error:', pathToServe, error.message);
+    if (!res.headersSent) {
+      sendJson(res, 500, { error: 'Could not read file' });
+    } else {
+      res.destroy();
+    }
+  });
+  stream.pipe(res);
 }
 
 async function readJsonBody(req, maxBytes = 1_000_000) {
