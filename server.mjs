@@ -1,5 +1,5 @@
 import { createReadStream, existsSync, statSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
+import { readFile, appendFile, mkdir } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { extname, join, normalize, resolve } from 'node:path';
@@ -52,6 +52,11 @@ const server = createServer(async (req, res) => {
 
     if (req.method === 'POST' && url.pathname === '/api/tts') {
       await handleTts(req, res);
+      return;
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/waitlist') {
+      await handleWaitlist(req, res);
       return;
     }
 
@@ -319,6 +324,32 @@ function parseClaraChatJson(raw) {
   }
 
   return { reply: text, actions: [] };
+}
+
+async function handleWaitlist(req, res) {
+  const body = await readJsonBody(req);
+  const email = String(body?.email || '').trim().toLowerCase();
+  const source = String(body?.source || 'landing').trim().slice(0, 80);
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    sendJson(res, 400, { error: 'Valid email required' });
+    return;
+  }
+
+  const dataDir = join(root, 'data');
+  if (!existsSync(dataDir)) {
+    await mkdir(dataDir, { recursive: true });
+  }
+
+  const entry = {
+    email,
+    source,
+    createdAt: new Date().toISOString(),
+    ip: String(req.headers['x-forwarded-for'] || req.socket?.remoteAddress || '').slice(0, 80)
+  };
+
+  await appendFile(join(dataDir, 'waitlist.jsonl'), JSON.stringify(entry) + '\n', 'utf8');
+  sendJson(res, 200, { ok: true });
 }
 
 function handleVoiceStatus(res) {
