@@ -25,7 +25,7 @@ function canUploadAnalysis() {
 
 function canAccessPage(pageId) {
   if (hasFullAccess()) return true;
-  if (pageId === 'home' || pageId === 'analysis') return true;
+  if (pageId === 'home' || pageId === 'bot' || pageId === 'analysis') return true;
   return false;
 }
 
@@ -63,7 +63,7 @@ function renderUsageGateBanner() {
   } else {
     el.className = 'usage-gate-banner trial';
     el.innerHTML = `
-      <span><strong>Try one P&amp;L analysis free.</strong> Upload your income statement to preview the report — then create an account for health trends, your deck, and Clara.</span>
+      <span><strong>Try one P&amp;L analysis free.</strong> Talk to Clara and upload your income statement — then create an account for unlimited uploads, health trends, and your deck.</span>
       <button class="btn-outline" style="font-size:12px;padding:7px 12px" onclick="openAuthModal('signup')">Create account</button>`;
   }
 }

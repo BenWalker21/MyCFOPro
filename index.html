@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyCFOPro.AI — CFO Intelligence for Small Business</title>
-<meta name="description" content="Upload your P&amp;L and get a CFO report, monthly health trends, a board-ready slide deck, and Clara — your AI CFO advisor.">
+<meta name="description" content="Talk to Clara, your AI CFO. Upload your P&amp;L and ask for reports, dashboards, slide decks, and advice — all in one conversation.">
 <meta property="og:title" content="MyCFOPro.AI — CFO Intelligence for Small Business">
 <meta property="og:description" content="Turn QuickBooks, Xero, Wave, Excel, CSV, or PDF exports into plain-English business insights.">
 <meta property="og:type" content="website">
@@ -852,6 +852,46 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   margin-top:auto;padding-top:0.85rem;font-size:11px;color:var(--ink-3);width:100%
 }
 .clara-voice-toggle-row input{accent-color:var(--green)}
+
+/* Clara workspace + artifact cards */
+.clara-workspace-header{margin-bottom:1rem}
+.clara-workspace-header .svc-h1{font-size:clamp(1.65rem,3vw,2.2rem);margin-bottom:0.35rem}
+.clara-workspace-header .svc-sub{max-width:640px}
+.clara-upload-strip{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 12px;
+  border:1.5px dashed #c7d2ef;border-radius:12px;background:var(--off);margin-bottom:10px;
+  transition:border-color 0.15s,background 0.15s;
+}
+.clara-upload-strip.dragover,.clara-upload-strip.highlight{border-color:var(--green);background:var(--green-bg)}
+.clara-upload-btn{
+  font-size:12px;font-weight:700;padding:7px 12px;border-radius:999px;border:1px solid var(--border);
+  background:var(--white);color:var(--ink);cursor:pointer;font-family:inherit;
+}
+.clara-upload-btn:hover{border-color:var(--blue);background:var(--blue-bg)}
+.clara-upload-hint{font-size:11px;color:var(--ink-3)}
+.clara-quick-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.clara-quick-btn{
+  font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;border:1px solid var(--border);
+  background:var(--white);color:var(--ink-2);cursor:pointer;font-family:inherit;
+}
+.clara-quick-btn:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-bg)}
+.clara-artifact-stack{display:flex;flex-direction:column;gap:8px;padding:4px 0}
+.clara-artifact{
+  display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border:1px solid #c7d2ef;
+  border-radius:12px;background:linear-gradient(180deg,#fff 0%,var(--off) 100%);
+}
+.clara-artifact-icon{font-size:22px;line-height:1;flex-shrink:0;margin-top:2px}
+.clara-artifact-title{font-size:13px;font-weight:800;color:var(--ink)}
+.clara-artifact-sub{font-size:11px;color:var(--ink-3);margin-top:3px;line-height:1.45}
+.clara-artifact-actions{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.clara-artifact-btn{
+  font-size:11px;font-weight:700;padding:6px 10px;border-radius:999px;border:1px solid var(--border);
+  background:var(--white);color:var(--ink-2);cursor:pointer;font-family:inherit;
+}
+.clara-artifact-btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+.clara-artifact-btn:hover{filter:brightness(0.98)}
+.clara-artifact-msg .bbubble{max-width:100%}
+
 .bot-split{display:grid;grid-template-columns:1fr 280px;gap:16px;height:560px;min-height:560px}
 .bot-chat{background:var(--white);border:1px solid var(--border);border-radius:var(--r);display:flex;flex-direction:column;overflow:hidden;min-height:560px}
 .bot-header{padding:1rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
@@ -973,16 +1013,16 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   </div>
   <div class="nav-links">
     <button class="nav-link active" onclick="goPage('home',this)">Home</button>
-    <button class="nav-link" onclick="goPage('analysis',this)">Analyze</button>
+    <button class="nav-link" onclick="goPage('bot',this)">Clara</button>
+    <button class="nav-link" onclick="goPage('analysis',this)">Report</button>
     <button class="nav-link" onclick="goPage('health',this)">Health</button>
     <button class="nav-link" onclick="goPage('slides',this)">Deck</button>
-    <button class="nav-link" onclick="goPage('bot',this)">Clara</button>
   </div>
   <span class="nav-company-badge" id="nav-company-badge"></span>
   <div class="auth-nav">
     <div class="auth-nav-signed-out" id="auth-nav-signed-out">
       <button class="auth-nav-btn" onclick="openAuthModal('signin')">Sign in</button>
-      <button class="auth-nav-btn primary" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Get Started</button>
+      <button class="auth-nav-btn primary" onclick="goPage('bot',document.querySelectorAll('.nav-link')[1])">Get Started</button>
     </div>
     <div class="auth-nav-signed-in" id="auth-nav-signed-in">
       <span class="auth-nav-email" id="auth-nav-email"></span>
@@ -1034,12 +1074,12 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   <!-- HERO -->
   <section class="hero">
     <div class="hero-inner">
-      <div class="hero-eyebrow"><span></span>Your monthly P&amp;L → CFO report, trends &amp; board deck</div>
-      <h1 class="hero-h1">Walk into the bank meeting<br><em>already prepared.</em></h1>
-      <p class="hero-sub">Upload your profit &amp; loss. Get a CFO-grade report, month-over-month health tracking, a presentation-ready slide deck, and Clara — your advisor who knows your numbers.</p>
+      <div class="hero-eyebrow"><span></span>Your AI CFO — reports, decks &amp; advice in one conversation</div>
+      <h1 class="hero-h1">Talk to Clara.<br><em>She handles the rest.</em></h1>
+      <p class="hero-sub">Upload your P&amp;L and ask Clara for a CFO report, a custom dashboard, a board-ready slide deck, or straight advice on your numbers — all in one place.</p>
       <div class="hero-actions">
-        <button class="btn-gold" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Upload my P&amp;L</button>
-        <button class="btn-ghost" onclick="goPage('slides',document.querySelectorAll('.nav-link')[3])">See the slide deck</button>
+        <button class="btn-gold" onclick="goPage('bot',document.querySelectorAll('.nav-link')[1])">Talk to Clara</button>
+        <button class="btn-ghost" onclick="goPage('slides',document.querySelectorAll('.nav-link')[4])">See the slide deck</button>
       </div>
       <div class="hero-trust">
         <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Secure cloud sync across devices</div>
@@ -1073,28 +1113,28 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   <!-- SERVICES -->
   <section class="services-strip">
     <div class="strip-inner">
-      <div class="strip-label">Three steps — one workflow owners actually use</div>
+      <div class="strip-label">One conversation with Clara — reports, trends &amp; decks</div>
       <div class="services-grid">
-        <div class="service-card" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">
-          <div class="service-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
-          <div class="service-name">1 · CFO Report</div>
-          <div class="service-desc">Upload your P&amp;L. Get margins, red flags, and a prioritized action plan in under a minute.</div>
-          <div class="service-cta">Upload P&amp;L →</div>
+        <div class="service-card" onclick="goPage('bot',document.querySelectorAll('.nav-link')[1])">
+          <div class="service-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
+          <div class="service-name">1 · Talk to Clara</div>
+          <div class="service-desc">Upload your P&amp;L and ask for a report, dashboard, deck, or advice — Clara builds it for you.</div>
+          <div class="service-cta">Open Clara →</div>
         </div>
-        <div class="service-card" onclick="goPage('health',document.querySelectorAll('.nav-link')[2])">
+        <div class="service-card" onclick="goPage('health',document.querySelectorAll('.nav-link')[3])">
           <div class="service-icon si-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
           <div class="service-name">2 · Track Trends</div>
           <div class="service-desc">Each month you upload builds your health score history — see if things are getting better or worse.</div>
           <div class="service-cta">View health →</div>
         </div>
-        <div class="service-card" onclick="goPage('slides',document.querySelectorAll('.nav-link')[3])">
+        <div class="service-card" onclick="goPage('slides',document.querySelectorAll('.nav-link')[4])">
           <div class="service-icon si-gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
           <div class="service-name">3 · Board Deck</div>
-          <div class="service-desc">Auto-build a polished slide deck from your numbers. Export to PowerPoint before your lender or board meeting.</div>
+          <div class="service-desc">Ask Clara to build a polished slide deck from your numbers. Export to PowerPoint before your lender meeting.</div>
           <div class="service-cta">Open deck →</div>
         </div>
       </div>
-      <p class="strip-footnote" style="text-align:center;font-size:13px;color:var(--ink-3);margin-top:1rem">Plus <strong>Clara</strong> — ask anything about your business and she answers using your real financials.</p>
+      <p class="strip-footnote" style="text-align:center;font-size:13px;color:var(--ink-3);margin-top:1rem">Clara remembers your company — reports, health history, and deck stay in sync automatically.</p>
     </div>
   </section>
 
@@ -1141,7 +1181,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
             <li>Charts, findings &amp; action items</li>
             <li>No credit card</li>
           </ul>
-          <button class="plan-btn" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Try one analysis</button>
+          <button class="plan-btn" onclick="goPage('bot',document.querySelectorAll('.nav-link')[1])">Try Clara free</button>
         </div>
         <div class="plan featured">
           <div class="plan-badge">Full workflow</div>
@@ -1167,8 +1207,8 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       <h2 class="cta-h2">Know your numbers.<br>Run your business.</h2>
       <p class="cta-sub">Upload your P&amp;L once. Get the report, the trends, and the deck — ready for your next meeting.</p>
       <div class="cta-actions">
-        <button class="btn-gold" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Upload my P&amp;L</button>
-        <button class="btn-ghost" onclick="goPage('bot',document.querySelectorAll('.nav-link')[4])">Talk to Clara</button>
+        <button class="btn-gold" onclick="goPage('bot',document.querySelectorAll('.nav-link')[1])">Talk to Clara</button>
+        <button class="btn-ghost" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[2])">View sample report</button>
       </div>
     </div>
   </section>
@@ -1284,7 +1324,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
         <h1 class="svc-h1">Walk into any meeting<br>looking like you have a team.</h1>
         <p class="svc-sub">Upload your financials on the Financial Analysis page and MyCFOPro instantly builds a complete, CEO-ready presentation — populated with your real numbers, color-coded by performance.</p>
         <div class="svc-actions">
-          <button class="btn-blue" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Go to Financial Analysis to get started</button>
+          <button class="btn-blue" onclick="goPage('bot',document.querySelectorAll('.nav-link')[1])">Talk to Clara to get started</button>
         </div>
       </div>
       <div style="background:var(--off);border:1px solid var(--border);border-radius:var(--r);padding:3rem;text-align:center;margin-top:1rem">
@@ -1328,7 +1368,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       <div class="deck-export-row">
         <button class="btn-blue" onclick="exportDeckPowerPoint()">Download PowerPoint</button>
         <button class="btn-outline" onclick="exportDeckPDF()">Print / Save PDF</button>
-        <button class="btn-outline" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">← Back to analysis</button>
+        <button class="btn-outline" onclick="goPage('bot',document.querySelectorAll('.nav-link')[1])">← Back to Clara</button>
         <span class="deck-export-status" id="deck-export-status"></span>
       </div>
     </div>
@@ -1341,10 +1381,10 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 ══════════════════════════════════════ -->
 <div class="page" id="page-bot">
   <div class="svc-page">
-    <div class="svc-hero">
-      <div class="svc-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>CFO Advisor</div>
-      <h1 class="svc-h1">Meet Clara.<br>Your on-call CFO.</h1>
-      <p class="svc-sub">Clara knows your numbers and gives you straight answers — with a face and voice, not just text. Ask about cash flow, margins, debt, benchmarks — anything. No jargon. No fluff. Just clarity.</p>
+    <div class="clara-workspace-header">
+      <div class="svc-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>Your AI CFO</div>
+      <h1 class="svc-h1">Clara — your on-call CFO.</h1>
+      <p class="svc-sub">Upload your P&amp;L, then ask me to build a report, customize your dashboard, create a slide deck, or explain what your numbers mean. I do the work — you get the answers.</p>
     </div>
     <div class="bot-layout">
       <aside class="clara-avatar-panel idle" id="clara-avatar-panel">
@@ -1375,8 +1415,19 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
           <div><div class="bot-name">Clara — CFO Advisor</div><div class="bot-status">● Online · ready to help</div></div>
         </div>
         <div class="bot-msgs" id="bot-msgs"></div>
+        <div class="clara-upload-strip" id="clara-upload-strip">
+          <input type="file" id="clara-file" style="display:none" accept=".xlsx,.xls,.csv,.pdf" onchange="handleClaraFileUpload(event)">
+          <button type="button" class="clara-upload-btn" onclick="claraPromptUpload()">Upload P&amp;L</button>
+          <span class="clara-upload-hint">Drop Excel, CSV, or PDF here · QuickBooks · Xero · Wave</span>
+        </div>
+        <div class="clara-quick-row">
+          <button type="button" class="clara-quick-btn" onclick="claraQuickAction('show_report')">Build report</button>
+          <button type="button" class="clara-quick-btn" onclick="claraQuickAction('build_deck')">Create deck</button>
+          <button type="button" class="clara-quick-btn" onclick="claraQuickAction('show_health')">Health trends</button>
+          <button type="button" class="clara-quick-btn" onclick="botAsk('What should I focus on first?')">What to focus on</button>
+        </div>
         <div class="bot-input-row">
-          <textarea class="bot-ta" id="bot-input" rows="1" placeholder="Ask Clara about your financials..." onkeydown="botKey(event)"></textarea>
+          <textarea class="bot-ta" id="bot-input" rows="1" placeholder="Ask Clara to build a report, deck, dashboard, or explain your numbers..." onkeydown="botKey(event)"></textarea>
           <button class="bot-send" id="bot-send-btn" onclick="botSend()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
           </button>
@@ -1384,24 +1435,24 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       </div>
       <div class="bot-panel">
         <div>
-          <div class="bp-title">Ask Clara</div>
+          <div class="bp-title">Ask Clara to create</div>
           <div class="qs">
-            <button class="qbtn" onclick="botAsk('What should I prioritize to improve my financial health?')">What should I prioritize first?</button>
-            <button class="qbtn" onclick="botAsk('How do I know if my gross margin is good?')">Is my gross margin healthy?</button>
-            <button class="qbtn" onclick="botAsk('What is Days Sales Outstanding and how do I improve it?')">What is DSO and why does it matter?</button>
-            <button class="qbtn" onclick="botAsk('How much cash should a small business keep on hand?')">How much cash should I have?</button>
-            <button class="qbtn" onclick="botAsk('What is a good debt ratio for a small business?')">What is a healthy debt ratio?</button>
-            <button class="qbtn" onclick="botAsk('How do I build a 13-week cash flow forecast?')">How do I build a cash forecast?</button>
+            <button class="qbtn" onclick="botAsk('Build my P&amp;L report with a profit-focused dashboard')">Build my report</button>
+            <button class="qbtn" onclick="botAsk('Create a slide deck for my bank meeting')">Deck for bank meeting</button>
+            <button class="qbtn" onclick="botAsk('Show my health trends month over month')">Show health trends</button>
+            <button class="qbtn" onclick="botAsk('What should I prioritize to improve my financial health?')">What to prioritize</button>
+            <button class="qbtn" onclick="botAsk('Is my gross margin healthy?')">Is my margin healthy?</button>
+            <button class="qbtn" onclick="botAsk('Make a minimal dashboard — just the essentials')">Minimal dashboard</button>
           </div>
         </div>
         <div>
           <div class="bp-title">What Clara can do</div>
           <div class="cap-list">
-            <div class="cap-item">Explain any financial metric in plain English</div>
-            <div class="cap-item">Analyze your specific numbers (upload a file first)</div>
-            <div class="cap-item">Recommend actions based on your situation</div>
-            <div class="cap-item">Benchmark you against industry standards</div>
-            <div class="cap-item">Help you prepare for bank or investor meetings</div>
+            <div class="cap-item">Build P&amp;L reports and custom dashboards from your upload</div>
+            <div class="cap-item">Create and update your CEO slide deck</div>
+            <div class="cap-item">Track month-over-month health trends</div>
+            <div class="cap-item">Explain any metric and recommend next steps</div>
+            <div class="cap-item">Help you prepare for bank or board meetings</div>
           </div>
         </div>
       </div>
@@ -1528,7 +1579,10 @@ function goPage(id, btn) {
   if (btn) btn.classList.add('active');
   window.scrollTo(0, 0);
   if (id === 'health' && typeof renderHealthPage === 'function') renderHealthPage();
-  if (id === 'bot' && typeof ensureBotInit === 'function') ensureBotInit();
+  if (id === 'bot') {
+    if (typeof ensureBotInit === 'function') ensureBotInit();
+    if (typeof initClaraWorkspaceDropzone === 'function') initClaraWorkspaceDropzone();
+  }
   if (id === 'analysis') {
     if (typeof renderWelcomeBackBanner === 'function') renderWelcomeBackBanner();
     if (typeof renderUsageGateBanner === 'function') renderUsageGateBanner();
@@ -1630,11 +1684,13 @@ window.addEventListener('load', () => {
   initUploadDropzone();
   updateStatementUploadCopy();
   if (typeof initClaraAvatarImages === 'function') initClaraAvatarImages();
+  if (typeof initClaraWorkspaceDropzone === 'function') initClaraWorkspaceDropzone();
   if (typeof initHealthPage === 'function') initHealthPage();
   if (typeof initAuth === 'function') {
     initAuth().then(() => {
       if (typeof hydrateAppFromStore === 'function') hydrateAppFromStore();
       if (typeof renderUsageGateBanner === 'function') renderUsageGateBanner();
+      if (typeof maybeOpenClaraWorkspace === 'function') maybeOpenClaraWorkspace();
     });
   } else if (typeof hydrateAppFromStore === 'function') {
     hydrateAppFromStore();
@@ -1654,7 +1710,11 @@ function ensureBotInit() {
 
 function initBot() {
   if (typeof initClaraAvatar === 'function') initClaraAvatar();
-  deliverClaraHtml(`Hi — I'm Clara, your CFO Advisor. I can help you understand any financial metric, explain what your numbers mean, or walk you through how to improve them.<br><br>Try one of the questions on the right, or just ask me anything.`);
+  const hasData = typeof currentData !== 'undefined' && currentData?.revenue;
+  const intro = hasData
+    ? `Welcome back. I still have your latest P&amp;L loaded — ask me to refresh your report, build a deck, show health trends, or explain anything in your numbers.`
+    : `Hi — I'm Clara, your AI CFO. Upload your P&amp;L above, or ask me to explain any financial concept. Once your numbers are loaded, I can build your report, customize your dashboard, create a slide deck, and tell you what to focus on first.`;
+  deliverClaraHtml(intro);
 }
 
 function addBotMsg(html) {
@@ -1704,6 +1764,9 @@ async function botSend() {
   botHistory.push({role:'user', content: text});
   showTyping();
 
+  let reply = '';
+  let actions = [];
+
   try {
     const claraPayload = typeof getClaraApiPayload === 'function' ? getClaraApiPayload() : {};
     const response = await fetch('/api/chat', {
@@ -1721,20 +1784,38 @@ async function botSend() {
     });
     if (!response.ok) throw new Error('AI chat unavailable');
     const json = await response.json();
-    removeTyping();
-    const reply = json.reply || generateClaraReply(text);
-    botHistory.push({role:'assistant', content: reply});
-    deliverClaraReply(reply);
-    document.getElementById('bot-send-btn').disabled = false;
+    if (json.actions?.length) {
+      reply = String(json.reply || '').trim();
+      actions = typeof normalizeClaraActions === 'function' ? normalizeClaraActions(json.actions) : json.actions;
+    } else {
+      const parsed = typeof parseClaraResponse === 'function'
+        ? parseClaraResponse(json.reply || '')
+        : { reply: json.reply || '', actions: [] };
+      reply = parsed.reply || String(json.reply || '').trim();
+      actions = parsed.actions || [];
+    }
   } catch (error) {
-    window.setTimeout(() => {
-      removeTyping();
-      const reply = generateClaraReply(text);
-      botHistory.push({role:'assistant', content: reply});
-      deliverClaraReply(reply);
-      document.getElementById('bot-send-btn').disabled = false;
-    }, 350);
+    reply = generateClaraReply(text);
   }
+
+  if (!actions.length && typeof detectClaraIntents === 'function') {
+    actions = detectClaraIntents(text);
+  }
+
+  removeTyping();
+  botHistory.push({role:'assistant', content: reply});
+  deliverClaraReply(reply);
+
+  if (typeof runClaraActions === 'function' && actions.length) {
+    window.setTimeout(() => {
+      const artifacts = runClaraActions(actions);
+      if (artifacts.length && typeof addClaraArtifactCards === 'function') {
+        addClaraArtifactCards(artifacts);
+      }
+    }, 450);
+  }
+
+  document.getElementById('bot-send-btn').disabled = false;
 }
 
 function generateClaraReply(text) {
@@ -2700,7 +2781,12 @@ function processRows(rows, filename) {
     currentData = data;
     setTimeout(() => {
       renderReport(data);
-      requestAIReport(data);
+      if (window.claraUploadPending && typeof notifyClaraUploadComplete === 'function') {
+        window.claraUploadPending = false;
+        notifyClaraUploadComplete(data);
+      } else {
+        requestAIReport(data);
+      }
     }, 600);
   }, 300);
 }
@@ -3219,7 +3305,9 @@ function renderReport(d) {
   if (typeof renderUsageGateBanner === 'function') renderUsageGateBanner();
   if (typeof renderDashboardCustomizePanel === 'function') renderDashboardCustomizePanel();
 
-  document.getElementById('analysis-report').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (document.getElementById('page-analysis')?.classList.contains('active')) {
+    document.getElementById('analysis-report').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 function syncClaraWithData(d) {
@@ -3251,6 +3339,7 @@ Speak like a trusted advisor, not a report. Use their exact numbers. Keep respon
 </script>
 <script src="company-store.js"></script>
 <script src="dashboard-config.js"></script>
+<script src="clara-actions.js"></script>
 <script src="usage-gate.js"></script>
 <script src="auth-ui.js"></script>
 <script src="ap-pay-engine.js"></script>
