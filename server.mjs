@@ -1,5 +1,5 @@
 import { createReadStream, existsSync, statSync } from 'node:fs';
-import { readFile } from 'node:fs/promises';
+import { readFile, appendFile, mkdir } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
 import { createServer } from 'node:http';
 import { extname, join, normalize, resolve } from 'node:path';
@@ -13,6 +13,7 @@ import {
   signInUser,
   signUpUser
 } from './auth.mjs';
+import { handleCashQueueRoute } from './cashqueue/routes.mjs';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const root = resolve(__dirname);
@@ -53,6 +54,16 @@ const server = createServer(async (req, res) => {
     if (req.method === 'POST' && url.pathname === '/api/tts') {
       await handleTts(req, res);
       return;
+    }
+
+    if (req.method === 'POST' && url.pathname === '/api/waitlist') {
+      await handleWaitlist(req, res);
+      return;
+    }
+
+    if (url.pathname.startsWith('/api/cq/')) {
+      const handled = await handleCashQueueRoute({ req, res, url, sendJson, readJsonBody, callAiModel });
+      if (handled) return;
     }
 
     if (req.method === 'GET' && url.pathname === '/health') {
@@ -319,6 +330,31 @@ function parseClaraChatJson(raw) {
   }
 
   return { reply: text, actions: [] };
+}
+
+async function handleWaitlist(req, res) {
+  const body = await readJsonBody(req);
+  const email = String(body?.email || '').trim().toLowerCase();
+  const source = String(body?.source || 'landing').trim().slice(0, 80);
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    sendJson(res, 400, { error: 'Valid email required' });
+    return;
+  }
+
+  const dataDir = join(root, 'data');
+  if (!existsSync(dataDir)) {
+    await mkdir(dataDir, { recursive: true });
+  }
+
+  const entry = {
+    email,
+    source,
+    createdAt: new Date().toISOString()
+  };
+
+  await appendFile(join(dataDir, 'waitlist.jsonl'), JSON.stringify(entry) + '\n', 'utf8');
+  sendJson(res, 200, { ok: true });
 }
 
 function handleVoiceStatus(res) {
