@@ -16,6 +16,8 @@ if not exist "node_modules\" (
 
 echo.
 echo Starting MyCFOPro — your browser will open to http://localhost:3000
+echo.
+echo CashQueue (collections app): http://localhost:3000/collections/app/
 echo Keep this window open while you use the app. Close it to stop the server.
 echo.
 
