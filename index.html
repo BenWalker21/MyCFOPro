@@ -474,6 +474,40 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 .deck-export-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .deck-export-status{font-size:12px;color:var(--ink-3)}
 
+/* P&L dashboard customize */
+.dashboard-customize{
+  background:var(--white);border:1px solid var(--border);border-radius:16px;
+  padding:1.1rem 1.25rem;margin-bottom:1rem;
+}
+.dashboard-customize-head{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;
+}
+.dashboard-customize-title{font-size:14px;font-weight:800;color:var(--ink)}
+.dashboard-customize-sub{font-size:12px;color:var(--ink-3);margin-top:3px;max-width:520px;line-height:1.5}
+.dashboard-customize-actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.dashboard-customize-body{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.dashboard-preset-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:14px}
+.dashboard-preset-btn{
+  text-align:left;padding:10px 12px;border:1.5px solid var(--border);border-radius:12px;
+  background:var(--off);cursor:pointer;transition:all 0.13s;font-family:inherit;
+}
+.dashboard-preset-btn:hover{border-color:#c7d2ef;background:var(--blue-bg)}
+.dashboard-preset-btn.active{border-color:var(--blue);background:linear-gradient(180deg,#f4fbf7 0%,var(--gold-bg) 100%)}
+.dashboard-preset-name{display:block;font-size:12px;font-weight:800;color:var(--ink)}
+.dashboard-preset-desc{display:block;font-size:10px;color:var(--ink-3);margin-top:3px;line-height:1.4}
+.dashboard-group-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--ink-4);margin:10px 0 8px}
+.dashboard-option-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-bottom:4px}
+.dashboard-option{
+  display:flex;align-items:flex-start;gap:10px;padding:10px 12px;
+  border:1.5px solid var(--border);border-radius:12px;background:var(--off);cursor:pointer;transition:all 0.13s;
+}
+.dashboard-option:hover{border-color:#c7d2ef;background:var(--blue-bg)}
+.dashboard-option.selected{border-color:var(--blue);background:linear-gradient(180deg,#f4fbf7 0%,var(--gold-bg) 100%)}
+.dashboard-option input{margin-top:2px;accent-color:var(--green)}
+.dashboard-option-name{font-size:13px;font-weight:700;color:var(--ink);display:block}
+.dashboard-option-desc{font-size:11px;color:var(--ink-3);line-height:1.45;margin-top:2px;display:block}
+.dashboard-customize-foot{font-size:12px;color:var(--green);margin-top:10px;min-height:18px}
+
 /* AP Cash Planner */
 .ap-cash-planner{
   background:var(--white);border:1px solid #c7d2ef;border-radius:var(--r);
@@ -1173,6 +1207,8 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       <style>@keyframes spin{to{transform:rotate(360deg)}}</style>
     </div>
 
+    <div class="dashboard-customize" id="dashboard-customize" data-open="0"></div>
+
     <div id="analysis-report" style="display:none">
       <div class="rpt-header">
         <div class="rpt-header-main">
@@ -1182,6 +1218,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
         <div class="rpt-header-actions">
           <span class="stmt-pill" id="rpt-statement-pill">Income Statement</span>
           <div class="health-pill" id="rpt-health-pill"></div>
+          <button class="btn-outline" onclick="toggleDashboardCustomizePanel(true)" style="font-size:12px;padding:7px 14px">Customize</button>
           <button class="btn-outline" onclick="resetAnalysis()" style="font-size:12px;padding:7px 14px">← New analysis</button>
         </div>
       </div>
@@ -1196,35 +1233,35 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       <div class="ar-collections-panel" id="ar-collections-panel" style="display:none"></div>
 
       <div class="rpt-charts-grid">
-        <div class="health-chart-area" style="margin:0">
+        <div class="health-chart-area" id="rpt-chart-area-revenue" style="margin:0">
           <div class="hca-header"><div><div class="hca-title" id="rpt-chart-1-title">Revenue by service line</div><div class="hca-sub" id="rpt-chart-1-sub">Where your income comes from</div></div></div>
           <div style="height:240px;position:relative"><canvas id="rpt-chart-revenue"></canvas></div>
         </div>
-        <div class="health-chart-area" style="margin:0">
+        <div class="health-chart-area" id="rpt-chart-area-waterfall" style="margin:0">
           <div class="hca-header"><div><div class="hca-title" id="rpt-chart-2-title">Gross margin by service</div><div class="hca-sub" id="rpt-chart-2-sub">Revenue vs. direct cost per line</div></div></div>
           <div style="height:240px;position:relative"><canvas id="rpt-chart-margin"></canvas></div>
         </div>
-        <div class="health-chart-area" style="margin:0">
+        <div class="health-chart-area" id="rpt-chart-area-opex" style="margin:0">
           <div class="hca-header"><div><div class="hca-title" id="rpt-chart-3-title">Expense breakdown</div><div class="hca-sub" id="rpt-chart-3-sub">Operating cost distribution</div></div></div>
           <div style="height:240px;position:relative"><canvas id="rpt-chart-opex"></canvas></div>
         </div>
-        <div class="health-chart-area" style="margin:0">
+        <div class="health-chart-area" id="rpt-chart-area-benchmark" style="margin:0">
           <div class="hca-header"><div><div class="hca-title" id="rpt-chart-4-title">Financial health radar</div><div class="hca-sub" id="rpt-chart-4-sub">Your ratios vs. industry benchmark</div></div></div>
           <div style="height:240px;position:relative"><canvas id="rpt-chart-radar"></canvas></div>
         </div>
       </div>
 
-      <div class="rpt-section">
+      <div class="rpt-section" id="rpt-section-findings">
         <div class="rpt-section-head">Key Findings</div>
         <div class="findings-grid" id="rpt-findings"></div>
       </div>
 
-      <div class="rpt-section">
+      <div class="rpt-section" id="rpt-section-actions">
         <div class="rpt-section-head">Priority Action Plan</div>
         <div class="actions-stack" id="rpt-actions"></div>
       </div>
 
-      <div class="rpt-summary-box">
+      <div class="rpt-summary-box" id="rpt-summary-box">
         <div class="rpt-summary-label">CFO Summary</div>
         <div class="rpt-summary-text" id="rpt-summary"></div>
       </div>
@@ -2181,14 +2218,14 @@ function buildReportMetrics(d) {
   }
 
   return [
-    { l: 'Revenue', v: fc(d.revenue), n: 'Total for period', f: '' },
-    { l: 'Gross Profit', v: fc(d.grossProfit), n: 'After direct costs', f: d.grossMargin >= 38 ? 'flag-good' : d.grossMargin >= 25 ? 'flag-warn' : 'flag-bad' },
-    { l: 'Gross Margin', v: fp(d.grossMargin), n: 'Benchmark ~38%', f: d.grossMargin >= 38 ? 'flag-good' : d.grossMargin >= 25 ? 'flag-warn' : 'flag-bad' },
-    { l: 'Net Income', v: fc(d.netIncome), n: 'Bottom line profit', f: d.netIncome > 0 ? 'flag-good' : 'flag-bad' },
-    { l: 'Net Margin', v: fp(d.netMargin), n: 'Revenue kept as profit', f: d.netMargin >= 8 ? 'flag-good' : d.netMargin >= 2 ? 'flag-warn' : 'flag-bad' },
-    { l: 'Operating Income', v: fc(d.opIncome || 0), n: 'Before interest & other', f: (d.opIncome || 0) > 0 ? 'flag-good' : 'flag-bad' },
-    { l: 'Total OpEx', v: fc(d.opex || 0), n: 'Operating expenses', f: '' },
-    { l: 'Health Score', v: h + '/100', n: 'Overall financial health', f: h >= 70 ? 'flag-good' : h >= 50 ? 'flag-warn' : 'flag-bad' }
+    { id: 'revenue', l: 'Revenue', v: fc(d.revenue), n: 'Total for period', f: '' },
+    { id: 'grossProfit', l: 'Gross Profit', v: fc(d.grossProfit), n: 'After direct costs', f: d.grossMargin >= 38 ? 'flag-good' : d.grossMargin >= 25 ? 'flag-warn' : 'flag-bad' },
+    { id: 'grossMargin', l: 'Gross Margin', v: fp(d.grossMargin), n: 'Benchmark ~38%', f: d.grossMargin >= 38 ? 'flag-good' : d.grossMargin >= 25 ? 'flag-warn' : 'flag-bad' },
+    { id: 'netIncome', l: 'Net Income', v: fc(d.netIncome), n: 'Bottom line profit', f: d.netIncome > 0 ? 'flag-good' : 'flag-bad' },
+    { id: 'netMargin', l: 'Net Margin', v: fp(d.netMargin), n: 'Revenue kept as profit', f: d.netMargin >= 8 ? 'flag-good' : d.netMargin >= 2 ? 'flag-warn' : 'flag-bad' },
+    { id: 'opIncome', l: 'Operating Income', v: fc(d.opIncome || 0), n: 'Before interest & other', f: (d.opIncome || 0) > 0 ? 'flag-good' : 'flag-bad' },
+    { id: 'opex', l: 'Total OpEx', v: fc(d.opex || 0), n: 'Operating expenses', f: '' },
+    { id: 'healthScore', l: 'Health Score', v: h + '/100', n: 'Overall financial health', f: h >= 70 ? 'flag-good' : h >= 50 ? 'flag-warn' : 'flag-bad' }
   ];
 }
 
@@ -2529,53 +2566,61 @@ function renderReportCharts(d) {
   const svcRevenue = (d.serviceRevenue && d.serviceRevenue.length) ? d.serviceRevenue : [{ name: 'Revenue', val: d.revenue }];
   const svcLabels = svcRevenue.map(s => s.name);
   const svcVals = svcRevenue.map(s => s.val);
-  analysisCharts.push(new Chart(document.getElementById('rpt-chart-revenue'), {
-    type: 'bar',
-    data: { labels: svcLabels, datasets: [{ label: 'Revenue', data: svcVals, backgroundColor: svcLabels.map((_, i) => barColors[i % barColors.length]), borderRadius: 4, borderSkipped: false }] },
-    options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' }, grid: { color: 'rgba(0,0,0,0.04)' } }, y: { ticks: { font: { size: 11 } } } } }
-  }));
+  if (typeof isDashboardChartEnabled !== 'function' || isDashboardChartEnabled('revenueLines')) {
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-revenue'), {
+      type: 'bar',
+      data: { labels: svcLabels, datasets: [{ label: 'Revenue', data: svcVals, backgroundColor: svcLabels.map((_, i) => barColors[i % barColors.length]), borderRadius: 4, borderSkipped: false }] },
+      options: { indexAxis: 'y', responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' }, grid: { color: 'rgba(0,0,0,0.04)' } }, y: { ticks: { font: { size: 11 } } } } }
+    }));
+  }
 
   const cogsVal = d.cogs || 0;
   const gpVal = d.grossProfit || (d.revenue - cogsVal);
   const opexVal = d.opex || 0;
   const netVal = d.netIncome || 0;
-  analysisCharts.push(new Chart(document.getElementById('rpt-chart-margin'), {
-    type: 'bar',
-    data: {
-      labels: ['Revenue', 'COGS', 'Gross profit', 'OpEx', 'Net income'],
-      datasets: [{
-        data: [d.revenue || 0, -Math.abs(cogsVal), gpVal, -Math.abs(opexVal), netVal],
-        backgroundColor: ['#0f2570', '#dc2626', '#22c55e', '#b45309', netVal >= 0 ? '#16a34a' : '#991b1b'],
-        borderRadius: 4
-      }]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' } } } }
-  }));
+  if (typeof isDashboardChartEnabled !== 'function' || isDashboardChartEnabled('waterfall')) {
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-margin'), {
+      type: 'bar',
+      data: {
+        labels: ['Revenue', 'COGS', 'Gross profit', 'OpEx', 'Net income'],
+        datasets: [{
+          data: [d.revenue || 0, -Math.abs(cogsVal), gpVal, -Math.abs(opexVal), netVal],
+          backgroundColor: ['#0f2570', '#dc2626', '#22c55e', '#b45309', netVal >= 0 ? '#16a34a' : '#991b1b'],
+          borderRadius: 4
+        }]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { ticks: { callback: v => '$' + (v / 1000).toFixed(0) + 'K' } } } }
+    }));
+  }
 
   const opexItems = (d.expenseItems && d.expenseItems.length) ? d.expenseItems : [{ name: 'Operating expenses', val: d.opex || 0 }];
   const topOpex = opexItems.slice(0, 7);
-  analysisCharts.push(new Chart(document.getElementById('rpt-chart-opex'), {
-    type: 'doughnut',
-    data: { labels: topOpex.map(e => e.name), datasets: [{ data: topOpex.map(e => e.val), backgroundColor: barColors.slice(0, 7), borderWidth: 0, hoverOffset: 8 }] },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 10 }, padding: 8, boxWidth: 10 } }, tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.toLocaleString('en-US', { maximumFractionDigits: 0 }) } } }, cutout: '60%' }
-  }));
+  if (typeof isDashboardChartEnabled !== 'function' || isDashboardChartEnabled('opexBreakdown')) {
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-opex'), {
+      type: 'doughnut',
+      data: { labels: topOpex.map(e => e.name), datasets: [{ data: topOpex.map(e => e.val), backgroundColor: barColors.slice(0, 7), borderWidth: 0, hoverOffset: 8 }] },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right', labels: { font: { size: 10 }, padding: 8, boxWidth: 10 } }, tooltip: { callbacks: { label: ctx => ' $' + ctx.parsed.toLocaleString('en-US', { maximumFractionDigits: 0 }) } } }, cutout: '60%' }
+    }));
+  }
 
   const marginRows = [
     { label: 'Gross margin', actual: d.grossMargin || 0, bench: 38 },
     { label: 'Operating margin', actual: d.opMargin || 0, bench: 12 },
     { label: 'Net margin', actual: d.netMargin || 0, bench: 8 }
   ];
-  analysisCharts.push(new Chart(document.getElementById('rpt-chart-radar'), {
-    type: 'bar',
-    data: {
-      labels: marginRows.map(r => r.label),
-      datasets: [
-        { label: 'Your business', data: marginRows.map(r => r.actual), backgroundColor: '#0f2570', borderRadius: 4 },
-        { label: 'Benchmark', data: marginRows.map(r => r.bench), backgroundColor: '#22c55e', borderRadius: 4 }
-      ]
-    },
-    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { ticks: { callback: v => v + '%' } } } }
-  }));
+  if (typeof isDashboardChartEnabled !== 'function' || isDashboardChartEnabled('marginBenchmark')) {
+    analysisCharts.push(new Chart(document.getElementById('rpt-chart-radar'), {
+      type: 'bar',
+      data: {
+        labels: marginRows.map(r => r.label),
+        datasets: [
+          { label: 'Your business', data: marginRows.map(r => r.actual), backgroundColor: '#0f2570', borderRadius: 4 },
+          { label: 'Benchmark', data: marginRows.map(r => r.bench), backgroundColor: '#22c55e', borderRadius: 4 }
+        ]
+      },
+      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } }, scales: { y: { ticks: { callback: v => v + '%' } } } }
+    }));
+  }
 }
 
 function handleAnalysisFile(e) {
@@ -3102,7 +3147,10 @@ function renderReport(d) {
     return 'tone-blue';
   }
 
-  const metrics = buildReportMetrics(d);
+  let metrics = buildReportMetrics(d);
+  if (type === 'income_statement' && typeof filterPLMetrics === 'function') {
+    metrics = filterPLMetrics(metrics);
+  }
   document.getElementById('rpt-metrics').innerHTML = metrics.map(m => `
     <div class="metric-card ${m.f || ''}">
       <div class="metric-label">${m.l}</div>
@@ -3113,9 +3161,24 @@ function renderReport(d) {
 
   analysisCharts.forEach(c => c.destroy());
   analysisCharts = [];
+  if (type === 'income_statement' && typeof applyDashboardVisibility === 'function') {
+    applyDashboardVisibility(d);
+  } else if (typeof applyDashboardVisibility === 'function') {
+    document.getElementById('rpt-metrics').style.display = '';
+    document.querySelector('.rpt-charts-grid').style.display = '';
+    ['rpt-chart-area-revenue', 'rpt-chart-area-waterfall', 'rpt-chart-area-opex', 'rpt-chart-area-benchmark'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = '';
+    });
+    ['rpt-section-findings', 'rpt-section-actions', 'rpt-summary-box'].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.style.display = '';
+    });
+  }
   renderReportCharts(d);
 
-  document.getElementById('rpt-findings').innerHTML = buildReportFindings(d).map(f => `
+  const findings = buildReportFindings(d);
+  document.getElementById('rpt-findings').innerHTML = findings.map(f => `
     <div class="finding-card">
       <span class="finding-tag tag-${f.t === 'good' ? 'good' : f.t === 'warn' ? 'warn' : 'bad'}">
         <span class="tag-dot"></span>${f.t === 'good' ? 'Strength' : f.t === 'warn' ? 'Watch closely' : 'Critical'}
@@ -3154,6 +3217,7 @@ function renderReport(d) {
     markFreeAnalysisUsed();
   }
   if (typeof renderUsageGateBanner === 'function') renderUsageGateBanner();
+  if (typeof renderDashboardCustomizePanel === 'function') renderDashboardCustomizePanel();
 
   document.getElementById('analysis-report').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -3186,6 +3250,7 @@ Speak like a trusted advisor, not a report. Use their exact numbers. Keep respon
 
 </script>
 <script src="company-store.js"></script>
+<script src="dashboard-config.js"></script>
 <script src="usage-gate.js"></script>
 <script src="auth-ui.js"></script>
 <script src="ap-pay-engine.js"></script>
