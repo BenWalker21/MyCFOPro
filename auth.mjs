@@ -203,7 +203,8 @@ function normalizeCloudStore(store) {
     },
     deck: store.deck && typeof store.deck === 'object' ? store.deck : { optionsState: {} },
     reportsByType: store.reportsByType && typeof store.reportsByType === 'object' ? store.reportsByType : {},
-    dashboardPref: typeof store.dashboardPref === 'string' ? store.dashboardPref : 'owner'
+    dashboardPref: typeof store.dashboardPref === 'string' ? store.dashboardPref : 'owner',
+    dashboardConfig: store.dashboardConfig && typeof store.dashboardConfig === 'object' ? store.dashboardConfig : null
   };
 }
 

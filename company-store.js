@@ -12,6 +12,7 @@ function createEmptyCompanyStore() {
     latest: null,
     reportsByType: {},
     dashboardPref: 'owner',
+    dashboardConfig: null,
     history: [],
     health: {
       company: '',
@@ -57,6 +58,9 @@ function normalizeCompanyStore() {
   if (!Array.isArray(companyStore.history)) companyStore.history = [];
   if (!companyStore.deck) companyStore.deck = { optionsState: {} };
   if (!companyStore.reportsByType) companyStore.reportsByType = {};
+  if (companyStore.dashboardConfig && typeof companyStore.dashboardConfig !== 'object') {
+    companyStore.dashboardConfig = null;
+  }
   if (companyStore.latest?.financials) {
     const legacyType = companyStore.latest.statementType || companyStore.latest.financials.statementType || 'income_statement';
     if (!companyStore.reportsByType[legacyType]) {
@@ -462,6 +466,7 @@ function hydrateAppFromStore() {
   updateNavCompanyBadge();
   updateHeroFromStore();
   if (typeof renderHealthPage === 'function') renderHealthPage();
+  if (typeof renderDashboardCustomizePanel === 'function') renderDashboardCustomizePanel();
 }
 
 function updateNavCompanyBadge() {
