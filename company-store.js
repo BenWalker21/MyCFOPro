@@ -361,9 +361,9 @@ function renderConnectedFlowPanel() {
       </div>
     </div>
     <div class="cf-actions">
-      <button class="btn-blue" style="font-size:12px;padding:8px 14px" onclick="goPage('health', document.querySelectorAll('.nav-link')[5])">View health trends →</button>
+      <button class="btn-blue" style="font-size:12px;padding:8px 14px" onclick="goPage('health', document.querySelectorAll('.nav-link')[4])">View health trends →</button>
       <button class="btn-outline" style="font-size:12px;padding:8px 14px" onclick="goPage('slides', document.querySelectorAll('.nav-link')[2])">Open slide deck →</button>
-      <button class="btn-outline" style="font-size:12px;padding:8px 14px" onclick="goPage('bot', document.querySelectorAll('.nav-link')[4])">Ask Clara →</button>
+      <button class="btn-outline" style="font-size:12px;padding:8px 14px" onclick="goPage('bot', document.querySelectorAll('.nav-link')[3])">Ask Clara →</button>
     </div>`;
 
   const banner = document.getElementById('health-save-banner');

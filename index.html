@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyCFOPro.AI — CFO Intelligence for Small Business</title>
-<meta name="description" content="Upload small-business financials and get CFO-grade insights, KPI tracking, presentation decks, and practical action plans in minutes.">
+<meta name="description" content="Upload small-business financials and get CFO-grade insights, company health tracking, presentation decks, and practical action plans in minutes.">
 <meta property="og:title" content="MyCFOPro.AI — CFO Intelligence for Small Business">
 <meta property="og:description" content="Turn QuickBooks, Xero, Wave, Excel, CSV, or PDF exports into plain-English business insights.">
 <meta property="og:type" content="website">
@@ -472,56 +472,6 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 .deck-option-desc{font-size:11px;color:var(--ink-3);line-height:1.45;margin-top:2px;display:block}
 .deck-export-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
 .deck-export-status{font-size:12px;color:var(--ink-3)}
-
-/* KPI grid */
-.kpi-toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:1.25rem}
-.kpi-cat-tabs{display:flex;gap:6px;flex-wrap:wrap;flex:1}
-.kpi-cat-tab{font-size:12px;font-weight:600;padding:7px 12px;border-radius:999px;border:1px solid var(--border);background:var(--white);color:var(--ink-3);cursor:pointer}
-.kpi-cat-tab.active,.kpi-cat-tab:hover{background:var(--blue-bg);border-color:var(--blue);color:var(--blue)}
-.kpi-search{flex:1;min-width:180px;max-width:280px;padding:9px 12px;border:1px solid var(--border);border-radius:var(--rs);font-size:13px;font-family:inherit}
-.kpi-prefill-status{font-size:12px;color:var(--green);min-width:120px}
-.kpi-track-status{font-size:12px;color:var(--green);margin-bottom:1rem;min-height:18px}
-.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px}
-.kpi-card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.3rem;transition:border-color 0.13s}
-.kpi-card-calc:hover{border-color:#c7d2ef}
-.kpi-name-row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px}
-.kpi-tracked-badge{font-size:10px;font-weight:700;color:var(--green);background:var(--green-bg);padding:3px 8px;border-radius:999px;border:1px solid #cceedd;white-space:nowrap}
-.kpi-cat{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;padding:3px 8px;border-radius:10px;display:inline-block;margin-bottom:9px}
-.kpi-name{font-size:15px;font-weight:700;color:var(--ink)}
-.kpi-formula{font-size:11px;font-family:monospace;color:var(--blue);background:var(--blue-bg);padding:3px 8px;border-radius:5px;display:inline-block;margin-bottom:8px}
-.kpi-desc{font-size:12px;color:var(--ink-3);line-height:1.6;margin-bottom:12px}
-.kpi-calc-panel{background:var(--off);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:10px}
-.kpi-calc-inputs{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-bottom:10px}
-.kpi-calc-field{display:flex;flex-direction:column;gap:4px}
-.kpi-calc-field span{font-size:10px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.3px}
-.kpi-calc-field input{padding:8px 10px;border:1px solid var(--border);border-radius:var(--rs);font-size:13px;font-family:inherit;background:var(--white)}
-.kpi-calc-field input:focus{outline:none;border-color:var(--blue)}
-.kpi-result-row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
-.kpi-result-block{flex:1;min-width:120px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--white)}
-.kpi-result-block.kpi-status-good{border-color:#cceedd;background:var(--green-bg)}
-.kpi-result-block.kpi-status-warn{border-color:#f4dfad;background:var(--amber-bg)}
-.kpi-result-block.kpi-status-bad{border-color:#fecaca;background:#fef2f2}
-.kpi-result-label{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--ink-3);margin-bottom:4px}
-.kpi-result-value{font-size:22px;font-weight:900;color:var(--ink);letter-spacing:-0.04em}
-.kpi-result-status{font-size:11px;font-weight:700;margin-top:4px}
-.kpi-status-good .kpi-result-status{color:var(--green)}
-.kpi-status-warn .kpi-result-status{color:var(--amber)}
-.kpi-status-bad .kpi-result-status{color:var(--red)}
-.kpi-track-col{display:flex;flex-direction:column;gap:6px;min-width:160px}
-.kpi-month-field{display:flex;flex-direction:column;gap:4px}
-.kpi-month-field span{font-size:10px;font-weight:700;color:var(--ink-3)}
-.kpi-month-field input{padding:7px 10px;border:1px solid var(--border);border-radius:var(--rs);font-size:12px;font-family:inherit}
-.kpi-track-btn{font-size:12px;padding:9px 12px;width:100%}
-.kpi-benchmark{display:flex;align-items:flex-start;gap:6px;margin-top:4px;padding-top:9px;border-top:1px solid var(--border);font-size:11px;color:var(--ink-3)}
-.kpi-benchmark strong{color:var(--ink)}
-.health-tracked-kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
-.health-tracked-kpi-card{background:var(--off);border:1px solid var(--border);border-radius:var(--r);padding:1rem 1.1rem}
-.health-tracked-kpi-card.kpi-status-good{border-color:#cceedd;background:var(--green-bg)}
-.health-tracked-kpi-card.kpi-status-warn{border-color:#f4dfad;background:var(--amber-bg)}
-.health-tracked-kpi-card.kpi-status-bad{border-color:#fecaca;background:#fef2f2}
-.health-tracked-kpi-head{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:2px}
-.health-kpi-remove{background:none;border:none;color:var(--ink-3);font-size:18px;line-height:1;cursor:pointer;padding:0 2px;border-radius:4px}
-.health-kpi-remove:hover{color:var(--red);background:#fef2f2}
 
 /* AP Cash Planner */
 .ap-cash-planner{
@@ -999,7 +949,6 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
     <button class="nav-link active" onclick="goPage('home',this)">Home</button>
     <button class="nav-link" onclick="goPage('analysis',this)">Financial Analysis</button>
     <button class="nav-link" onclick="goPage('slides',this)">Slide Deck</button>
-    <button class="nav-link" onclick="goPage('kpi',this)">KPI Library</button>
     <button class="nav-link" onclick="goPage('bot',this)">CFO Advisor</button>
     <button class="nav-link" onclick="goPage('health',this)">Company Health</button>
   </div>
@@ -1061,10 +1010,10 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
     <div class="hero-inner">
       <div class="hero-eyebrow"><span></span>AI-Powered CFO Platform for Small Business</div>
       <h1 class="hero-h1">Your numbers,<br><em>finally working for you.</em></h1>
-      <p class="hero-sub">Upload your financials and get a complete CFO experience — instant analysis, CEO-ready slide decks, KPI tracking, and a CFO advisor you can actually talk to.</p>
+      <p class="hero-sub">Upload your financials and get a complete CFO experience — instant analysis, CEO-ready slide decks, company health tracking, and a CFO advisor you can actually talk to.</p>
       <div class="hero-actions">
         <button class="btn-gold" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Analyze my financials</button>
-        <button class="btn-ghost" onclick="goPage('kpi',document.querySelectorAll('.nav-link')[3])">Explore the KPI library</button>
+        <button class="btn-ghost" onclick="goPage('bot',document.querySelectorAll('.nav-link')[3])">Talk to Clara</button>
       </div>
       <div class="hero-trust">
         <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Secure cloud sync across devices</div>
@@ -1112,19 +1061,13 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
           <div class="service-desc">Auto-generate a polished, presentation-ready slide deck from your financial data. Walk into any boardroom ready.</div>
           <div class="service-cta">Build a deck →</div>
         </div>
-        <div class="service-card" onclick="goPage('kpi',document.querySelectorAll('.nav-link')[3])">
-          <div class="service-icon si-green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-          <div class="service-name">KPI Library</div>
-          <div class="service-desc">17 essential KPI calculators — enter your numbers, see benchmarks, and track what matters month over month.</div>
-          <div class="service-cta">Explore KPIs →</div>
-        </div>
-        <div class="service-card" onclick="goPage('bot',document.querySelectorAll('.nav-link')[4])">
+        <div class="service-card" onclick="goPage('bot',document.querySelectorAll('.nav-link')[3])">
           <div class="service-icon si-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
           <div class="service-name">CFO Advisor</div>
           <div class="service-desc">Ask Clara anything about your financials. She knows your numbers and gives straight answers, not reports.</div>
           <div class="service-cta">Talk to Clara →</div>
         </div>
-        <div class="service-card" onclick="goPage('health',document.querySelectorAll('.nav-link')[5])">
+        <div class="service-card" onclick="goPage('health',document.querySelectorAll('.nav-link')[4])">
           <div class="service-icon si-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
           <div class="service-name">Company Health</div>
           <div class="service-desc">Track your financial performance over time. See trends, spot problems early, and watch your health score improve.</div>
@@ -1141,7 +1084,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
     <div class="stats-row">
       <div class="stat-item"><div class="stat-num">$180K</div><div class="stat-label">Average CFO salary MyCFOPro replaces</div></div>
       <div class="stat-item"><div class="stat-num">&lt;60s</div><div class="stat-label">From upload to full CFO report</div></div>
-      <div class="stat-item"><div class="stat-num">17+</div><div class="stat-label">Essential KPI calculators with benchmarks</div></div>
+      <div class="stat-item"><div class="stat-num">6</div><div class="stat-label">Statement types — P&amp;L, balance sheet, AR, AP &amp; more</div></div>
       <div class="stat-item"><div class="stat-num">$49</div><div class="stat-label">Pro plan — full CFO workspace</div></div>
     </div>
     <div class="use-case-grid">
@@ -1151,7 +1094,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       </div>
       <div class="use-case-card">
         <div class="use-case-title">Profitable but tight on cash</div>
-        <div class="use-case-text">Use the analysis and KPI tools to separate profit from collections timing — then ask Clara what to fix first based on your actual numbers.</div>
+        <div class="use-case-text">Use financial analysis to separate profit from collections timing — then ask Clara what to fix first based on your actual numbers.</div>
       </div>
       <div class="use-case-card">
         <div class="use-case-title">Board-ready in minutes</div>
@@ -1189,7 +1132,6 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
             <li>CEO slide deck builder</li>
             <li>CFO Advisor (Clara)</li>
             <li>Company health tracking</li>
-            <li>17+ KPI calculators</li>
             <li>Cloud sync across devices</li>
           </ul>
           <button class="plan-btn primary" onclick="openAuthModal('signup')">Create account — get Pro access</button>
@@ -1219,7 +1161,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
       <p class="cta-sub">Try one analysis free. Create an account for unlimited access, Clara, health tracking, and slide decks.</p>
       <div class="cta-actions">
         <button class="btn-gold" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Analyze my financials</button>
-        <button class="btn-ghost" onclick="goPage('bot',document.querySelectorAll('.nav-link')[4])">Talk to Clara first</button>
+        <button class="btn-ghost" onclick="goPage('bot',document.querySelectorAll('.nav-link')[3])">Talk to Clara first</button>
       </div>
     </div>
   </section>
@@ -1437,34 +1379,6 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 </div>
 
 <!-- ══════════════════════════════════════
-  KPI LIBRARY PAGE
-══════════════════════════════════════ -->
-<div class="page" id="page-kpi">
-  <div class="svc-page">
-    <div class="svc-hero" style="margin-bottom:1.25rem">
-      <div class="svc-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>KPI Library</div>
-      <h1 class="svc-h1">Calculate any KPI.<br>Track what matters.</h1>
-      <p class="svc-sub">Enter your numbers, get instant results with benchmarks — then add any KPI to your monthly Company Health tracker with one click.</p>
-    </div>
-    <div class="kpi-toolbar">
-      <div class="kpi-cat-tabs" id="kpi-cat-tabs">
-        <button type="button" class="kpi-cat-tab active" onclick="setKpiCategory('All', this)">All</button>
-        <button type="button" class="kpi-cat-tab" onclick="setKpiCategory('Profitability', this)">Profitability</button>
-        <button type="button" class="kpi-cat-tab" onclick="setKpiCategory('Liquidity', this)">Liquidity</button>
-        <button type="button" class="kpi-cat-tab" onclick="setKpiCategory('Efficiency', this)">Efficiency</button>
-        <button type="button" class="kpi-cat-tab" onclick="setKpiCategory('Leverage', this)">Leverage</button>
-        <button type="button" class="kpi-cat-tab" onclick="setKpiCategory('Growth', this)">Growth</button>
-      </div>
-      <input type="search" class="kpi-search" placeholder="Search KPIs…" oninput="filterKpiSearch(this.value)">
-      <button class="btn-outline" style="font-size:12px;padding:8px 14px;white-space:nowrap" onclick="prefillKpiInputsFromFinancials(true)">Fill from my financials</button>
-      <span class="kpi-prefill-status" id="kpi-prefill-status"></span>
-    </div>
-    <div class="kpi-track-status" id="kpi-track-status"></div>
-    <div class="kpi-grid" id="kpi-grid"></div>
-  </div>
-</div>
-
-<!-- ══════════════════════════════════════
   CFO ADVISOR PAGE
 ══════════════════════════════════════ -->
 <div class="page" id="page-bot">
@@ -1582,8 +1496,6 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
     <div id="health-data-content" style="display:none">
       <div class="health-summary-grid" id="health-summary-grid"></div>
 
-      <div class="health-chart-area" id="health-tracked-kpis" style="display:none"></div>
-
       <div class="health-chart-area">
         <div class="hca-header">
           <div><div class="hca-title">Health score over time</div><div class="hca-sub" id="health-score-sub">Last 6 months</div></div>
@@ -1658,7 +1570,6 @@ function goPage(id, btn) {
   if (btn) btn.classList.add('active');
   window.scrollTo(0, 0);
   if (id === 'health' && typeof renderHealthPage === 'function') renderHealthPage();
-  if (id === 'kpi' && typeof initKpiPage === 'function') initKpiPage();
   if (id === 'bot' && typeof ensureBotInit === 'function') ensureBotInit();
   if (id === 'analysis') {
     if (typeof renderWelcomeBackBanner === 'function') renderWelcomeBackBanner();
@@ -1758,7 +1669,6 @@ function showPricingComingSoon(tier) {
 window.addEventListener('load', () => {
   initHeroPreviewCharts(null);
 
-  buildKPIs();
   initUploadDropzone();
   updateStatementUploadCopy();
   if (typeof initClaraAvatarImages === 'function') initClaraAvatarImages();
@@ -3367,7 +3277,6 @@ Speak like a trusted advisor, not a report. Use their exact numbers. Keep respon
 <script src="usage-gate.js"></script>
 <script src="dashboard-prefs.js"></script>
 <script src="auth-ui.js"></script>
-<script src="kpi-engine.js"></script>
 <script src="ap-pay-engine.js"></script>
 <script src="deck-engine.js"></script>
 <script src="health-engine.js"></script>

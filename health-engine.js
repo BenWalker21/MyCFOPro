@@ -322,7 +322,7 @@ function showHealthSaveBanner(monthKey) {
   banner.style.display = 'flex';
   banner.innerHTML = `
     <span>📈 This month was added to <strong>Company Health</strong> (${monthKeyToLabel(monthKey)}).</span>
-    <button class="btn-outline" style="padding:6px 12px;font-size:12px" onclick="goPage('health', document.querySelectorAll('.nav-link')[5])">View trends →</button>
+    <button class="btn-outline" style="padding:6px 12px;font-size:12px" onclick="goPage('health', document.querySelectorAll('.nav-link')[4])">View trends →</button>
     <button style="background:none;border:none;color:var(--ink-3);cursor:pointer;font-size:18px;line-height:1" onclick="this.closest('#health-save-banner').style.display='none'">×</button>`;
 }
 
@@ -378,7 +378,7 @@ function saveHealthGoals() {
 
 function renderHealthPage() {
   loadHealthStore();
-  const hasData = healthStore.entries.length > 0 || (healthStore.trackedKpiIds?.length > 0);
+  const hasData = healthStore.entries.length > 0;
   const empty = document.getElementById('health-empty-hint');
   const content = document.getElementById('health-data-content');
   if (empty) empty.style.display = hasData ? 'none' : 'block';
@@ -400,7 +400,6 @@ function renderHealthPage() {
   renderHealthGoals();
   renderHealthCharts();
   renderHealthHistory();
-  if (typeof renderTrackedKpisPanel === 'function') renderTrackedKpisPanel();
   updateHealthPeriodLabel();
 }
 

@@ -40,7 +40,7 @@ npm start
 - A marketing homepage for the AI CFO product
 - Financial statement upload for CSV, Excel, and PDF exports
 - CFO-style analysis reports with charts and action items
-- KPI library with calculators, company health dashboard, CEO slide deck, and Clara advisor
+- Company health dashboard, CEO slide deck, and Clara advisor
 - Optional secure AI backend for generated CFO reports and Clara chat
 - Accounts and cloud sync when running via `npm start`
 
