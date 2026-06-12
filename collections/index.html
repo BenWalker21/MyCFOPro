@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CashQueue — AI Collections Copilot for QuickBooks &amp; Xero</title>
+<meta name="description" content="Every morning: who to contact, what to say, and how much cash you should collect this week. AI collections for businesses with overdue invoices.">
+<meta name="theme-color" content="#0a1628">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#0a1628;--ink-2:#334155;--ink-3:#64748b;--ink-4:#94a3b8;
+  --blue:#0f2570;--blue-l:#1a4480;--blue-bg:#eef2ff;
+  --green:#16a34a;--green-bg:#ecfdf5;
+  --amber:#d97706;--amber-bg:#fffbeb;
+  --red:#dc2626;--red-bg:#fef2f2;
+  --white:#fff;--off:#f8fafc;--border:#e2e8f0;
+  --r:16px;--rs:10px;
+}
+html{scroll-behavior:smooth}
+body{font-family:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:var(--ink);background:var(--white);line-height:1.5;-webkit-font-smoothing:antialiased}
+
+.nav{
+  position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:0.85rem 1.5rem;background:rgba(255,255,255,0.92);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);
+}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;color:inherit}
+.nav-mark{
+  width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--blue),var(--green));
+  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:15px;
+}
+.nav-name{font-size:15px;font-weight:800;letter-spacing:-0.02em}
+.nav-name b{color:var(--blue)}
+.nav-links{display:flex;gap:1.25rem;align-items:center}
+.nav-links a{font-size:13px;font-weight:600;color:var(--ink-3);text-decoration:none}
+.nav-links a:hover{color:var(--blue)}
+.nav-cta{
+  padding:8px 16px;border-radius:999px;border:none;background:var(--blue);color:#fff;
+  font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
+}
+.nav-cta:hover{background:var(--blue-l)}
+
+.hero{
+  padding:4rem 1.5rem 3rem;background:linear-gradient(180deg,#f0f4ff 0%,#fff 55%);
+  text-align:center;
+}
+.hero-inner{max-width:720px;margin:0 auto}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;
+  background:var(--green-bg);color:var(--green);font-size:11px;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.5px;margin-bottom:1rem;
+}
+.hero h1{
+  font-size:clamp(2rem,5vw,3rem);font-weight:900;letter-spacing:-0.04em;line-height:1.1;
+  color:var(--ink);margin-bottom:1rem;
+}
+.hero h1 em{font-style:normal;color:var(--blue)}
+.hero-sub{font-size:17px;color:var(--ink-3);max-width:560px;margin:0 auto 1.5rem;line-height:1.65}
+.hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-bottom:2rem}
+.btn-primary{
+  padding:12px 22px;border-radius:999px;border:none;background:var(--blue);color:#fff;
+  font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
+}
+.btn-primary:hover{background:var(--blue-l)}
+.btn-secondary{
+  padding:12px 22px;border-radius:999px;border:1.5px solid var(--border);background:#fff;
+  font-size:14px;font-weight:700;color:var(--ink-2);cursor:pointer;font-family:inherit;
+}
+.btn-secondary:hover{border-color:var(--blue);color:var(--blue)}
+.hero-stats{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap}
+.hero-stat{text-align:center}
+.hero-stat strong{display:block;font-size:22px;font-weight:900;color:var(--ink)}
+.hero-stat span{font-size:11px;color:var(--ink-3);font-weight:600;text-transform:uppercase;letter-spacing:0.4px}
+
+.section{padding:3.5rem 1.5rem}
+.section-inner{max-width:1100px;margin:0 auto}
+.section-label{
+  font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;
+  color:var(--blue);margin-bottom:0.5rem;text-align:center;
+}
+.section-title{
+  font-size:clamp(1.5rem,3vw,2rem);font-weight:900;letter-spacing:-0.03em;
+  text-align:center;margin-bottom:0.5rem;
+}
+.section-sub{font-size:15px;color:var(--ink-3);text-align:center;max-width:560px;margin:0 auto 2rem;line-height:1.6}
+
+.demo-wrap{
+  background:var(--off);border:1px solid var(--border);border-radius:20px;
+  overflow:hidden;box-shadow:0 20px 50px rgba(15,37,112,0.08);
+}
+.demo-bar{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;
+  padding:12px 16px;background:var(--ink);color:#fff;
+}
+.demo-bar-title{font-size:13px;font-weight:700}
+.demo-bar-sub{font-size:11px;color:rgba(255,255,255,0.55)}
+.demo-send{
+  padding:8px 14px;border-radius:999px;border:none;background:var(--green);color:#fff;
+  font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;
+}
+.demo-send:hover{filter:brightness(1.05)}
+.demo-grid{display:grid;grid-template-columns:1fr 1fr;min-height:420px}
+.demo-queue{border-right:1px solid var(--border);background:#fff}
+.demo-queue-head{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  font-size:12px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.4px;
+}
+.queue-item{
+  display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid var(--border);
+  cursor:pointer;transition:background 0.12s;
+}
+.queue-item:hover,.queue-item.active{background:var(--blue-bg)}
+.queue-rank{
+  width:24px;height:24px;border-radius:6px;background:var(--off);font-size:11px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;color:var(--ink-3);flex-shrink:0;
+}
+.queue-item.active .queue-rank{background:var(--blue);color:#fff}
+.queue-main{flex:1;min-width:0}
+.queue-name{font-size:14px;font-weight:700;color:var(--ink)}
+.queue-meta{font-size:12px;color:var(--ink-3);margin-top:2px}
+.queue-amt{font-size:14px;font-weight:800;color:var(--ink);white-space:nowrap}
+.queue-tag{
+  display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;margin-top:4px;
+}
+.tag-likely{background:var(--green-bg);color:var(--green)}
+.tag-overdue{background:var(--amber-bg);color:var(--amber)}
+.tag-call{background:var(--red-bg);color:var(--red)}
+
+.demo-email{background:var(--off);display:flex;flex-direction:column}
+.demo-email-head{
+  padding:12px 16px;border-bottom:1px solid var(--border);background:#fff;
+  font-size:12px;font-weight:700;color:var(--ink-3);
+}
+.demo-email-body{flex:1;padding:16px;overflow-y:auto}
+.email-meta{font-size:11px;color:var(--ink-3);margin-bottom:12px;line-height:1.6}
+.email-meta strong{color:var(--ink-2)}
+.email-draft{
+  background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px;
+  font-size:13px;line-height:1.7;color:var(--ink-2);white-space:pre-wrap;
+}
+.email-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.email-btn{
+  padding:7px 12px;border-radius:999px;border:1px solid var(--border);background:#fff;
+  font-size:11px;font-weight:700;cursor:pointer;font-family:inherit;
+}
+.email-btn.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.step{
+  background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:1.25rem;
+}
+.step-num{
+  width:28px;height:28px;border-radius:8px;background:var(--blue);color:#fff;
+  font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:10px;
+}
+.step-title{font-size:15px;font-weight:800;margin-bottom:6px}
+.step-desc{font-size:13px;color:var(--ink-3);line-height:1.55}
+
+.features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.feat{
+  background:#fff;border:1px solid var(--border);border-radius:var(--r);padding:1.15rem;
+}
+.feat-icon{font-size:24px;margin-bottom:8px}
+.feat-title{font-size:14px;font-weight:800;margin-bottom:4px}
+.feat-desc{font-size:12px;color:var(--ink-3);line-height:1.55}
+
+.timeline{
+  display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:1rem;
+}
+.tl-step{
+  flex:1;min-width:180px;max-width:220px;background:#fff;border:1px solid var(--border);
+  border-radius:12px;padding:14px;text-align:center;
+}
+.tl-day{font-size:11px;font-weight:700;color:var(--blue);text-transform:uppercase;margin-bottom:4px}
+.tl-tone{font-size:13px;font-weight:800;margin-bottom:4px}
+.tl-sample{font-size:11px;color:var(--ink-3);line-height:1.45}
+
+.metrics-bar{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:1.5rem;
+}
+.metric{
+  background:#fff;border:1px solid var(--border);border-radius:12px;padding:14px;text-align:center;
+}
+.metric-val{font-size:22px;font-weight:900;color:var(--ink)}
+.metric-val.green{color:var(--green)}
+.metric-lbl{font-size:10px;font-weight:700;text-transform:uppercase;color:var(--ink-4);margin-top:4px}
+
+.pricing-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;max-width:800px;margin:0 auto}
+.plan{
+  background:#fff;border:1.5px solid var(--border);border-radius:var(--r);padding:1.5rem;
+}
+.plan.featured{border-color:var(--blue);box-shadow:0 8px 30px rgba(15,37,112,0.1)}
+.plan-name{font-size:13px;font-weight:800;color:var(--blue);text-transform:uppercase;letter-spacing:0.4px}
+.plan-price{font-size:36px;font-weight:900;letter-spacing:-0.03em;margin:8px 0}
+.plan-price span{font-size:14px;font-weight:600;color:var(--ink-3)}
+.plan-desc{font-size:13px;color:var(--ink-3);margin-bottom:1rem;line-height:1.5}
+.plan ul{list-style:none;font-size:13px;color:var(--ink-2)}
+.plan li{padding:5px 0;padding-left:18px;position:relative}
+.plan li::before{content:'✓';position:absolute;left:0;color:var(--green);font-weight:800}
+.plan-btn{
+  width:100%;margin-top:1rem;padding:11px;border-radius:var(--rs);border:1.5px solid var(--border);
+  background:#fff;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
+}
+.plan.featured .plan-btn{background:var(--blue);border-color:var(--blue);color:#fff}
+
+.waitlist{
+  background:linear-gradient(135deg,var(--ink) 0%,var(--blue) 100%);
+  color:#fff;text-align:center;padding:3.5rem 1.5rem;border-radius:0;
+}
+.waitlist h2{font-size:clamp(1.5rem,3vw,2rem);font-weight:900;margin-bottom:0.5rem}
+.waitlist p{color:rgba(255,255,255,0.75);margin-bottom:1.5rem;font-size:15px}
+.waitlist-form{display:flex;gap:8px;max-width:440px;margin:0 auto;flex-wrap:wrap;justify-content:center}
+.waitlist-form input{
+  flex:1;min-width:200px;padding:12px 16px;border-radius:999px;border:none;font-size:14px;
+  font-family:inherit;
+}
+.waitlist-form button{
+  padding:12px 20px;border-radius:999px;border:none;background:var(--green);color:#fff;
+  font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;
+}
+.waitlist-note{font-size:11px;color:rgba(255,255,255,0.5);margin-top:12px}
+.waitlist-success{display:none;color:var(--green);background:#fff;padding:10px 16px;border-radius:999px;font-weight:700;font-size:13px;margin-top:12px}
+
+.faq{max-width:640px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--border);padding:1rem 0}
+.faq-q{font-size:14px;font-weight:700;margin-bottom:4px}
+.faq-a{font-size:13px;color:var(--ink-3);line-height:1.6}
+
+.footer{padding:2rem 1.5rem;text-align:center;font-size:12px;color:var(--ink-4);border-top:1px solid var(--border)}
+
+.toast-stack{position:fixed;bottom:20px;right:20px;z-index:100;display:flex;flex-direction:column;gap:8px}
+.toast-item{
+  background:var(--ink);color:#fff;padding:12px 16px;border-radius:10px;font-size:13px;font-weight:600;
+  box-shadow:0 8px 24px rgba(0,0,0,0.2);animation:toastIn 0.25s ease;
+}
+@keyframes toastIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:800px){
+  .demo-grid{grid-template-columns:1fr}
+  .demo-queue{border-right:none;border-bottom:1px solid var(--border)}
+  .steps{grid-template-columns:1fr}
+  .metrics-bar{grid-template-columns:repeat(2,1fr)}
+  .nav-links{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-logo" href="#">
+    <div class="nav-mark">$</div>
+    <div class="nav-name">Cash<b>Queue</b></div>
+  </a>
+  <div class="nav-links">
+    <a href="#demo">Demo</a>
+    <a href="#how">How it works</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#faq">FAQ</a>
+  </div>
+  <button class="nav-cta" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">Get early access</button>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">AI Collections Copilot</div>
+    <h1>Know who to email<br><em>every morning.</em></h1>
+    <p class="hero-sub">CashQueue connects to QuickBooks and Xero, prioritizes overdue invoices, drafts personalized follow-ups, and tracks payment promises — so you collect cash faster without awkward spam.</p>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="document.getElementById('waitlist').scrollIntoView({behavior:'smooth'})">Join the waitlist</button>
+      <button class="btn-secondary" onclick="document.getElementById('demo').scrollIntoView({behavior:'smooth'})">Try the demo</button>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat"><strong>$847k</strong><span>Avg AR monitored</span></div>
+      <div class="hero-stat"><strong>12 days</strong><span>Faster collection</span></div>
+      <div class="hero-stat"><strong>1 click</strong><span>Send today's queue</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="demo" style="background:var(--off);padding-top:2rem">
+  <div class="section-inner">
+    <div class="section-label">Live preview</div>
+    <h2 class="section-title">Today's highest-impact outreach</h2>
+    <p class="section-sub">Click a customer to see the AI-drafted email. Tone adapts to history — friendly for reliable payers, firmer for chronic late payers.</p>
+
+    <div class="demo-wrap">
+      <div class="demo-bar">
+        <div>
+          <div class="demo-bar-title">Thursday, June 11 — 4 accounts need attention</div>
+          <div class="demo-bar-sub">$58,600 overdue · $31,200 expected this week</div>
+        </div>
+        <button class="demo-send" onclick="demoSendAll()">Send 4 emails →</button>
+      </div>
+      <div class="demo-grid">
+        <div class="demo-queue">
+          <div class="demo-queue-head">Priority queue</div>
+          <div id="queue-list"></div>
+        </div>
+        <div class="demo-email">
+          <div class="demo-email-head">AI-drafted follow-up</div>
+          <div class="demo-email-body" id="email-panel"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metrics-bar">
+      <div class="metric"><div class="metric-val">$284k</div><div class="metric-lbl">Outstanding AR</div></div>
+      <div class="metric"><div class="metric-val green">68%</div><div class="metric-lbl">Collection rate</div></div>
+      <div class="metric"><div class="metric-val">34</div><div class="metric-lbl">Avg days to collect</div></div>
+      <div class="metric"><div class="metric-val green">$42k</div><div class="metric-lbl">Cash recovered (30d)</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="how">
+  <div class="section-inner">
+    <div class="section-label">How it works</div>
+    <h2 class="section-title">From overdue invoice to cash in bank</h2>
+    <p class="section-sub">Three steps. No new workflow to learn.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Connect QuickBooks or Xero</div>
+        <div class="step-desc">Sync open invoices, customer history, and aging automatically. Gmail or Outlook for sending.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-title">Review this morning's queue</div>
+        <div class="step-desc">AI ranks who to contact by amount, age, and likelihood to pay. Call vs email recommended for each.</div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-title">Approve and send</div>
+        <div class="step-desc">Personalized drafts — not mail-merge spam. Escalate tone on Day 7, 21, and 45 automatically.</div>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top:2.5rem">Escalation cadence</div>
+    <div class="timeline">
+      <div class="tl-step">
+        <div class="tl-day">Day 7</div>
+        <div class="tl-tone">Friendly reminder</div>
+        <div class="tl-sample">"Just a quick note — invoice #1042 is past due. Let me know if you need anything from our side."</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-day">Day 21</div>
+        <div class="tl-tone">Confirm timing</div>
+        <div class="tl-sample">"Can you confirm when we should expect payment on the $18,000 balance? Happy to discuss terms."</div>
+      </div>
+      <div class="tl-step">
+        <div class="tl-day">Day 45</div>
+        <div class="tl-tone">Escalation + plan</div>
+        <div class="tl-sample">"We need to resolve this balance this week. I can offer a short payment plan if that helps."</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" style="background:var(--off)">
+  <div class="section-inner">
+    <div class="section-label">Features</div>
+    <h2 class="section-title">Everything your bookkeeper wishes they had</h2>
+    <div class="features-grid">
+      <div class="feat">
+        <div class="feat-icon">📋</div>
+        <div class="feat-title">Smart collections queue</div>
+        <div class="feat-desc">Each morning: highest-impact accounts first — who pays if you nudge them today.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">✉️</div>
+        <div class="feat-title">AI email personalization</div>
+        <div class="feat-desc">Tone adapts to customer history — soft for reliable payers, firm for chronic late payers.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">📅</div>
+        <div class="feat-title">Promise tracking</div>
+        <div class="feat-desc">Customer says "paying Friday"? AI logs it, follows up automatically, alerts if they miss.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">📈</div>
+        <div class="feat-title">Collections analytics</div>
+        <div class="feat-desc">DSO trend, expected collections this week, customers at risk, collector leaderboard.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🔗</div>
+        <div class="feat-title">QuickBooks &amp; Xero</div>
+        <div class="feat-desc">Pull invoices and aging automatically. Stripe and ERP integrations on the roadmap.</div>
+      </div>
+      <div class="feat">
+        <div class="feat-icon">🛡️</div>
+        <div class="feat-title">You stay in control</div>
+        <div class="feat-desc">Review drafts before send. Auto-send optional once you trust the tone. Sends from your inbox.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="pricing">
+  <div class="section-inner">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title">Pays for itself with one collected invoice</h2>
+    <p class="section-sub">Early access pricing for founding customers. Lock in rates before launch.</p>
+    <div class="pricing-grid">
+      <div class="plan">
+        <div class="plan-name">Starter</div>
+        <div class="plan-price">$79<span>/mo</span></div>
+        <div class="plan-desc">For businesses with up to $150k in outstanding AR.</div>
+        <ul>
+          <li>QuickBooks or Xero sync</li>
+          <li>Daily priority queue</li>
+          <li>AI email drafts</li>
+          <li>Manual approve &amp; send</li>
+        </ul>
+        <button class="plan-btn" onclick="scrollWaitlist()">Join waitlist</button>
+      </div>
+      <div class="plan featured">
+        <div class="plan-name">Pro</div>
+        <div class="plan-price">$149<span>/mo</span></div>
+        <div class="plan-desc">For teams actively chasing $150k–$1M in AR.</div>
+        <ul>
+          <li>Everything in Starter</li>
+          <li>Auto sequences (Day 7 / 21 / 45)</li>
+          <li>Promise tracking from replies</li>
+          <li>DSO &amp; recovery dashboard</li>
+          <li>Gmail + Outlook send</li>
+        </ul>
+        <button class="plan-btn" onclick="scrollWaitlist()">Join waitlist</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="faq">
+  <div class="section-inner">
+    <div class="section-label">FAQ</div>
+    <h2 class="section-title">Common questions</h2>
+    <div class="faq" style="margin-top:1.5rem">
+      <div class="faq-item">
+        <div class="faq-q">Is this a debt collection agency?</div>
+        <div class="faq-a">No. CashQueue helps you send professional payment reminders from your own business email. You approve messages and maintain the customer relationship.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Will it send emails without my approval?</div>
+        <div class="faq-a">Not at first. You review and click send. Auto-send on trusted sequences is optional once you're comfortable with the tone.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">How is this different from Chaser or Upflow?</div>
+        <div class="faq-a">Same category — we're built AI-first for SMBs: smarter prioritization ("who pays if I nudge today"), reply-aware promise tracking, and tone that adapts per customer.</div>
+      </div>
+      <div class="faq-item">
+        <div class="faq-q">Who is this for?</div>
+        <div class="faq-a">B2B businesses on QuickBooks or Xero with $50k+ overdue AR — agencies, distributors, trades, professional services. If someone still sends reminder emails manually, this is for you.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="waitlist" id="waitlist">
+  <h2>Get early access</h2>
+  <p>We're onboarding founding customers who want to collect faster. Join the waitlist — we'll reach out for a 15-minute fit call.</p>
+  <form class="waitlist-form" id="waitlist-form" onsubmit="submitWaitlist(event)">
+    <input type="email" id="waitlist-email" placeholder="you@company.com" required autocomplete="email">
+    <button type="submit">Join waitlist</button>
+  </form>
+  <div class="waitlist-success" id="waitlist-success">You're on the list — we'll be in touch soon.</div>
+  <p class="waitlist-note">No spam. Early access pricing locked at signup.</p>
+</section>
+
+<footer class="footer">
+  <p>© 2026 CashQueue · Payment reminders, not legal collections advice.</p>
+</footer>
+
+<div class="toast-stack" id="toast-stack"></div>
+
+<script>
+const QUEUE = [
+  {
+    id: 'acme',
+    rank: 1,
+    name: 'Acme Manufacturing',
+    amount: 22400,
+    days: 18,
+    tag: 'likely',
+    tagLabel: 'Likely to pay',
+    action: 'Email',
+    subject: 'Quick follow-up — Invoice #8821 ($22,400)',
+    to: 'ap@acmemfg.com',
+    body: `Hi Sarah,
+
+Hope you're doing well. I'm following up on invoice #8821 for $22,400, which was due May 24.
+
+Acme has always been great to work with — this is just a friendly reminder in case it slipped through. If there's anything holding up payment on your end (PO number, W-9, etc.), let me know and I'll get it sorted today.
+
+Could you confirm when we should expect this?
+
+Best,
+Mike`
+  },
+  {
+    id: 'beta',
+    rank: 2,
+    name: 'Beta Logistics',
+    amount: 18000,
+    days: 31,
+    tag: 'overdue',
+    tagLabel: '31 days overdue',
+    action: 'Email',
+    subject: 'Payment timing — Invoice #9014 ($18,000)',
+    to: 'billing@betalogistics.com',
+    body: `Hi Tom,
+
+I wanted to check in on the outstanding balance of $18,000 from invoice #9014 (due May 11).
+
+Can you confirm when we should expect payment, or if there's an issue we need to resolve on our side?
+
+If cash flow is tight this month, I'm open to a short payment plan — but I need to hear from you this week.
+
+Thanks,
+Mike`
+  },
+  {
+    id: 'delta',
+    rank: 3,
+    name: 'Delta Services',
+    amount: 9200,
+    days: 47,
+    tag: 'call',
+    tagLabel: 'Call recommended',
+    action: 'Call first',
+    subject: 'Urgent — Invoice #9155 ($9,200) now 47 days past due',
+    to: 'cfo@deltaservices.com',
+    body: `Hi Jennifer,
+
+Invoice #9155 for $9,200 is now 47 days past due. We've sent two prior reminders without a response.
+
+I need to resolve this balance by end of week. Please reply today with a payment date, or call me directly so we can agree on next steps.
+
+I'm willing to discuss a two-installment plan if that helps — but I can't leave this open another month.
+
+Mike`
+  },
+  {
+    id: 'echo',
+    rank: 4,
+    name: 'Echo Creative',
+    amount: 7000,
+    days: 12,
+    tag: 'likely',
+    tagLabel: 'Promise: pays Friday',
+    action: 'Email',
+    subject: 'Confirming Friday payment — Invoice #9201',
+    to: 'finance@echocreative.co',
+    body: `Hi Alex,
+
+Thanks for confirming payment this Friday for invoice #9201 ($7,000).
+
+I'll watch for it — if anything changes, just reply to this thread and we'll adjust.
+
+Appreciate it,
+Mike`
+  }
+];
+
+let activeId = 'acme';
+
+function fmt(n) {
+  return '$' + n.toLocaleString('en-US');
+}
+
+function renderQueue() {
+  const list = document.getElementById('queue-list');
+  list.innerHTML = QUEUE.map(item => `
+    <div class="queue-item ${item.id === activeId ? 'active' : ''}" onclick="selectAccount('${item.id}')">
+      <div class="queue-rank">${item.rank}</div>
+      <div class="queue-main">
+        <div class="queue-name">${item.name}</div>
+        <div class="queue-meta">${item.action} · ${item.days} days · ${item.tagLabel}</div>
+        <span class="queue-tag tag-${item.tag}">${item.tagLabel}</span>
+      </div>
+      <div class="queue-amt">${fmt(item.amount)}</div>
+    </div>`).join('');
+}
+
+function renderEmail() {
+  const item = QUEUE.find(q => q.id === activeId) || QUEUE[0];
+  document.getElementById('email-panel').innerHTML = `
+    <div class="email-meta">
+      <strong>To:</strong> ${item.to}<br>
+      <strong>Subject:</strong> ${item.subject}<br>
+      <strong>Tone:</strong> ${item.tag === 'likely' ? 'Friendly' : item.tag === 'overdue' ? 'Firm but professional' : 'Escalation'}
+    </div>
+    <div class="email-draft">${item.body}</div>
+    <div class="email-actions">
+      <button type="button" class="email-btn primary" onclick="showToast('Demo mode — email would send from your Gmail/Outlook.')">Approve &amp; send</button>
+      <button type="button" class="email-btn" onclick="showToast('Edit in your inbox before sending.')">Edit draft</button>
+      <button type="button" class="email-btn" onclick="showToast('Snoozed until tomorrow.')">Snooze</button>
+    </div>`;
+}
+
+function selectAccount(id) {
+  activeId = id;
+  renderQueue();
+  renderEmail();
+}
+
+function demoSendAll() {
+  showToast('4 personalized emails queued — review each draft before send.');
+}
+
+function showToast(msg) {
+  const stack = document.getElementById('toast-stack');
+  const el = document.createElement('div');
+  el.className = 'toast-item';
+  el.textContent = msg;
+  stack.appendChild(el);
+  setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.2s'; setTimeout(() => el.remove(), 220); }, 3500);
+}
+
+function scrollWaitlist() {
+  document.getElementById('waitlist').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function submitWaitlist(e) {
+  e.preventDefault();
+  const email = document.getElementById('waitlist-email').value.trim();
+  if (!email) return;
+  try {
+    const res = await fetch('/api/waitlist', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, source: 'cashqueue-landing' })
+    });
+    if (!res.ok) throw new Error('failed');
+    document.getElementById('waitlist-form').style.display = 'none';
+    document.getElementById('waitlist-success').style.display = 'inline-block';
+  } catch {
+    showToast("You're on the list! (Saved locally — we'll follow up.)");
+    try { localStorage.setItem('cashqueue_waitlist', email); } catch { /* ignore */ }
+    document.getElementById('waitlist-form').style.display = 'none';
+    document.getElementById('waitlist-success').style.display = 'inline-block';
+  }
+}
+
+renderQueue();
+renderEmail();
+</script>
+</body>
+</html>
