@@ -246,11 +246,26 @@ async function handleChat(req, res) {
   if (claraContext) contextParts.push(`Additional company memory:\n${claraContext.slice(0, 3500)}`);
 
   const ai = await callAiModel({
-    system: `You are Clara, MyCFOPro's CFO Advisor for small businesses.
+    system: `You are Clara, MyCFOPro's AI CFO for small businesses.
 Be warm, direct, and practical. Explain financial concepts in plain English.
 Use exact provided numbers when available. Reference month-over-month trends when health tracking data is present.
-Do not invent missing data. Keep answers to 3-5 sentences unless the user asks for detail.
-This is informational and not a substitute for a CPA or licensed advisor.`,
+Do not invent missing data. Keep reply text to 3-5 sentences unless the user asks for detail.
+This is informational and not a substitute for a CPA or licensed advisor.
+
+You can ask the app to perform actions for the user. Respond with ONLY valid JSON (no markdown fences):
+{"reply":"your message to the user","actions":[{"type":"ACTION_TYPE","preset":"OPTIONAL"}]}
+
+Available action types (include only when the user clearly wants you to do something):
+- show_report — open/build the P&L report (optional preset: owner, profit, cost, board, minimal)
+- build_deck — create the CEO slide deck from their P&L
+- show_health — open month-over-month health trends
+- show_deck — open the existing slide deck viewer
+- set_dashboard — change dashboard layout (preset required: owner, profit, cost, board, minimal)
+- analyze — run AI CFO analysis on uploaded financials
+
+If the user is only asking a question, use "actions":[].
+If they need to upload a P&L first, say so in reply and use "actions":[] or {"type":"open_upload"}.
+Do not include actions the user did not request.`,
     messages: [
       { role: 'user', content: contextParts.join('\n\n') },
       ...history.map(item => ({
@@ -259,14 +274,51 @@ This is informational and not a substitute for a CPA or licensed advisor.`,
       })),
       { role: 'user', content: message }
     ],
-    maxTokens: 700
+    maxTokens: 900
   });
 
+  const parsed = parseClaraChatJson(ai.text);
   sendJson(res, 200, {
     provider: ai.provider,
     model: ai.model,
-    reply: ai.text.trim()
+    reply: parsed.reply,
+    actions: parsed.actions
   });
+}
+
+function parseClaraChatJson(raw) {
+  const text = String(raw || '').trim();
+  if (!text) return { reply: '', actions: [] };
+
+  const tryParse = (candidate) => {
+    try {
+      const json = JSON.parse(candidate);
+      if (json && typeof json.reply === 'string') {
+        return {
+          reply: json.reply.trim(),
+          actions: Array.isArray(json.actions) ? json.actions.filter(a => a && a.type) : []
+        };
+      }
+    } catch { /* ignore */ }
+    return null;
+  };
+
+  const direct = tryParse(text);
+  if (direct) return direct;
+
+  const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if (fenced) {
+    const fromFence = tryParse(fenced[1].trim());
+    if (fromFence) return fromFence;
+  }
+
+  const embedded = text.match(/\{[\s\S]*"reply"\s*:[\s\S]*\}/);
+  if (embedded) {
+    const fromEmbed = tryParse(embedded[0]);
+    if (fromEmbed) return fromEmbed;
+  }
+
+  return { reply: text, actions: [] };
 }
 
 function handleVoiceStatus(res) {
