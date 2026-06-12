@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MyCFOPro.AI — CFO Intelligence for Small Business</title>
-<meta name="description" content="Upload small-business financials and get CFO-grade insights, company health tracking, presentation decks, and practical action plans in minutes.">
+<meta name="description" content="Upload your P&amp;L and get a CFO report, monthly health trends, a board-ready slide deck, and Clara — your AI CFO advisor.">
 <meta property="og:title" content="MyCFOPro.AI — CFO Intelligence for Small Business">
 <meta property="og:description" content="Turn QuickBooks, Xero, Wave, Excel, CSV, or PDF exports into plain-English business insights.">
 <meta property="og:type" content="website">
@@ -215,6 +215,7 @@ button{cursor:pointer;font-family:inherit}
 .section-h2{font-size:clamp(1.8rem,3.5vw,2.6rem);font-weight:900;color:var(--ink);letter-spacing:-0.04em;text-align:center;margin-bottom:0.5rem;line-height:1.2}
 .section-sub{font-size:15px;color:var(--ink-3);text-align:center;margin-bottom:3rem}
 .plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.plans-two{max-width:720px;margin-left:auto;margin-right:auto}
 .plan{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:1.75rem}
 .plan.featured{border:2px solid var(--blue);position:relative}
 .plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);font-size:11px;font-weight:700;background:var(--blue);color:var(--white);padding:4px 14px;border-radius:20px;white-space:nowrap}
@@ -691,15 +692,6 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
 .usage-gate-banner{display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:12px 14px;border-radius:var(--rs);margin:12px 0 0;font-size:13px}
 .usage-gate-banner.trial{background:var(--blue-bg);border:1px solid #c7d2ef;color:var(--ink-2)}
 .usage-gate-banner.locked{background:var(--amber-bg);border:1px solid #f4dfad;color:var(--ink-2)}
-.dash-pref-panel{margin:16px 0 0;padding:14px;border:1px solid var(--border);border-radius:var(--rs);background:#fff}
-.dash-pref-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
-.dash-pref-title{font-size:13px;font-weight:700;color:var(--ink)}
-.dash-pref-sub{font-size:12px;color:var(--ink-3)}
-.dash-pref-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px}
-.dash-pref-card{padding:10px 12px;border:1px solid var(--border);border-radius:10px;background:var(--bg);cursor:pointer;text-align:left;transition:border-color .15s,background .15s}
-.dash-pref-card.active{border-color:var(--blue);background:var(--blue-bg)}
-.dash-pref-card-name{font-size:12px;font-weight:700;color:var(--ink);margin-bottom:3px}
-.dash-pref-card-desc{font-size:11px;color:var(--ink-3);line-height:1.4}
 .ar-collections-panel{margin:16px 0;padding:16px;border:1px solid var(--border);border-radius:var(--rs);background:#fff}
 .ar-collections-head{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:8px}
 .ar-collections-sub{font-size:12px;color:var(--ink-3);margin-bottom:12px}
@@ -947,10 +939,10 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   </div>
   <div class="nav-links">
     <button class="nav-link active" onclick="goPage('home',this)">Home</button>
-    <button class="nav-link" onclick="goPage('analysis',this)">Financial Analysis</button>
-    <button class="nav-link" onclick="goPage('slides',this)">Slide Deck</button>
-    <button class="nav-link" onclick="goPage('bot',this)">CFO Advisor</button>
-    <button class="nav-link" onclick="goPage('health',this)">Company Health</button>
+    <button class="nav-link" onclick="goPage('analysis',this)">Analyze</button>
+    <button class="nav-link" onclick="goPage('health',this)">Health</button>
+    <button class="nav-link" onclick="goPage('slides',this)">Deck</button>
+    <button class="nav-link" onclick="goPage('bot',this)">Clara</button>
   </div>
   <span class="nav-company-badge" id="nav-company-badge"></span>
   <div class="auth-nav">
@@ -992,7 +984,7 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
           <div class="auth-field"><label>Name</label><input type="text" id="auth-signup-name" autocomplete="name" placeholder="Your name"></div>
           <div class="auth-field"><label>Email</label><input type="email" id="auth-signup-email" required autocomplete="email"></div>
           <div class="auth-field"><label>Password</label><input type="password" id="auth-signup-password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters"></div>
-          <p class="auth-note">Your account includes unlimited analyses, cloud sync, Clara, health tracking, and slide decks.</p>
+          <p class="auth-note">Pro includes unlimited P&amp;L uploads, health trends, slide deck, and Clara.</p>
           <button type="submit" class="auth-submit">Create account</button>
         </form>
       </div>
@@ -1008,12 +1000,12 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   <!-- HERO -->
   <section class="hero">
     <div class="hero-inner">
-      <div class="hero-eyebrow"><span></span>AI-Powered CFO Platform for Small Business</div>
-      <h1 class="hero-h1">Your numbers,<br><em>finally working for you.</em></h1>
-      <p class="hero-sub">Upload your financials and get a complete CFO experience — instant analysis, CEO-ready slide decks, company health tracking, and a CFO advisor you can actually talk to.</p>
+      <div class="hero-eyebrow"><span></span>Your monthly P&amp;L → CFO report, trends &amp; board deck</div>
+      <h1 class="hero-h1">Walk into the bank meeting<br><em>already prepared.</em></h1>
+      <p class="hero-sub">Upload your profit &amp; loss. Get a CFO-grade report, month-over-month health tracking, a presentation-ready slide deck, and Clara — your advisor who knows your numbers.</p>
       <div class="hero-actions">
-        <button class="btn-gold" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Analyze my financials</button>
-        <button class="btn-ghost" onclick="goPage('bot',document.querySelectorAll('.nav-link')[3])">Talk to Clara</button>
+        <button class="btn-gold" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Upload my P&amp;L</button>
+        <button class="btn-ghost" onclick="goPage('slides',document.querySelectorAll('.nav-link')[3])">See the slide deck</button>
       </div>
       <div class="hero-trust">
         <div class="trust-item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Secure cloud sync across devices</div>
@@ -1047,33 +1039,28 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   <!-- SERVICES -->
   <section class="services-strip">
     <div class="strip-inner">
-      <div class="strip-label">Everything you need to run your finances with confidence</div>
+      <div class="strip-label">Three steps — one workflow owners actually use</div>
       <div class="services-grid">
         <div class="service-card" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">
-          <div class="service-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
-          <div class="service-name">Financial Analysis</div>
-          <div class="service-desc">Upload your P&L or balance sheet and get a full CFO-grade report with red flags and action items.</div>
-          <div class="service-cta">Analyze now →</div>
+          <div class="service-icon si-blue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+          <div class="service-name">1 · CFO Report</div>
+          <div class="service-desc">Upload your P&amp;L. Get margins, red flags, and a prioritized action plan in under a minute.</div>
+          <div class="service-cta">Upload P&amp;L →</div>
         </div>
-        <div class="service-card" onclick="goPage('slides',document.querySelectorAll('.nav-link')[2])">
-          <div class="service-icon si-gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
-          <div class="service-name">CEO Slide Deck</div>
-          <div class="service-desc">Auto-generate a polished, presentation-ready slide deck from your financial data. Walk into any boardroom ready.</div>
-          <div class="service-cta">Build a deck →</div>
-        </div>
-        <div class="service-card" onclick="goPage('bot',document.querySelectorAll('.nav-link')[3])">
-          <div class="service-icon si-purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></div>
-          <div class="service-name">CFO Advisor</div>
-          <div class="service-desc">Ask Clara anything about your financials. She knows your numbers and gives straight answers, not reports.</div>
-          <div class="service-cta">Talk to Clara →</div>
-        </div>
-        <div class="service-card" onclick="goPage('health',document.querySelectorAll('.nav-link')[4])">
+        <div class="service-card" onclick="goPage('health',document.querySelectorAll('.nav-link')[2])">
           <div class="service-icon si-teal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
-          <div class="service-name">Company Health</div>
-          <div class="service-desc">Track your financial performance over time. See trends, spot problems early, and watch your health score improve.</div>
+          <div class="service-name">2 · Track Trends</div>
+          <div class="service-desc">Each month you upload builds your health score history — see if things are getting better or worse.</div>
           <div class="service-cta">View health →</div>
         </div>
+        <div class="service-card" onclick="goPage('slides',document.querySelectorAll('.nav-link')[3])">
+          <div class="service-icon si-gold"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+          <div class="service-name">3 · Board Deck</div>
+          <div class="service-desc">Auto-build a polished slide deck from your numbers. Export to PowerPoint before your lender or board meeting.</div>
+          <div class="service-cta">Open deck →</div>
+        </div>
       </div>
+      <p class="strip-footnote" style="text-align:center;font-size:13px;color:var(--ink-3);margin-top:1rem">Plus <strong>Clara</strong> — ask anything about your business and she answers using your real financials.</p>
     </div>
   </section>
 
@@ -1084,8 +1071,8 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
     <div class="stats-row">
       <div class="stat-item"><div class="stat-num">$180K</div><div class="stat-label">Average CFO salary MyCFOPro replaces</div></div>
       <div class="stat-item"><div class="stat-num">&lt;60s</div><div class="stat-label">From upload to full CFO report</div></div>
-      <div class="stat-item"><div class="stat-num">6</div><div class="stat-label">Statement types — P&amp;L, balance sheet, AR, AP &amp; more</div></div>
-      <div class="stat-item"><div class="stat-num">$49</div><div class="stat-label">Pro plan — full CFO workspace</div></div>
+      <div class="stat-item"><div class="stat-num">3-in-1</div><div class="stat-label">Report, trends &amp; deck from one P&amp;L upload</div></div>
+      <div class="stat-item"><div class="stat-num">$29</div><div class="stat-label">Pro plan — less than one hour of bookkeeper time</div></div>
     </div>
     <div class="use-case-grid">
       <div class="use-case-card">
@@ -1108,47 +1095,33 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   <section class="pricing-section">
     <div class="pricing-inner">
       <div class="section-eyebrow">Pricing</div>
-      <h2 class="section-h2">Simple, transparent pricing.</h2>
-      <p class="section-sub">No contracts. Cancel anytime. Start with one free analysis.</p>
-      <div class="plans">
+      <h2 class="section-h2">One product. One price.</h2>
+      <p class="section-sub">Try your first P&amp;L analysis free. Upgrade when you want unlimited uploads and the full workflow.</p>
+      <div class="plans plans-two">
         <div class="plan">
           <div class="plan-name">Preview</div>
           <div class="plan-price"><sup>$</sup>0</div>
-          <p class="plan-desc">One full analysis to see MyCFOPro in action. No credit card.</p>
+          <p class="plan-desc">One full P&amp;L analysis — see the report, charts, and action plan.</p>
           <ul class="plan-features">
-            <li>1 financial analysis &amp; CFO report</li>
-            <li>All statement types (P&amp;L, BS, AR, AP)</li>
-            <li>Instant charts &amp; action items</li>
+            <li>1 P&amp;L upload &amp; CFO report</li>
+            <li>Charts, findings &amp; action items</li>
+            <li>No credit card</li>
           </ul>
           <button class="plan-btn" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Try one analysis</button>
         </div>
         <div class="plan featured">
-          <div class="plan-badge">Most popular</div>
+          <div class="plan-badge">Full workflow</div>
           <div class="plan-name">Pro</div>
-          <div class="plan-price"><sup>$</sup>49<sub>/mo</sub></div>
-          <p class="plan-desc">Unlimited analyses, Clara advisor, health tracking, and slide decks.</p>
+          <div class="plan-price"><sup>$</sup>29<sub>/mo</sub></div>
+          <p class="plan-desc">Everything you need for monthly bank meetings and board prep.</p>
           <ul class="plan-features">
-            <li>Unlimited financial analyses</li>
-            <li>CEO slide deck builder</li>
-            <li>CFO Advisor (Clara)</li>
-            <li>Company health tracking</li>
+            <li>Unlimited P&amp;L uploads</li>
+            <li>Monthly health score trends</li>
+            <li>CEO slide deck + PowerPoint export</li>
+            <li>Clara CFO advisor</li>
             <li>Cloud sync across devices</li>
           </ul>
-          <button class="plan-btn primary" onclick="openAuthModal('signup')">Create account — get Pro access</button>
-        </div>
-        <div class="plan">
-          <div class="plan-name">Business</div>
-          <div class="plan-price"><sup>$</sup>149<sub>/mo</sub></div>
-          <p class="plan-desc">Multiple entities, team access, and custom benchmarks.</p>
-          <ul class="plan-features">
-            <li>Everything in Pro</li>
-            <li>Up to 5 entities</li>
-            <li>3 team seats</li>
-            <li>Custom industry benchmarks</li>
-            <li>White-label reports</li>
-            <li>Priority support</li>
-          </ul>
-          <button class="plan-btn" onclick="showPricingComingSoon('Business')">Contact for Business</button>
+          <button class="plan-btn primary" onclick="openAuthModal('signup')">Create account</button>
         </div>
       </div>
     </div>
@@ -1158,10 +1131,10 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   <section class="cta-banner">
     <div class="cta-inner">
       <h2 class="cta-h2">Know your numbers.<br>Run your business.</h2>
-      <p class="cta-sub">Try one analysis free. Create an account for unlimited access, Clara, health tracking, and slide decks.</p>
+      <p class="cta-sub">Upload your P&amp;L once. Get the report, the trends, and the deck — ready for your next meeting.</p>
       <div class="cta-actions">
-        <button class="btn-gold" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Analyze my financials</button>
-        <button class="btn-ghost" onclick="goPage('bot',document.querySelectorAll('.nav-link')[3])">Talk to Clara first</button>
+        <button class="btn-gold" onclick="goPage('analysis',document.querySelectorAll('.nav-link')[1])">Upload my P&amp;L</button>
+        <button class="btn-ghost" onclick="goPage('bot',document.querySelectorAll('.nav-link')[4])">Talk to Clara</button>
       </div>
     </div>
   </section>
@@ -1176,65 +1149,13 @@ footer{background:var(--blue-d);padding:2rem;text-align:center}
   <div class="svc-page">
     <div id="analysis-upload-view">
       <div class="svc-hero">
-        <div class="svc-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Financial Analysis</div>
-        <h1 class="svc-h1">Upload once.<br>Understand everything.</h1>
-        <p class="svc-sub">Choose your statement type, then drop your QuickBooks, Xero, or Wave export. MyCFOPro reads your numbers and returns a CFO-grade report tailored to that statement.</p>
+        <div class="svc-eyebrow"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/></svg>Profit &amp; Loss Analysis</div>
+        <h1 class="svc-h1">Upload your P&amp;L.<br>Get your CFO report.</h1>
+        <p class="svc-sub">Drop your income statement from QuickBooks, Xero, or Wave. MyCFOPro builds your report, updates your health trends, and refreshes your slide deck automatically.</p>
       </div>
       <div class="analysis-panel">
-        <div class="analysis-panel-head">
-          <div>
-            <div class="analysis-panel-title">Choose your statement type</div>
-            <div class="analysis-panel-sub">Pick the report you are uploading so MyCFOPro parses the right fields and builds the right analysis.</div>
-          </div>
-        </div>
-        <div class="stmt-type-grid" id="stmt-type-grid">
-          <button type="button" class="stmt-type-card active" data-value="income_statement" onclick="selectStatementType('income_statement', this)">
-            <span class="stmt-type-icon">PL</span>
-            <span class="stmt-type-name">Income Statement</span>
-            <span class="stmt-type-desc">P&amp;L · revenue &amp; profit</span>
-          </button>
-          <button type="button" class="stmt-type-card" data-value="balance_sheet" onclick="selectStatementType('balance_sheet', this)">
-            <span class="stmt-type-icon">BS</span>
-            <span class="stmt-type-name">Balance Sheet</span>
-            <span class="stmt-type-desc">Assets, liabilities, equity</span>
-          </button>
-          <button type="button" class="stmt-type-card" data-value="cash_flow" onclick="selectStatementType('cash_flow', this)">
-            <span class="stmt-type-icon">CF</span>
-            <span class="stmt-type-name">Cash Flow</span>
-            <span class="stmt-type-desc">Operating, investing, financing</span>
-          </button>
-          <button type="button" class="stmt-type-card" data-value="ar_summary" onclick="selectStatementType('ar_summary', this)">
-            <span class="stmt-type-icon">AR</span>
-            <span class="stmt-type-name">AR Summary</span>
-            <span class="stmt-type-desc">Customer aging buckets</span>
-          </button>
-          <button type="button" class="stmt-type-card" data-value="ap_balance" onclick="selectStatementType('ap_balance', this)">
-            <span class="stmt-type-icon">AP</span>
-            <span class="stmt-type-name">AP Balance</span>
-            <span class="stmt-type-desc">Vendor aging &amp; payables exposure</span>
-          </button>
-          <button type="button" class="stmt-type-card" data-value="unpaid_bills" onclick="selectStatementType('unpaid_bills', this)">
-            <span class="stmt-type-icon">$</span>
-            <span class="stmt-type-name">Unpaid Bills</span>
-            <span class="stmt-type-desc">Which bills to pay with available cash</span>
-          </button>
-        </div>
         <input type="hidden" id="statement-type" value="income_statement">
-        <div class="dash-pref-panel">
-          <div class="dash-pref-head">
-            <div>
-              <div class="dash-pref-title">Dashboard style</div>
-              <div class="dash-pref-sub">Tell us what you want to see — we build the report around it. Selected: <strong id="dash-pref-label">Owner overview</strong></div>
-            </div>
-          </div>
-          <div class="dash-pref-grid">
-            <button type="button" class="dash-pref-card active" data-pref="owner" onclick="setDashboardPref('owner')"><div class="dash-pref-card-name">Owner overview</div><div class="dash-pref-card-desc">Profit, cash, and priorities</div></button>
-            <button type="button" class="dash-pref-card" data-pref="cash" onclick="setDashboardPref('cash')"><div class="dash-pref-card-name">Cash focus</div><div class="dash-pref-card-desc">Runway, liquidity, collections</div></button>
-            <button type="button" class="dash-pref-card" data-pref="profit" onclick="setDashboardPref('profit')"><div class="dash-pref-card-name">Profitability</div><div class="dash-pref-card-desc">Margins and cost drivers</div></button>
-            <button type="button" class="dash-pref-card" data-pref="board" onclick="setDashboardPref('board')"><div class="dash-pref-card-name">Board ready</div><div class="dash-pref-card-desc">Clean KPIs for lenders &amp; boards</div></button>
-          </div>
-        </div>
-        <div class="analysis-hint" id="statement-hint">Profit &amp; loss showing revenue, expenses, and net income for the period.</div>
+        <div class="analysis-hint" id="statement-hint">Profit &amp; loss (P&amp;L) showing revenue, expenses, and net income for the period.</div>
         <div class="usage-gate-banner" id="usage-gate-banner"></div>
         <div class="welcome-back-banner" id="welcome-back-banner"></div>
         <div class="cloud-sync-banner" id="cloud-sync-banner"></div>
@@ -1681,7 +1602,6 @@ window.addEventListener('load', () => {
   } else if (typeof hydrateAppFromStore === 'function') {
     hydrateAppFromStore();
   }
-  if (typeof initDashboardPrefPicker === 'function') initDashboardPrefPicker();
   if (typeof renderUsageGateBanner === 'function') renderUsageGateBanner();
 });
 
@@ -1880,22 +1800,15 @@ const STATEMENT_TYPES = {
 };
 
 function getStatementType() {
-  return document.getElementById('statement-type')?.value || 'income_statement';
+  return 'income_statement';
 }
 
 function selectStatementType(type, button) {
   const input = document.getElementById('statement-type');
-  if (input) input.value = type;
-  document.querySelectorAll('.stmt-type-card').forEach(card => {
-    card.classList.toggle('active', card === button);
-  });
+  if (input) input.value = 'income_statement';
   updateStatementUploadCopy();
   if (typeof renderWelcomeBackBanner === 'function') renderWelcomeBackBanner();
   if (typeof renderUsageGateBanner === 'function') renderUsageGateBanner();
-  const reportEl = document.getElementById('analysis-report');
-  if (reportEl && reportEl.style.display !== 'none' && currentData && (currentData.statementType || 'income_statement') !== type) {
-    resetAnalysis();
-  }
 }
 
 function updateStatementUploadCopy() {
@@ -2736,10 +2649,9 @@ function handleAnalysisFile(e) {
 }
 
 function processRows(rows, filename) {
-  showAnalysisStatus('Analyzing your financials...');
+  showAnalysisStatus('Analyzing your P&L...');
   setTimeout(() => {
-    const statementType = getStatementType();
-    const data = parseFinancialRows(rows, filename, statementType);
+    const data = parseFinancialRows(rows, filename, 'income_statement');
     currentData = data;
     setTimeout(() => {
       renderReport(data);
@@ -3275,7 +3187,6 @@ Speak like a trusted advisor, not a report. Use their exact numbers. Keep respon
 </script>
 <script src="company-store.js"></script>
 <script src="usage-gate.js"></script>
-<script src="dashboard-prefs.js"></script>
 <script src="auth-ui.js"></script>
 <script src="ap-pay-engine.js"></script>
 <script src="deck-engine.js"></script>

@@ -37,11 +37,15 @@ npm start
 
 ## What is included
 
-- A marketing homepage for the AI CFO product
-- Financial statement upload for CSV, Excel, and PDF exports
-- CFO-style analysis reports with charts and action items
-- Company health dashboard, CEO slide deck, and Clara advisor
-- Optional secure AI backend for generated CFO reports and Clara chat
+MyCFOPro focuses on one workflow owners pay for:
+
+1. **Upload P&L** → CFO report with charts, findings, and action items  
+2. **Health trends** → month-over-month score and margin tracking  
+3. **Slide deck** → board/lender-ready presentation from your numbers  
+4. **Clara** → AI advisor that knows your financials  
+
+- P&L upload (CSV, Excel, PDF from QuickBooks, Xero, Wave)
+- Optional AI backend for generated reports and Clara chat
 - Accounts and cloud sync when running via `npm start`
 
 ## Run with real AI analysis

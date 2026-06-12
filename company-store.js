@@ -207,8 +207,8 @@ function updateCompanyAIReport(report) {
 
 function syncGlobalsFromStore() {
   loadCompanyStore();
-  const activeType = typeof getStatementType === 'function' ? getStatementType() : 'income_statement';
-  const saved = getSavedReportForType(activeType) || companyStore.latest;
+  const saved = getSavedReportForType('income_statement') ||
+    (companyStore.latest?.statementType === 'income_statement' ? companyStore.latest : null);
   if (saved?.financials) {
     currentData = { ...saved.financials };
     window.latestAIReport = saved.aiReport || null;
@@ -361,9 +361,9 @@ function renderConnectedFlowPanel() {
       </div>
     </div>
     <div class="cf-actions">
-      <button class="btn-blue" style="font-size:12px;padding:8px 14px" onclick="goPage('health', document.querySelectorAll('.nav-link')[4])">View health trends →</button>
-      <button class="btn-outline" style="font-size:12px;padding:8px 14px" onclick="goPage('slides', document.querySelectorAll('.nav-link')[2])">Open slide deck →</button>
-      <button class="btn-outline" style="font-size:12px;padding:8px 14px" onclick="goPage('bot', document.querySelectorAll('.nav-link')[3])">Ask Clara →</button>
+      <button class="btn-blue" style="font-size:12px;padding:8px 14px" onclick="goPage('health', document.querySelectorAll('.nav-link')[2])">View health trends →</button>
+      <button class="btn-outline" style="font-size:12px;padding:8px 14px" onclick="goPage('slides', document.querySelectorAll('.nav-link')[3])">Open slide deck →</button>
+      <button class="btn-outline" style="font-size:12px;padding:8px 14px" onclick="goPage('bot', document.querySelectorAll('.nav-link')[4])">Ask Clara →</button>
     </div>`;
 
   const banner = document.getElementById('health-save-banner');

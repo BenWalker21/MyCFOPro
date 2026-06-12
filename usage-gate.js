@@ -58,12 +58,12 @@ function renderUsageGateBanner() {
   if (hasUsedFreeAnalysis()) {
     el.className = 'usage-gate-banner locked';
     el.innerHTML = `
-      <span><strong>Account required.</strong> You have used your free preview analysis. Create an account to upload more reports, track health, build decks, and talk to Clara.</span>
+      <span><strong>Account required.</strong> You have used your free P&amp;L preview. Create an account for unlimited uploads, health trends, your slide deck, and Clara.</span>
       <button class="btn-blue" style="font-size:12px;padding:7px 12px" onclick="openAuthModal('signup')">Create account</button>`;
   } else {
     el.className = 'usage-gate-banner trial';
     el.innerHTML = `
-      <span><strong>Try one analysis free.</strong> Upload any statement to preview MyCFOPro — then create an account for unlimited access.</span>
+      <span><strong>Try one P&amp;L analysis free.</strong> Upload your income statement to preview the report — then create an account for health trends, your deck, and Clara.</span>
       <button class="btn-outline" style="font-size:12px;padding:7px 12px" onclick="openAuthModal('signup')">Create account</button>`;
   }
 }
